@@ -26,6 +26,10 @@ import javax.swing.ImageIcon
 import javax.imageio.ImageIO
 from javax.swing import AbstractAction, Action
 
+from  com.vladsch.flexmark.html import HtmlRenderer
+from com.vladsch.flexmark.parser import Parser
+from com.vladsch.flexmark.util.options import MutableDataSet
+
 from addons.ScriptingComposerTools.javadocviewer.webbrowserpanel.browserpanel import BrowserPanel
 
 import javadoc_role
@@ -70,10 +74,10 @@ def fixurls(rest,prefix):
 class ReStructuredTextPreviewAction(AbstractAction):
 
   def __init__(self):
-    AbstractAction.__init__(self,"reStructuredText preview")
-    self.putValue(Action.ACTION_COMMAND_KEY, "rstpreview");
-    self.putValue(Action.SMALL_ICON, self.load_icon(getResource(__file__,"rstpreview.png")));
-    self.putValue(Action.SHORT_DESCRIPTION, "reStructuredText preview");
+    AbstractAction.__init__(self,"Markup preview")
+    self.putValue(Action.ACTION_COMMAND_KEY, "markuppreview")
+    self.putValue(Action.SMALL_ICON, self.load_icon(getResource(__file__,"rstpreview.png")))
+    self.putValue(Action.SHORT_DESCRIPTION, "Markup preview (.rst, .md)")
 
   def load_icon(self, afile):
     if not isinstance(afile,File):
@@ -92,9 +96,9 @@ class ReStructuredTextPreviewAction(AbstractAction):
     if getFile == None:
       return False
     name, ext = os.path.splitext(getFile().getName())
-    if ext != ".rst":
-      return False  
-    return True
+    if ext in (".rst", ".md"):
+      return True
+    return False
     
   def actionPerformed(self,e):
     composer = e.getSource().getContext()
@@ -106,11 +110,24 @@ class ReStructuredTextPreviewAction(AbstractAction):
     if getFile == None:
       return 
     foldersManager = ToolsLocator.getFoldersManager()
-    temp = foldersManager.getTemporaryFile("rstpreview.html")
+    temp = foldersManager.getTemporaryFile("markup-preview.html")
     os.chdir(getFile().getParent())
-    rst = editor.getJTextComponent().getText()
-    rst = fixurls(rst,os.getcwd()+"/")
-    html = publish_string( source=rst, source_path=getFile().getName(), writer_name="html" )
+    markuptext = editor.getJTextComponent().getText()
+    if os.path.splitext(getFile().getName())[1] == ".md":
+        options = MutableDataSet()
+        # uncomment to set optional extensions
+        #options.set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create(), StrikethroughExtension.create()));
+        # uncomment to convert soft-breaks to hard breaks
+        #options.set(HtmlRenderer.SOFT_BREAK, "<br />\n");
+        parser = Parser.builder(options).build()
+        renderer = HtmlRenderer.builder(options).build()
+        document = parser.parse(markuptext)
+        html = renderer.render(document)
+        html = html.encode("utf-8",'replace')
+    else:
+      markuptext = fixurls(markuptext,os.getcwd()+"/")
+      html = publish_string( source=markuptext, source_path=getFile().getName(), writer_name="html" )
+
     f = open(temp.getAbsolutePath(),"w")
     f.write(html)
     f.close()
@@ -118,7 +135,7 @@ class ReStructuredTextPreviewAction(AbstractAction):
     dockPanel = composer.getDock().get("#ReStructuredTextPreview")
     if dockPanel == None:
       browser = BrowserPanel()      
-      dockPanel = composer.getDock().add("#ReStructuredTextPreview","RST preview",browser,JScriptingComposer.Dock.DOCK_BOTTOM)
+      dockPanel = composer.getDock().add("#ReStructuredTextPreview","Markup preview",browser,JScriptingComposer.Dock.DOCK_BOTTOM)
     else:
       browser = dockPanel.getComponent()    
     composer.getDock().select("#ReStructuredTextPreview")   
