@@ -39,6 +39,7 @@ def warning(msg):
 def message(msg):
   composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
   commonsdialog.msgbox(msg, "Git", commonsdialog.IDEA, root=composer)
+  
 def confirm(msg):
   composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
   n = commonsdialog.confirmDialog(msg, "Git", messageType=commonsdialog.QUESTION, root=composer)
