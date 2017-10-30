@@ -102,7 +102,7 @@ class ComposerGit(object):
     if "/" not in branch:
       branch="refs/heads/" + branch
     self.__branch = branch
-    
+
   def init(self):
     git_init = Git.init()
     git_init.setDirectory(self.__workingpath)
@@ -145,6 +145,16 @@ class ComposerGit(object):
     git.close()
     repo.close()
 
+  def getRemoteURL(self):
+    git = self._open()
+    try:
+      config = git.getRepository().getConfig()
+      remoteUrl = config.getString("remote","origin","url")
+      #print "### remoteUrl", repr(remoteUrl)
+      return remoteUrl
+    finally:
+      self._close(git)
+  
   def status(self):
     git = self._open()
     try:

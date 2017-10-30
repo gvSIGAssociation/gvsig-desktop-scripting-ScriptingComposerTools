@@ -30,6 +30,9 @@ reload(repo_pull)
 import repo_ignore
 reload(repo_ignore)
 
+import repo_info
+reload(repo_info)
+
 class ShowChangesAction(AbstractAction):
 
   def __init__(self):
@@ -114,6 +117,20 @@ class GitIgnoreAction(AbstractAction):
   def isEnabled(self):
     return True
 
+class GitInfoAction(AbstractAction):
+
+  def __init__(self):
+    AbstractAction.__init__(self,"Show repository information")
+    self.putValue(Action.ACTION_COMMAND_KEY, "GitInfo")
+    #self.putValue(Action.SMALL_ICON, load_icon(getResource(__file__,"images","gitinfo.png")))
+    #self.putValue(Action.SHORT_DESCRIPTION, "Show repository information.")
+
+  def actionPerformed(self,e):
+    repo_info.repo_info()
+  
+  def isEnabled(self):
+    return True
+
 def selfRegister():
   i18nManager = ToolsLocator.getI18nManager()
   manager = ScriptingSwingLocator.getUIManager()
@@ -132,6 +149,9 @@ def selfRegister():
 
   gitIgnore = GitIgnoreAction()
   manager.addComposerMenu(i18nManager.getTranslation("Tools")+"/Git",gitIgnore)
+
+  gitInfo = GitInfoAction()
+  manager.addComposerMenu(i18nManager.getTranslation("Tools")+"/Git",gitInfo)
 
   showChanges = ShowChangesAction()
   manager.addComposerMenu(i18nManager.getTranslation("Tools")+"/Git",showChanges)
