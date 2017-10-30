@@ -106,8 +106,9 @@ class Inspector(object):
     methods = list()
     for m in self.theClass.getMethods():
       methods.append(self.methodToString2(m))
+    methods.sort()
     return methods
-  
+
   def getLines(self):
     lines = list()
     
