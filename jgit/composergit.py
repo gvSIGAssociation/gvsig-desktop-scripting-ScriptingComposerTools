@@ -67,7 +67,35 @@ class Changes(dict):
     if not change.getWorkingPath() in self:
       self[change.getWorkingPath()] = change
       return
-        
+
+class Commit(object):
+  def __init__(self, revCommit):
+    self.__revCommit = revCommit
+
+  def getId(self):
+    return self.__revCommit.getId()
+    
+  def getMessage(self):
+    return self.__revCommit.getFullMessage()
+
+  def getShortMessage(self):
+    return self.__revCommit.getShortMessage()
+
+  def getCommiterName(self):
+    return self.__revCommit.getCommitterIdent().getName()
+    
+  def getCommiterMail(self):
+    return self.__revCommit.getCommitterIdent().getEmailAddress()
+  
+  def getDate(self):
+    return self.__revCommit.getCommitterIdent().getWhen()
+
+class CommitList(list):
+  def __init__(self, revCommits):
+    list.__init__(self)
+    for revCommit in revCommits:
+      self.append(Commit(revCommit))
+
 class ComposerGit(object):
   def __init__(self, workingpath, repopath=None):
     self.__workingpath = workingpath
@@ -283,6 +311,16 @@ class ComposerGit(object):
         return "OK"
       return str(result)
       
+    finally:
+      self._close(git)
+
+  def log(self, maxCount=20):
+    git = self._open()
+    try:
+      git_log = git.log()
+      git_log.setMaxCount(maxCount)
+      commits = CommitList(git_log.call())
+      return commits
     finally:
       self._close(git)
   

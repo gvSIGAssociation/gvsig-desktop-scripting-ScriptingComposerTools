@@ -32,6 +32,23 @@ def getSelectedFolder():
     return None
   return unit
 
+def getSelectedGit():
+  folder = getSelectedFolder()
+  if folder == None:
+    warning("You must select a folder in the project tree.")
+    return None
+  git = Git(folder.getFile())
+  if not os.path.exists(git.getRepoPath()):
+    warning("There is no local repository associated with folder '%s'." % git.getRepoName())
+    return None
+  fname = os.path.join(git.getWorkingPath(),".gitignore")
+  if not os.path.exists(fname):
+    f = open(fname, "w")
+    f.write("*.class\n")
+    f.write(".directory\n")
+    f.close()    
+  return git
+  
 def warning(msg):
   composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
   commonsdialog.msgbox(msg, "Git", commonsdialog.WARNING, root=composer)

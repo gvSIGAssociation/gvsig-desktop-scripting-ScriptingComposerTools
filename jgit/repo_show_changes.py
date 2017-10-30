@@ -133,7 +133,7 @@ class ShowChangesPanel(FormPanel,Component):
       message("Need only a row selected to diff with HEAD")
       return
     change = self.__last_status[selectedRows[0]]
-    repo_diff.repo_diff(change.getWorkingPath())
+    repo_diff.repo_diff(change.getWorkingPath(), self.__git)
     
   def btnUpdate_click(self, *args):
     try:

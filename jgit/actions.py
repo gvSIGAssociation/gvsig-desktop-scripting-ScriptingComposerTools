@@ -33,6 +33,9 @@ reload(repo_ignore)
 import repo_info
 reload(repo_info)
 
+import repo_log
+reload(repo_log)
+
 class ShowChangesAction(AbstractAction):
 
   def __init__(self):
@@ -131,6 +134,20 @@ class GitInfoAction(AbstractAction):
   def isEnabled(self):
     return True
 
+class GitLogAction(AbstractAction):
+
+  def __init__(self):
+    AbstractAction.__init__(self,"Show log")
+    self.putValue(Action.ACTION_COMMAND_KEY, "GitLog")
+    #self.putValue(Action.SMALL_ICON, load_icon(getResource(__file__,"images","gitlog.png")))
+    #self.putValue(Action.SHORT_DESCRIPTION, "Show log.")
+
+  def actionPerformed(self,e):
+    repo_show_log.repo_show_log()
+  
+  def isEnabled(self):
+    return True
+    
 def selfRegister():
   i18nManager = ToolsLocator.getI18nManager()
   manager = ScriptingSwingLocator.getUIManager()
@@ -152,6 +169,9 @@ def selfRegister():
 
   gitInfo = GitInfoAction()
   manager.addComposerMenu(i18nManager.getTranslation("Tools")+"/Git",gitInfo)
+
+  gitLog = GitLogAction()
+  manager.addComposerMenu(i18nManager.getTranslation("Tools")+"/Git",gitLog)
 
   showChanges = ShowChangesAction()
   manager.addComposerMenu(i18nManager.getTranslation("Tools")+"/Git",showChanges)

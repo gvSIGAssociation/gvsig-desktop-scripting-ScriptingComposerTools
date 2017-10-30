@@ -8,7 +8,7 @@ import os
 
 import repo_utils
 reload(repo_utils)
-from repo_utils import Git, getSelectedFolder, warning, SimpleDialog, message
+from repo_utils import Git, getSelectedGit, warning, SimpleDialog, message
 
 from org.gvsig.tools.swing.api.windowmanager import WindowManager_v2
 
@@ -22,15 +22,9 @@ class RepoInfoPanel(FormPanel):
 
 
 def repo_info():
-  folder = getSelectedFolder()
-  if folder == None:
-    warning("You must select a folder in the project tree.")
+  git = getSelectedGit()
+  if git == None:
     return 
-  git = Git(folder.getFile())
-  if not os.path.exists(git.getRepoPath()):
-    warning("There is no local repository associated with folder '%s'." % git.getRepoName())
-    return 
-
   panel = RepoInfoPanel(git)
   dialog = SimpleDialog(panel, WindowManager_v2.BUTTONS_OK)
   dialog.showModal()

@@ -20,20 +20,15 @@ from pygments.formatters.html import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
 from pygments.styles import get_style_by_name
 
-from repo_utils import Git, getComposer, getSelectedFolder
+from repo_utils import Git, getComposer, getSelectedGit
 from repo_utils import warning, message
 
 from org.gvsig.scripting.swing.api import JScriptingComposer
 
 def repo_diff(path, git=None):
   if git == None:
-    folder = getSelectedFolder()
-    if folder == None:
-      warning("Debera seleccionar una carpeta en el arbol de proyectos para crear un nuevo repositorio local.")
-      return 
-    git = Git(folder.getFile())
-    if not os.path.exists(git.getRepoPath()):
-      warning("No existe un repositorio local asociado a la carpeta '%s'." % git.getRepoName())
+    git = getSelectedGit()
+    if git == None:
       return
   out = git.diff(path)
   
