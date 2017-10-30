@@ -2,7 +2,7 @@
 
 import gvsig
 from gvsig.libs.formpanel import FormPanel, getResource, load_icon
-from gvsig.commonsdialog import msgbox
+from gvsig import commonsdialog 
 
 import fnmatch
 import copy
@@ -335,7 +335,7 @@ class ClassBrowserPanel(FormPanel,Component):
   def btnSearch_click(self, *args):
     theClass = getClassByName(self.txtClassName.getText())
     if theClass == None:
-      msgbox("Clase no encontrada")
+      commonsdialog.msgbox("Clase no encontrada")
       return
     inspector = Inspector(theClass)
     self.txtOutput.setText(str(inspector))
@@ -366,6 +366,11 @@ class ClassBrowserAction(AbstractAction):
     )
 
   def actionPerformed(self,e):
+    composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
+    p = composer.getDock().get("#JavadocNavigator")
+    if p == None:
+      commonsdialog.msgbox("It is necessary that the javadocs are loaded to use this functionality." , "Java class browser", commonsdialog.WARNING, root=composer)      
+      return
     panel = ClassBrowserDialog()
     panel.showWindow()
   
