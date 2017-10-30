@@ -1,0 +1,188 @@
+----------------------------------------------
+CHALKWORK BASIC
+by Dave Shea
+mezzoblue.com/icons/chalkwork/basic
+----------------------------------------------
+CHALKWORK COMMERCE
+by Dave Shea
+mezzoblue.com/icons/chalkwork/commerce
+----------------------------------------------
+CHALKWORK EDITING CONTROLS
+by Dave Shea
+mezzoblue.com/icons/chalkwork/editing-controls
+----------------------------------------------
+CHALKWORK INFORMATION MANAGEMENT
+by Dave Shea
+mezzoblue.com/icons/chalkwork/information-management
+----------------------------------------------
+CHALKWORK HTML (Free Version)
+by Dave Shea
+mezzoblue.com/icons/chalkwork/html
+----------------------------------------------
+
+Thanks for your interest in the Chalkwork Family. Please consider subscribing to the Chalkwork news feed, which will announce new releases in the family as well as inform existing users of updates if any occur.
+
+	http://mezzoblue.com/icons/chalkwork/news.xml
+
+- Dave Shea
+  mezzoblue.com
+  @mezzoblue on Twitter
+
+
+
+
+LICENSE AGREEMENT
+----------------------------------------------
+By downloading this icon set, you agree to abide by the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License under which these icons are being made available for non-commercial use.
+
+	Applicable Creative Commons License: http://creativecommons.org/licenses/by-nc-sa/3.0/
+	Attribution and additional license information: http://www.mezzoblue.com/icons/license/#license-cc
+
+By purchasing a Chalkwork Commercial License, you agree to abide by the Chalkwork Royalty-Free Stock Icon License Agreement under which these icons are being made available for commercial use.
+
+	Chalkwork Commercial License: http://www.mezzoblue.com/icons/license/#license-cc
+
+This notice must be included any time these icons are redistributed.
+
+
+
+
+----------------------------------------------
+ICON FOLDER INDEX
+----------------------------------------------
+The icon files are broken down by file format. Due to some formats resulting in higher quality results, those are considered the preferred files and are located in the folder titled 'High Quality'. This package should contain the following folders in this hierarchy:
+
+High Quality
+    ICNS (Mac)
+    ICO (Windows)
+    PNG
+    TIF
+Lower Quality
+    BMP
+    GIF
+
+Within each of the second-level folders, you'll find 102 further folders, one for each icon and its variations. Depending on the file format, you may find multiple sizes within these folders along with any icon variations that may exist. Please note that ICO and ICNS files contain all applicable sizes within a single file, and that ICNS files do not support the 24x24 icon size.
+
+
+----------------------------------------------
+CHALKWORK INFORMATION MANAGEMENT ICON INDEX
+* indicates that variations of this icon are provided within this set
+---------------------------------------------------------------------
+
+Ad
+	- Ad (Dollars) *
+	- Ad (Euros) *
+	- Ad (Pounds) *
+Address Book *
+Announcement *
+API
+Archive *
+Attachment *
+Authenticate
+Blog *
+Bookmark *
+Briefcase *
+Category *
+Chart (Area) *
+Chart (Bar) *
+Chart (Pie) *
+Collapse
+Colour Palette *
+Continue
+Control Panel
+Conversation *
+Create
+Dashboard *
+Database *
+Dictionary *
+Document (Area Chart) *
+Document (Bar Chart) *
+Document (Blank) *
+Document (Form) *
+Document (Photo) *
+Document (Pie Chart) *
+Document (Secure) *
+Document (Shred)
+Documents (x2) *
+Documents (x3) *
+Download
+Draw
+Entry *
+Excerpt *
+Expand
+Export
+Fax *
+File *
+	- File (Closed)
+	- File (Open)
+Filter *
+Flag *
+Flag (Black) *
+Flag (Blue) *
+Flag (Brown) *
+Flag (Green) *
+Flag (Light Blue) *
+Flag (Orange) *
+Flag (Pink) *
+Flag (Purple) *
+Flag (Red) *
+Flag (White) *
+Flag (Yellow) *
+Formatting
+Hierarchy *
+Import
+Inbox *
+Index *
+List *
+Log *
+Map *
+Mobile Phone *
+Moderate
+Module *
+News *
+Notes *
+Notification *
+Office *
+Package *
+Password
+Phone *
+	- Phone (Batphone) *
+	- Phone (Office) *
+Plugin *
+Preview
+Publish
+Read More
+Rebuild
+Relationship (Data) *
+Relationship (People) *
+Rotate Left
+Rotate Right
+Schedule *
+	- Schedule (Noun)
+	- Schedule (Verb)
+Script *
+Security *
+Sign In
+Sign Out
+Sort Down
+Sort Up
+Spam *
+Statistics *
+Status *
+	- Status (Green)
+	- Status (Off)
+	- Status (On)
+	- Status (Red)
+	- Status (Yellow)
+Support *
+Sync
+Template *
+Ticket *
+Time Zone *
+Tools *
+Trackback
+View (Columns)
+View (Lists)
+View (Thumbnails)
+Weather *
+Write

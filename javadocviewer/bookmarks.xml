@@ -1,0 +1,13 @@
+<group name="Bookmarks">
+  <group name="Online Documentation">
+    <bookmark name="gvSIG Scripting developer guide">http://downloads.gvsig.org/download/web/es/build/html/scripting_devel_guide/2.3/index.html</bookmark>
+    <bookmark name="gvSIG DAL developers guide">http://docs.gvsig.org/plone/projects/gvsig-desktop/docs/devel/org.gvsig.fmap.dal/2.0.0/gvsig_allFolderContentsOnOnePage</bookmark>
+    <bookmark name="gvSIG blog - Category: scripting">https://blog.gvsig.org/category/gvsig-development/scripting/</bookmark>
+    <bookmark name="Python 2.7.12 documentation">https://docs.python.org/2/index.html</bookmark>
+    <bookmark name="The Definitive Guide to Jython">http://www.jython.org/jythonbook/en/1.0/index.html</bookmark>
+    <bookmark name="Dive Into Python">http://www.diveintopython.net/toc/index.html</bookmark>
+    <bookmark name="Think Python">http://greenteapress.com/thinkpython/html/index.html</bookmark>
+    <bookmark name="Welcome to Python for you and me">http://pymbook.readthedocs.io/en/latest/index.html</bookmark>
+    <bookmark name="Python Object Oriented">http://www.tutorialspoint.com/python/python_classes_objects.htm</bookmark>
+  </group>
+</group>

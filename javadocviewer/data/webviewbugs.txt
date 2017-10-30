@@ -1,0 +1,12 @@
+
+[regression] [WebView] Load single page application from jar
+https://bugs.openjdk.java.net/browse/JDK-8136466
+Fixed in 8u72
+
+
+[WebView] Icon font doesn't work if single page application will be loaded from jar
+https://bugs.openjdk.java.net/browse/JDK-8152420
+Fixed in 8u112
+
+
+
