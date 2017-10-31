@@ -1,4 +1,15 @@
 # encoding: utf-8
 
-from fontchooser import selfRegister
+import gvsig
 
+try:
+  from fontchooser import selfRegister
+except:
+  import sys
+  ex = sys.exc_info()[1]
+  gvsig.logger("Can't load module 'fontchooser'. " + str(ex), gvsig.LOGGER_WARN, ex)
+  del ex
+  del sys
+  
+  def selfRegister():
+    pass

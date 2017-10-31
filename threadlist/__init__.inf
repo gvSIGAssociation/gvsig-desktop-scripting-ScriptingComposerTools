@@ -4,9 +4,9 @@ enable = true
 [Unit]
 type = Script
 name = __init__
-description =
+description = 
 createdBy = 
-version =
+version = 
 
 [Script]
 main = main

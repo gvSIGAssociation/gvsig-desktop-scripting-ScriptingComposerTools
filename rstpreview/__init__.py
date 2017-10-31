@@ -1,3 +1,16 @@
 # encoding: utf-8
 
-from rstpreview import selfRegister
+import gvsig
+
+try:
+  from rstpreview import selfRegister
+except:
+  import sys
+  ex = sys.exc_info()[1]
+  gvsig.logger("Can't load module 'rstpreview'. " + str(ex), gvsig.LOGGER_WARN, ex)
+  del ex
+  del sys
+  
+  def selfRegister():
+    pass
+
