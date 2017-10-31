@@ -33,8 +33,8 @@ reload(repo_ignore)
 import repo_info
 reload(repo_info)
 
-import repo_log
-reload(repo_log)
+import repo_show_log
+reload(repo_show_log)
 
 class ShowChangesAction(AbstractAction):
 
