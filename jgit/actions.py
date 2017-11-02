@@ -140,7 +140,7 @@ class GitInfoAction(AbstractAction):
 class GitLogAction(AbstractAction):
 
   def __init__(self):
-    AbstractAction.__init__(self,"Show log")
+    AbstractAction.__init__(self,"Show history")
     self.putValue(Action.ACTION_COMMAND_KEY, "GitLog")
     #self.putValue(Action.SMALL_ICON, load_icon(getResource(__file__,"images","gitlog.png")))
     #self.putValue(Action.SHORT_DESCRIPTION, "Show log.")
