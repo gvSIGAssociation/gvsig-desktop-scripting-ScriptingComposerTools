@@ -26,7 +26,6 @@ from java.io import ByteArrayOutputStream
 
 from org.eclipse.jgit.merge import ThreeWayMergeStrategy
 from org.eclipse.jgit.merge import MergeStrategy
-
 from org.eclipse.jgit.revwalk import RevWalk
 from org.eclipse.jgit.treewalk import CanonicalTreeParser
 
