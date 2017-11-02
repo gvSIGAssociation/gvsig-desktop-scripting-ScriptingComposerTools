@@ -20,18 +20,32 @@ from pygments.formatters.html import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
 from pygments.styles import get_style_by_name
 
-from repo_utils import Git, getComposer, getSelectedGit
+from repo_utils import Git, getComposer, getSelectedGit, getSelectedUnit
 from repo_utils import warning, message
 
 from org.gvsig.scripting.swing.api import JScriptingComposer
 
-def repo_diff(path, git=None):
+def repo_diff(path=None, outdiff=None, git=None):
   if git == None:
     git = getSelectedGit()
     if git == None:
       return
-  out = git.diff(path)
-  
+
+  if path == None:
+    unit = getSelectedUnit()
+    if unit==None:
+      message("Can't show diff, select a element under Git control in the project tree")
+      return
+    path = unit.getFiles()[0].getAbsolutePath()
+    
+  if os.path.isabs(path):
+    path = os.path.relpath(path, git.getWorkingPath())
+      
+  if outdiff==None:
+    out = git.diff(path)
+  else:
+    out = outdiff
+      
   html = StringIO.StringIO()
   lexer = get_lexer_by_name("Diff")
   formatter = HtmlFormatter(style='default')
@@ -57,5 +71,13 @@ def repo_diff(path, git=None):
   browser.asJComponent().requestFocus()
   
 
+def test1():
+  unit = getSelectedUnit()
+  if unit == None:
+    message("Debera seleccionar un elemento en el arbol de proyectos.")
+    return
+  repo_diff(unit.getFiles()[0].getAbsolutePath())
+
 def main(*args):
-    pass
+  #test1()
+  repo_diff()

@@ -32,7 +32,38 @@ def getSelectedFolder():
     return None
   return unit
 
+def getSelectedUnit():
+  composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
+  launcher = composer.getProjects()
+  browser = launcher.getSelectedBrowser()
+  unit = browser.getSelectedNode()
+  return unit
+
 def getSelectedGit():
+  composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
+  launcher = composer.getProjects()
+  browser = launcher.getSelectedBrowser()
+  folder = browser.getSelectionPath()
+  while folder !=None:
+    unit = folder.getLastPathComponent()
+    #print "### unit", repr(unit)
+    if not isinstance(unit,ScriptingFolder):
+      folder = folder.getParentPath()
+      continue
+    git = Git(unit.getFile())
+    if os.path.exists(git.getRepoPath()):
+      fname = os.path.join(git.getWorkingPath(),".gitignore")
+      if not os.path.exists(fname):
+        f = open(fname, "w")
+        f.write("*.class\n")
+        f.write(".directory\n")
+        f.close()     
+      return git
+    folder = folder.getParentPath()
+  warning("You must select a element under Git control in the project tree.")
+  return None
+      
+def getSelectedGit_old():
   folder = getSelectedFolder()
   if folder == None:
     warning("You must select a folder in the project tree.")
@@ -91,4 +122,4 @@ class SimpleDialog(object):
     self.__dialog.show(windowManager.MODE.DIALOG)
 
 def main(*args):
-    print composergit.__file__
+    print getSelectedGit()

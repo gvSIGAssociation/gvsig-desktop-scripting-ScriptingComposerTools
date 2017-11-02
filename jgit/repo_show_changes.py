@@ -13,7 +13,7 @@ from gvsig.libs.formpanel import FormPanel
 from javax.swing.table import DefaultTableModel, TableModel
 from javax.swing.event import TableModelEvent
 
-from repo_utils import Git, getComposer, getSelectedFolder
+from repo_utils import Git, getComposer, getSelectedGit
 from repo_utils import warning, SimpleDialog, message, inputbox, windowManager, confirm
 
 from org.gvsig.scripting.swing.api import ScriptingSwingLocator, JScriptingComposer
@@ -133,7 +133,7 @@ class ShowChangesPanel(FormPanel,Component):
       message("Need only a row selected to diff with HEAD")
       return
     change = self.__last_status[selectedRows[0]]
-    repo_diff.repo_diff(change.getWorkingPath(), self.__git)
+    repo_diff.repo_diff(change.getWorkingPath(), git=self.__git)
     
   def btnUpdate_click(self, *args):
     try:
@@ -214,20 +214,9 @@ class ShowChangesPanel(FormPanel,Component):
     repo_pull.repo_pull(self.__git)
   
 def repo_show_changes():
-  folder = getSelectedFolder()
-  if folder == None:
-    warning("Debera seleccionar una carpeta en el arbol de proyectos.")
-    return 
-  git = Git(folder.getFile())
-  if not os.path.exists(git.getRepoPath()):
-    warning("No existe un repositorio local asociado a la carpeta '%s'." % git.getRepoName())
-    return
-  fname = os.path.join(git.getWorkingPath(),".gitignore")
-  if not os.path.exists(fname):
-    f = open(fname, "w")
-    f.write("*.class\n")
-    f.write(".directory\n")
-    f.close()    
+  git = getSelectedGit()
+  if git == None:
+    return    
     
   panel = ShowChangesPanel(git.getRepoName(), git)
   composer = getComposer()

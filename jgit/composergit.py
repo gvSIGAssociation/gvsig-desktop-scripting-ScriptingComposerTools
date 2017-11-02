@@ -27,6 +27,9 @@ from java.io import ByteArrayOutputStream
 from org.eclipse.jgit.merge import ThreeWayMergeStrategy
 from org.eclipse.jgit.merge import MergeStrategy
 
+from org.eclipse.jgit.revwalk import RevWalk
+from org.eclipse.jgit.treewalk import CanonicalTreeParser
+
 def getBaseRepoPath():
   manager = ScriptingLocator.getManager()
   path = os.path.abspath(os.path.join(manager.getRootUserFolder().getAbsolutePath(),"..","git"))
@@ -72,6 +75,25 @@ class Commit(object):
   def __init__(self, revCommit):
     self.__revCommit = revCommit
 
+  def _getRevCommit(self):
+    return self.__revCommit
+    
+  def _getAbstractTreeIterator(self, git):
+    walk = RevWalk(git.getRepository())
+    tree = walk.parseTree(walk.parseCommit(self.__revCommit).getTree().getId())
+    treeParser = CanonicalTreeParser()
+    reader = git.getRepository().newObjectReader()
+    try:
+        treeParser.reset(reader, tree.getId())
+    finally:
+        #reader.release()
+        #print dir(reader)
+        walk.dispose()
+    return treeParser
+
+  def __str__(self):
+    return str(self.__revCommit)
+  
   def getId(self):
     return self.__revCommit.getId()
     
@@ -106,6 +128,9 @@ class ComposerGit(object):
     self.__repopath = File(repopath)
     self.__branch = "refs/heads/master"
 
+  def __str__(self):
+    return self.__repopath.getAbsolutePath()
+    
   def getWorkingPath(self):
     return str(self.__workingpath)
     
@@ -268,16 +293,24 @@ class ComposerGit(object):
     finally:
       self._close(git)
 
-  def diff(self, path):
+  def diff(self, path=None, commitOld=None, commitNew=None):
     #print "### diff, path:", repr(path)
     git = self._open()
     try:
       outputStream = ByteArrayOutputStream()
       git_diff = git.diff()
-      git_diff.setPathFilter(PathFilter.create(path))
+      if path!=None:
+        git_diff.setPathFilter(PathFilter.create(path))
       git_diff.setOutputStream( outputStream )
       git_diff.setSourcePrefix("master:")
       git_diff.setDestinationPrefix("Working-folder:")
+      if commitOld!=None:
+        #print "### git diff, old", commitOld
+        git_diff.setOldTree(commitOld._getAbstractTreeIterator(git))
+      if commitNew!=None:
+        #print "### git diff, new", commitNew
+        git_diff.setNewTree(commitNew._getAbstractTreeIterator(git))
+        
       diffEntries = git_diff.call()
       #print "### diff, diffEntries: ", diffEntries
       out = outputStream.toString()
@@ -314,10 +347,15 @@ class ComposerGit(object):
     finally:
       self._close(git)
 
-  def log(self, maxCount=20):
+  def log(self, paths=None, maxCount=20):
     git = self._open()
     try:
       git_log = git.log()
+      if paths!=None:
+        for path in paths:
+          if os.path.isabs(path):
+            path = os.path.relpath(path, self.getWorkingPath())
+          git_log.addPath(path)
       git_log.setMaxCount(maxCount)
       commits = CommitList(git_log.call())
       return commits

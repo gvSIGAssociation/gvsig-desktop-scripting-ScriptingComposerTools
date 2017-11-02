@@ -36,6 +36,9 @@ reload(repo_info)
 import repo_show_log
 reload(repo_show_log)
 
+import repo_diff
+reload(repo_diff)
+
 class ShowChangesAction(AbstractAction):
 
   def __init__(self):
@@ -148,6 +151,20 @@ class GitLogAction(AbstractAction):
   def isEnabled(self):
     return True
     
+class GitDiffAction(AbstractAction):
+
+  def __init__(self):
+    AbstractAction.__init__(self,"Diff")
+    self.putValue(Action.ACTION_COMMAND_KEY, "GitDiff")
+    self.putValue(Action.SMALL_ICON, load_icon(getResource(__file__,"images","diff.png")))
+    self.putValue(Action.SHORT_DESCRIPTION, "Show diff with head.")
+
+  def actionPerformed(self,e):
+    repo_diff.repo_diff()
+  
+  def isEnabled(self):
+    return True
+    
 def selfRegister():
   i18nManager = ToolsLocator.getI18nManager()
   manager = ScriptingSwingLocator.getUIManager()
@@ -172,6 +189,9 @@ def selfRegister():
 
   gitLog = GitLogAction()
   manager.addComposerMenu(i18nManager.getTranslation("Tools")+"/Git",gitLog)
+
+  gitDiff = GitDiffAction()
+  manager.addComposerMenu(i18nManager.getTranslation("Tools")+"/Git",gitDiff)
 
   showChanges = ShowChangesAction()
   manager.addComposerMenu(i18nManager.getTranslation("Tools")+"/Git",showChanges)
