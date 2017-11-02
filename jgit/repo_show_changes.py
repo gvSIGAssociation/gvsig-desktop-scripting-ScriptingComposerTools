@@ -147,6 +147,7 @@ class ShowChangesPanel(FormPanel,Component):
       if not confirm("Are you sure to overwrite files in the workspace?"):
         return
       filesToCheckout = list()
+      filesToRemove = list()
       self.setStatusbar(0,0,len(selectedRows))
       n = 0
       for row in selectedRows:
@@ -157,10 +158,17 @@ class ShowChangesPanel(FormPanel,Component):
         workingpath = change.getWorkingPath()
         if status in ("missing", "modified","uncommitted"):
           filesToCheckout.append(workingpath)
+        if status in ("untracked"):
+          filesToRemove.append(workingpath)
       #print "git checkout ", filesToCheckout
-      #if len(filesToCheckout)>0:
-      self.message("git checkout %s files..." % len(filesToCheckout))
-      self.__git.checkout(filesToCheckout)
+      if len(filesToRemove)>0:
+        self.message("git rm %s files..." % len(filesToRemove))
+        #print "git rm ", filesToRemove
+        self.__git.rm(filesToRemove)
+      if len(filesToCheckout)>0:
+        self.message("git checkout %s files..." % len(filesToCheckout))
+        #print "git checkout ", filesToCheckout
+        self.__git.checkout(filesToCheckout)
       self.refresh()
     finally:
       self.message()

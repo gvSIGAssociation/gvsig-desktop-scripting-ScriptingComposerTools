@@ -159,7 +159,8 @@ class ComposerGit(object):
     git_init = Git.init()
     git_init.setDirectory(self.__workingpath)
     git_init.setGitDir(self.__repopath)
-    f = open(os.path.join(self.__workingpath,".gitignore"), "w")
+    git_init.call()
+    f = open(os.path.join(self.__workingpath.getAbsolutePath(),".gitignore"), "w")
     f.write("*.class\n")
     f.write(".directory\n")
     f.close()
@@ -172,7 +173,7 @@ class ComposerGit(object):
     else:
       git_clone.setBranch(branch)
       git_clone.setBranchesToClone([branch,])
-    git_clone.setNoCheckout(True)
+    git_clone.setNoCheckout(False)
     git_clone.setURI(remote)
     if monitor!=None:
       git_clone.setProgressMonitor(monitor)
@@ -239,6 +240,7 @@ class ComposerGit(object):
   def add(self, files):
     git = self._open()
     try:
+      #print "###git add ",files
       git_add = git.add()
       for f in files:
         git_add.addFilepattern(str(f))
@@ -249,10 +251,14 @@ class ComposerGit(object):
   def rm(self, files):
     git = self._open()
     try:
+      #print "###git rm ",files
       git_rm = git.rm()
       for f in files:
         git_rm.addFilepattern(str(f))
       git_rm.call()
+      for f in files:
+        f = os.path.join(self.__workingpath.getAbsolutePath(),f)
+        os.remove(f)
     finally:
       self._close(git)
 
