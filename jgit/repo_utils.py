@@ -15,6 +15,8 @@ import composergit
 reload(composergit)
 from composergit import ComposerGit as Git
 
+from java.io import File
+
 windowManager = ToolsSwingLocator.getWindowManager()
 
 def getComposer():
@@ -44,6 +46,7 @@ def getSelectedGit():
   launcher = composer.getProjects()
   browser = launcher.getSelectedBrowser()
   folder = browser.getSelectionPath()
+  selected = folder.getLastPathComponent()
   while folder !=None:
     unit = folder.getLastPathComponent()
     #print "### unit", repr(unit)
@@ -60,9 +63,16 @@ def getSelectedGit():
         f.close()     
       return git
     folder = folder.getParentPath()
-  warning("You must select a element under Git control in the project tree.")
+  warning("The '"+getUserPath(selected)+"' file is not under the Git control.\nYou must select a element under Git control in the project tree.")
   return None
-      
+
+def getUserPath(unit):
+  parts = list()
+  while unit!=None:
+    parts.insert(0, unit.getName())
+    unit = unit.getParent()
+  return "/".join(parts)
+  
 def getSelectedGit_old():
   folder = getSelectedFolder()
   if folder == None:
