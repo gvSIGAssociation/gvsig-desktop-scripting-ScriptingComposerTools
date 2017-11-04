@@ -31,7 +31,7 @@ from org.eclipse.jgit.treewalk import CanonicalTreeParser
 
 def getBaseRepoPath():
   manager = ScriptingLocator.getManager()
-  path = os.path.abspath(os.path.join(manager.getRootUserFolder().getAbsolutePath(),"..","git"))
+  path = manager.getDataFolder("git-composer").getAbsolutePath()
   #print ">>> base repo path", path
   return path
 
