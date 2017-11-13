@@ -338,13 +338,14 @@ class ComposerGit(object):
       rebaseResult = result.getRebaseResult()
       mergeResult = result.getMergeResult()
       print "### pull, isSuccessful:", result.isSuccessful()
-      print "### pull, rebaseResult.getStatus():", rebaseResult.getStatus()
-      print "### pull, rebaseResult.getConflicts():", rebaseResult.getConflicts()
-      print "### pull, rebaseResult.getFailingPaths():", rebaseResult.getFailingPaths()
-      print "### pull, mergeResult.getMergeStatus():", rebaseResult.getMergeStatus()
-      print "### pull, mergeResult.getConflicts():", rebaseResult.getConflicts()
-      print "### pull, mergeResult.getFailingPaths():", rebaseResult.getFailingPaths()
-      print "### pull, mergeResult.getCheckoutConflicts():", rebaseResult.getCheckoutConflicts()
+      if rebaseResult!=None:
+        print "### pull, rebaseResult.getStatus():", rebaseResult.getStatus()
+        print "### pull, rebaseResult.getConflicts():", rebaseResult.getConflicts()
+        print "### pull, rebaseResult.getFailingPaths():", rebaseResult.getFailingPaths()
+        print "### pull, mergeResult.getMergeStatus():", rebaseResult.getMergeStatus()
+        print "### pull, mergeResult.getConflicts():", rebaseResult.getConflicts()
+        print "### pull, mergeResult.getFailingPaths():", rebaseResult.getFailingPaths()
+        print "### pull, mergeResult.getCheckoutConflicts():", rebaseResult.getCheckoutConflicts()
       if result.isSuccessful():
         return "OK"
       return str(result)

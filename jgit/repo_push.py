@@ -14,7 +14,7 @@ from org.gvsig.scripting.swing.api import ScriptingSwingLocator
 from java.lang import Runnable
 from org.gvsig.tools.swing.api import Component
 
-from repo_utils import Git, getComposer, getSelectedFolder
+from repo_utils import Git, getComposer, getSelectedGit
 from repo_utils import warning, message
 
 from java.lang import Thread
@@ -86,14 +86,9 @@ class PushParamsPanel(FormPanel,Component):
     
 def repo_push(git=None):
   if git == None:
-    folder = getSelectedFolder()
-    if folder == None:
-      warning("Debera seleccionar una carpeta en el arbol de proyectos para crear un nuevo repositorio local.")
+    git = getSelectedGit()
+    if git == None:
       return 
-    git = Git(folder.getFile())
-    if not os.path.exists(git.getRepoPath()):
-      warning("No existe un repositorio local asociado a la carpeta '%s'." % git.getRepoName())
-      return
   panel = PushParamsPanel(git)
   panel.showWindow()
       

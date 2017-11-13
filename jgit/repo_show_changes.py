@@ -30,6 +30,10 @@ reload(repo_pull)
 import repo_diff
 reload(repo_diff)
 
+from org.gvsig.scripting import ScriptingLocator
+
+from java.io import File
+
 labels_status = {
   "missing"    : "Locally removed",  # Pending "git rm/checkout"
   "removed"    : "Locally removed",  # Pending "git commit"
@@ -126,7 +130,7 @@ class ShowChangesPanel(FormPanel,Component):
 
   def btnDiff_click(self, *args):
     selectedRows = self.tableChanges.getSelectedRows()
-    if len(selectedRows)<0:
+    if len(selectedRows)<1:
       message("Need select a row to diff with HEAD")
       return
     if len(selectedRows)>1:
@@ -134,6 +138,25 @@ class ShowChangesPanel(FormPanel,Component):
       return
     change = self.__last_status[selectedRows[0]]
     repo_diff.repo_diff(change.getWorkingPath(), git=self.__git)
+
+  def btnEdit_click(self, *args):
+    selectedRows = self.tableChanges.getSelectedRows()
+    if len(selectedRows)<1:
+      message("Need select a row to show in editor")
+      return
+    if len(selectedRows)>1:
+      message("Need only a row selected to show in editor")
+      return
+    composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
+    change = self.__last_status[selectedRows[0]]
+    pathname = os.path.join(self.__git.getWorkingPath(),change.getWorkingPath())
+    manager = ScriptingLocator.getManager()
+    f = File(pathname)
+    script = manager.getUnit(f)
+    if script == None:
+      folder = manager.getFolder(f.getParentFile())
+      script = manager.createExternalFile(folder,f.getName())
+    composer.scriptEdit(script)  
     
   def btnUpdate_click(self, *args):
     try:

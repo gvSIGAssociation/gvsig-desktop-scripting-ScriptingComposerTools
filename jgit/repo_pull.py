@@ -9,7 +9,7 @@ import os
 
 from org.gvsig.tools.swing.api import Component
 
-from repo_utils import Git, getComposer, getSelectedFolder
+from repo_utils import Git, getComposer, getSelectedGit
 from repo_utils import warning
 
 from org.gvsig.scripting.swing.api import ScriptingSwingLocator
@@ -74,7 +74,7 @@ class PullPanel(FormPanel,Component):
     FormPanel.__init__(self,getResource(__file__,"repo_pull.xml"))
     self.__monitor = PullMonitor(git, self)
     self.pgbMonitor.setVisible(False)
-    self.setPreferredSize(450,120)
+    self.setPreferredSize(450,130)
     #self.addEscapeKeyListener(fn)
     #self.addEnterKeyListener(fn)
     self.cboMergeStrategy.setSelectedIndex(3)
@@ -97,14 +97,9 @@ class PullPanel(FormPanel,Component):
 
 def repo_pull(git=None):
   if git == None:
-    folder = getSelectedFolder()
-    if folder == None:
-      warning("Debera seleccionar una carpeta en el arbol de proyectos para crear un nuevo repositorio local.")
+    git = getSelectedGit()
+    if git == None:
       return 
-    git = Git(folder.getFile())
-    if not os.path.exists(git.getRepoPath()):
-      warning("No existe un repositorio local asociado a la carpeta '%s'." % git.getRepoName())
-      return
   panel = PullPanel(git)
   panel.showWindow()
   
