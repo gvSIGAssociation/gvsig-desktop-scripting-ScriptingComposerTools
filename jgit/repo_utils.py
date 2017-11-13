@@ -63,16 +63,9 @@ def getSelectedGit():
         f.close()     
       return git
     folder = folder.getParentPath()
-  warning("The '"+getUserPath(selected)+"' file is not under the Git control.\nYou must select a element under Git control in the project tree.")
+  warning("The '"+selected.getUserPath()+"' file is not under the Git control.\nYou must select a element under Git control in the project tree.")
   return None
 
-def getUserPath(unit):
-  parts = list()
-  while unit!=None:
-    parts.insert(0, unit.getName())
-    unit = unit.getParent()
-  return "/".join(parts)
-  
 def getSelectedGit_old():
   folder = getSelectedFolder()
   if folder == None:
@@ -132,4 +125,5 @@ class SimpleDialog(object):
     self.__dialog.show(windowManager.MODE.DIALOG)
 
 def main(*args):
+    #print getUserPath(getSelectedUnit())
     print getSelectedGit()
