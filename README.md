@@ -21,6 +21,7 @@ Add tools like:
 * PDF, HTML, and PNG viwers integrateds in the editor.
 * DBF and properties specialized editors.
 * Load layers in current gvSIG view from the project tree of the editor.
+* Interactive python console embedded in the editor.
 
 
 Some tools are partially developed.
