@@ -3,7 +3,7 @@
 import gvsig
 from gvsig.libs.formpanel import FormPanel, FormComponent, getResource
 from gvsig.commonsdialog import msgbox, inputbox, confirmDialog
-from gvsig.commonsdialog import QUESTION, YES_NO_CANCEL, NO
+from gvsig.commonsdialog import QUESTION, YES_NO_CANCEL, NO, YES
 
 import os
 import fnmatch
@@ -29,7 +29,7 @@ from org.gvsig.scripting.swing.api import JScriptingComposer
 
 import javadoc
 reload(javadoc)
-from javadoc import Package, Module, Javadoc
+from javadoc import Package, Module, Javadoc, JavadocSet, getJavadocUserFolder
 
 from javadocsetpanel import JavadocSetPanel
 
@@ -507,14 +507,43 @@ class ConfigPanel(FormComponent):
    if n == 0:
      return JScriptingComposer.Dock.DOCK_CENTER
    return JScriptingComposer.Dock.DOCK_BOTTOM
-   
-  def btnAddDocset_click(self,*args):
+
+  def _loadJavadocSet(self, docset):
+    composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
+    if composer != None:
+      composer.getStatusbar().message("Javadocs: loading javadocset '%s'..." % docset.getName())
+    if not self.getJavadoc().load(docset):
+      msgbox("Javadoc set load failed")
+    self.__navigator.refresh()
+    composer.getStatusbar().message("")
+  
+  def btnRemoveDocSet_click(self, *args):
+    docset = self.lstJavadocSets.getSelectedValue()
+    if docset == None:
+      msgbox("Select a javadoc set")
+      return
+    msg = """Are you sure to remove '%s'?
+
+Only user javadoc set can be deleted.
+The predefined javadoc set will be deleted only from the user area, 
+restoring their values by default."""
+    if confirmDialog(msg % docset.getName())!=YES:
+      return
+    docset.remove()
+    self.__navigator.loadJavadocSets()
+    msgbox("'%s' removed from configuration." % docset.getName())
+    
+  def btnEditDocSet_click(self, *args):
+    docset = self.lstJavadocSets.getSelectedValue()
+    if docset == None:
+      msgbox("Select a javadoc set")
+      return
     winmgr = ScriptingSwingLocator.getUIManager().getWindowManager()
-    javadocSetPanel = JavadocSetPanel()    
+    javadocSetPanel = JavadocSetPanel(docset)    
     dialog = winmgr.createDialog(
       javadocSetPanel.asJComponent(),
       "Javadoc set",
-      None, 
+      "Modify javadoc set", 
       winmgr.BUTTON_CANCEL + winmgr.BUTTON_OK
     )
     dialog.setWindowManager(winmgr)
@@ -525,10 +554,35 @@ class ConfigPanel(FormComponent):
       if url == "" or name == "":
         msgbox("URL and name can't be a empty string")
         return
-      if not self.getJavadoc().load(url,name):
-        msgbox("No se que ha pasado")
+      if docset.isEnabled() and not javadocSetPanel.isDocsetEnabled():
+        docset = JavadocSet(name, url, javadocSetPanel.isDocsetEnabled())
+        docset.save()
+        self.__navigator.loadJavadocSets()
+      else:
+        docset = JavadocSet(name, url, javadocSetPanel.isDocsetEnabled())
+        docset.save()
+        thread.start_new_thread(self._loadJavadocSet,(docset,))
+  
+  def btnAddDocset_click(self,*args):
+    winmgr = ScriptingSwingLocator.getUIManager().getWindowManager()
+    javadocSetPanel = JavadocSetPanel()    
+    dialog = winmgr.createDialog(
+      javadocSetPanel.asJComponent(),
+      "Javadoc set",
+      "New javadoc set", 
+      winmgr.BUTTON_CANCEL + winmgr.BUTTON_OK
+    )
+    dialog.setWindowManager(winmgr)
+    dialog.show(winmgr.MODE.DIALOG)
+    if dialog.getAction()==winmgr.BUTTON_OK:
+      name = javadocSetPanel.getName()
+      url = javadocSetPanel.getURL()
+      if url == "" or name == "":
+        msgbox("URL and name can't be a empty string")
         return
-      self.__navigator.refresh()
+      docset = JavadocSet(name, url, javadocSetPanel.isDocsetEnabled())
+      docset.save()
+      thread.start_new_thread(self._loadJavadocSet,(docset,))
     
     
 #-------------------------------------------
@@ -581,12 +635,22 @@ class JavadocNavigatorPanel(FormPanel, Component):
     self.__bookmarks.refresh()
     self.__config.refresh()
 
-  def __loadJavadocSet(self, name, url):
-    self.getJavadoc().load(url,name)
+  def _loadJavadocSets(self):
+    composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
+    if composer != None:
+      composer.getStatusbar().message("Javadocs: loading javadocset...")
+    self.getJavadoc().clear()
     self.refresh()
+    for docset in self.getJavadoc().getJavadocSets():
+      if composer != None:
+        composer.getStatusbar().message("Javadocs: loading javadocset '%s'..." % docset.getName())
+      self.getJavadoc().load(docset)
+      self.refresh()
+    if composer != None:
+      composer.getStatusbar().message("")
     
-  def loadJavadocSet(self,name, url):
-    thread.start_new_thread(self.__loadJavadocSet,(name,url))
+  def loadJavadocSets(self):
+    thread.start_new_thread(self._loadJavadocSets,tuple())
     
   def showWindow(self,title="Help viewer"):
     windowManager = ScriptingSwingLocator.getUIManager()
@@ -602,8 +666,8 @@ def main(*args):
     "jar:file:" + getResource(__file__, "data","scripting-developers-guide.zip!/html/index.html"), 
     persistent=False
   )
-  for docset in javadoc.getDefaultJavadocSets():
-    navigator.loadJavadocSet(docset.getName(), docset.getURL())
+  for docset in javadoc.getJavadocSets():
+    navigator.loadJavadocSet(docset)
   
   composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
   composer.getDock().add("#JavadocNavigator","Javadoc",navigator,JScriptingComposer.Dock.DOCK_LEFT)

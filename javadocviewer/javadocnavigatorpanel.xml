@@ -24,7 +24,7 @@
     </at>
     <at name="componentclass">com.jeta.forms.gui.form.FormComponent</at>
    </super>
-   <at name="id">/home/jjdelcerro/gvSIG/plugins/org.gvsig.scripting.app.mainplugin/scripts/addons/ScriptingComposerTools/javadocviewer/javadocnavigatorpanel.xml</at>
+   <at name="id">/home/jjdelcerro/gvSIG/plugins/org.gvsig.scripting.app.mainplugin/2.4.0/scripts/addons/ScriptingComposerTools/javadocviewer/javadocnavigatorpanel.xml</at>
    <at name="path">addons/ScriptingComposerTools/javadocviewer/javadocnavigatorpanel.xml</at>
    <at name="rowspecs">CENTER:4DLU:NONE,FILL:DEFAULT:GROW(1.0),CENTER:4DLU:NONE</at>
    <at name="colspecs">FILL:4DLU:NONE,FILL:DEFAULT:GROW(1.0),FILL:4DLU:NONE</at>
@@ -109,7 +109,7 @@
                       </at>
                       <at name="componentclass">com.jeta.forms.gui.form.FormComponent</at>
                      </super>
-                     <at name="id">embedded.1828754076</at>
+                     <at name="id">embedded.1360739997</at>
                      <at name="rowspecs">CENTER:4DLU:NONE,FILL:DEFAULT:GROW(1.0),CENTER:4DLU:NONE</at>
                      <at name="colspecs">FILL:4DLU:NONE,FILL:DEFAULT:GROW(1.0),FILL:4DLU:NONE</at>
                      <at name="components">
@@ -162,7 +162,7 @@
                               <at name="scrollableTracksViewportWidth">true</at>
                               <at name="name">treePackages</at>
                               <at name="showsRootHandles">true</at>
-                              <at name="width">402</at>
+                              <at name="width">537</at>
                               <at name="rowCount">3</at>
                               <at name="scollBars">
                                <object classname="com.jeta.forms.store.properties.ScrollBarsProperty">
@@ -192,7 +192,7 @@
                                </object>
                               </at>
                               <at name="rootVisible">false</at>
-                              <at name="height">454</at>
+                              <at name="height">321</at>
                              </object>
                             </at>
                            </object>
@@ -318,7 +318,7 @@
                       </at>
                       <at name="componentclass">com.jeta.forms.gui.form.FormComponent</at>
                      </super>
-                     <at name="id">embedded.396759425</at>
+                     <at name="id">embedded.1832436280</at>
                      <at name="rowspecs">CENTER:4DLU:NONE,CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,FILL:DEFAULT:GROW(1.0),CENTER:4DLU:NONE</at>
                      <at name="colspecs">FILL:DEFAULT:NONE,FILL:DEFAULT:GROW(1.0),FILL:DEFAULT:NONE,FILL:DEFAULT:NONE</at>
                      <at name="components">
@@ -368,7 +368,7 @@
                                </object>
                               </at>
                               <at name="name">txtSearch</at>
-                              <at name="width">350</at>
+                              <at name="width">485</at>
                               <at name="height">20</at>
                              </object>
                             </at>
@@ -479,7 +479,7 @@
                               <at name="scrollableTracksViewportHeight">true</at>
                               <at name="scrollableTracksViewportWidth">true</at>
                               <at name="name">lstResults</at>
-                              <at name="width">384</at>
+                              <at name="width">519</at>
                               <at name="items">
                                <object classname="com.jeta.forms.store.properties.ItemsProperty">
                                 <at name="name">items</at>
@@ -512,7 +512,7 @@
                                 </at>
                                </object>
                               </at>
-                              <at name="height">427</at>
+                              <at name="height">294</at>
                              </object>
                             </at>
                            </object>
@@ -644,7 +644,7 @@
                       </at>
                       <at name="componentclass">com.jeta.forms.gui.form.FormComponent</at>
                      </super>
-                     <at name="id">embedded.1728178818</at>
+                     <at name="id">embedded.1359011796</at>
                      <at name="rowspecs">CENTER:4DLU:NONE,FILL:DEFAULT:GROW(1.0),CENTER:2DLU:NONE</at>
                      <at name="colspecs">FILL:4DLU:NONE,FILL:DEFAULT:GROW(1.0),FILL:4DLU:NONE</at>
                      <at name="components">
@@ -697,7 +697,7 @@
                               <at name="scrollableTracksViewportWidth">true</at>
                               <at name="name">treeBookmarks</at>
                               <at name="showsRootHandles">true</at>
-                              <at name="width">402</at>
+                              <at name="width">537</at>
                               <at name="scollBars">
                                <object classname="com.jeta.forms.store.properties.ScrollBarsProperty">
                                 <at name="name">scollBars</at>
@@ -725,7 +725,7 @@
                                 </at>
                                </object>
                               </at>
-                              <at name="height">457</at>
+                              <at name="height">324</at>
                              </object>
                             </at>
                            </object>
@@ -851,7 +851,7 @@
                       </at>
                       <at name="componentclass">com.jeta.forms.gui.form.FormComponent</at>
                      </super>
-                     <at name="id">embedded.950372677</at>
+                     <at name="id">embedded.2078721669</at>
                      <at name="rowspecs">CENTER:4DLU:NONE,CENTER:DEFAULT:NONE,CENTER:DEFAULT:NONE,FILL:DEFAULT:GROW(1.0),CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,CENTER:4DLU:NONE</at>
                      <at name="colspecs">FILL:4DLU:NONE,FILL:DEFAULT:GROW(1.0),FILL:4DLU:NONE,FILL:DEFAULT:NONE,FILL:DEFAULT:NONE</at>
                      <at name="components">
@@ -900,7 +900,7 @@
                                 </at>
                                </object>
                               </at>
-                              <at name="width">302</at>
+                              <at name="width">437</at>
                               <at name="name"/>
                               <at name="text">Javadoc sets</at>
                               <at name="fill">
@@ -963,7 +963,7 @@
                               <at name="scrollableTracksViewportHeight">true</at>
                               <at name="scrollableTracksViewportWidth">true</at>
                               <at name="name">lstJavadocSets</at>
-                              <at name="width">300</at>
+                              <at name="width">435</at>
                               <at name="items">
                                <object classname="com.jeta.forms.store.properties.ItemsProperty">
                                 <at name="name">items</at>
@@ -996,7 +996,7 @@
                                 </at>
                                </object>
                               </at>
-                              <at name="height">368</at>
+                              <at name="height">235</at>
                              </object>
                             </at>
                            </object>
@@ -1021,7 +1021,7 @@
                            </at>
                            <at name="componentclass">com.jeta.forms.gui.form.FormComponent</at>
                           </super>
-                          <at name="id">embedded.1644213131</at>
+                          <at name="id">embedded.1879076297</at>
                           <at name="rowspecs">CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,CENTER:DEFAULT:NONE</at>
                           <at name="colspecs">FILL:DEFAULT:NONE</at>
                           <at name="components">
@@ -1130,7 +1130,6 @@
                                    <at name="name">btnEditDocSet</at>
                                    <at name="width">77</at>
                                    <at name="text">Modify</at>
-                                   <at name="enabled">false</at>
                                    <at name="height">22</at>
                                   </object>
                                  </at>
@@ -1187,64 +1186,6 @@
                                    <at name="name">btnRemoveDocSet</at>
                                    <at name="width">77</at>
                                    <at name="text">Remove</at>
-                                   <at name="enabled">false</at>
-                                   <at name="height">22</at>
-                                  </object>
-                                 </at>
-                                </object>
-                               </at>
-                              </object>
-                             </at>
-                            </item>
-                            <item >
-                             <at name="value">
-                              <object classname="com.jeta.forms.store.memento.BeanMemento">
-                               <super classname="com.jeta.forms.store.memento.ComponentMemento">
-                                <at name="cellconstraints">
-                                 <object classname="com.jeta.forms.store.memento.CellConstraintsMemento">
-                                  <at name="column">1</at>
-                                  <at name="row">7</at>
-                                  <at name="colspan">1</at>
-                                  <at name="rowspan">1</at>
-                                  <at name="halign">default</at>
-                                  <at name="valign">default</at>
-                                  <at name="insets" object="insets">0,0,0,0</at>
-                                 </object>
-                                </at>
-                                <at name="componentclass">com.jeta.forms.gui.form.StandardComponent</at>
-                               </super>
-                               <at name="jetabeanclass">com.jeta.forms.gui.beans.JETABean</at>
-                               <at name="beanclass">javax.swing.JButton</at>
-                               <at name="beanproperties">
-                                <object classname="com.jeta.forms.store.memento.PropertiesMemento">
-                                 <at name="classname">javax.swing.JButton</at>
-                                 <at name="properties">
-                                  <object classname="com.jeta.forms.store.support.PropertyMap">
-                                   <at name="border">
-                                    <object classname="com.jeta.forms.store.properties.CompoundBorderProperty">
-                                     <super classname="com.jeta.forms.store.properties.BorderProperty">
-                                      <at name="name">border</at>
-                                     </super>
-                                     <at name="borders">
-                                      <object classname="java.util.LinkedList">
-                                       <item >
-                                        <at name="value">
-                                         <object classname="com.jeta.forms.store.properties.DefaultBorderProperty">
-                                          <super classname="com.jeta.forms.store.properties.BorderProperty">
-                                           <at name="name">border</at>
-                                          </super>
-                                         </object>
-                                        </at>
-                                       </item>
-                                      </object>
-                                     </at>
-                                    </object>
-                                   </at>
-                                   <at name="actionCommand">Save</at>
-                                   <at name="name">btnConfigSave</at>
-                                   <at name="width">77</at>
-                                   <at name="text">Save</at>
-                                   <at name="enabled">false</at>
                                    <at name="height">22</at>
                                   </object>
                                  </at>
@@ -1373,7 +1314,7 @@
                            </at>
                            <at name="componentclass">com.jeta.forms.gui.form.FormComponent</at>
                           </super>
-                          <at name="id">embedded.1815865899</at>
+                          <at name="id">embedded.241256492</at>
                           <at name="rowspecs">CENTER:DEFAULT:NONE</at>
                           <at name="colspecs">FILL:DEFAULT:NONE,FILL:4DLU:NONE,FILL:DEFAULT:GROW(1.0)</at>
                           <at name="components">
@@ -1496,7 +1437,7 @@
                                     </object>
                                    </at>
                                    <at name="name">cboShowInArea</at>
-                                   <at name="width">283</at>
+                                   <at name="width">418</at>
                                    <at name="items">
                                     <object classname="com.jeta.forms.store.properties.ItemsProperty">
                                      <at name="name">items</at>
@@ -1733,9 +1674,9 @@
               </at>
              </object>
             </at>
-            <at name="width">449</at>
+            <at name="width">584</at>
             <at name="tabCount">4</at>
-            <at name="height">544</at>
+            <at name="height">411</at>
            </object>
           </at>
          </object>

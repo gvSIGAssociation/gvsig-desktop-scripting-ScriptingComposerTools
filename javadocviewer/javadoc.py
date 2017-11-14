@@ -4,14 +4,28 @@ import gvsig
 from gvsig.libs.formpanel import getResource
 from gvsig import logger,LOGGER_WARN
 
+import os
 import re 
 import urllib2
+import fnmatch
+import ConfigParser
+import hashlib
 
 from java.net import URL
 from java.io import BufferedReader
 from java.io import InputStreamReader
 from  org.gvsig.scripting.swing.api import ScriptingSwingLocator, JScriptingComposer
+from org.gvsig.scripting import ScriptingLocator
 
+def getJavadocUserFolder(*subfolders):
+  manager = ScriptingLocator.getManager()
+  folder = os.path.join(manager.getDataFolder("ScriptingComposerTools").getAbsolutePath(),"javadoc",*subfolders)
+  try:
+    os.makedirs(folder)
+  except:
+    pass
+  return folder
+    
 class Module(object):
   def __init__(self, parent, name, url, packageName=None):
     self.__parent = parent
@@ -77,6 +91,13 @@ class Package(object):
         return package
     return None
 
+  def __contains(self, moduleOrPackage):
+    for child in self.__children:
+      if child.getName() == moduleOrPackage.getName():
+        if child.__class__ == moduleOrPackage.__class__:
+          return child, True
+    return moduleOrPackage, False
+    
   def addPackage(self, name):
     if isinstance(name,tuple) or isinstance(name,list):
       names = name
@@ -84,8 +105,10 @@ class Package(object):
       package = self.get(name)
       if not isinstance(package,Package):
         package = Package(self, name)
-        self.__children.append(package)
-        self.__children.sort(key=lambda module: module.getName())
+        package, contains = self.__contains(package)
+        if not contains:
+          self.__children.append(package)
+          self.__children.sort(key=lambda module: module.getName())
       if len(names)>1:
         return package.addPackage(names[1:])
       return package   
@@ -100,21 +123,37 @@ class Package(object):
         return None
       return package.addModule(names[-1], url, packageName)
     module = Module(self, name, url, packageName)
-    self.__children.append(module)
-    self.__children.sort(key=lambda module: module.getName())
+    module, contains = self.__contains(module)
+    if not contains:
+      self.__children.append(module)
+      self.__children.sort(key=lambda module: module.getName())
     return module
 
 class JavadocSet(object):
-  def __init__(self, name, url):
+  def __init__(self, name, url, enabled=True):
     self.__name = name
     self.__url = url
+    self.__enabled = enabled
 
   def getName(self):
     return self.__name
 
-  __repr__ = getName
-  __str__ = getName
+  def toString(self):
+    return self.__name
   
+  def __str__(self):
+    return self.__name
+
+  def __repr__(self):
+    #return "JavadocSet('%s','%s',%s)" % (self.__name, self.__url, self.__enabled)
+    return self.__name
+    
+  def isEnabled(self):
+    return self.__enabled
+
+  def setEnabled(self, enabled):
+    self.__enabled = enabled
+    
   def getURL(self):
     return self.__url
 
@@ -123,35 +162,61 @@ class JavadocSet(object):
 
   def setURL(self, url):
     self.__url = url
+
+  def save(self, pathname=None):
+    if pathname == None:
+      fname = self.__getValidFileName(self.getName())
+      pathname = os.path.join(getJavadocUserFolder("sets"), fname)  
+    config = ConfigParser.ConfigParser()
+    config.add_section('javadocset')
+    config.set("javadocset","name", self.__name)
+    config.set("javadocset","url", self.__url)
+    config.set("javadocset","enabled", str(self.__enabled).lower())
+    with open(pathname, 'wb') as configfile:
+      config.write(configfile)
+
+  def remove(self, pathname=None):
+    if pathname == None:
+      fname = self.__getValidFileName(self.getName())
+      pathname = os.path.join(getJavadocUserFolder("sets"), fname)  
+    if os.path.exists(pathname):
+      os.remove(pathname)
+      
+  def __getValidFileName(self, name):
+    fname = [ c for c in name if c in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_" ]
+    fname =  "".join(fname) + "-" + hashlib.md5(name).hexdigest() + ".javadoc"
+    return fname
+
     
 class JavadocConfig(object):
   def __init__(self):
     self.__javadocSets = list()
 
+  def contains(self, docset):
+    for x in self.__javadocSets:
+      if x.getName() == docset.getName():
+        return True
+    return False
+    
   def getJavadocSets(self):
     return self.__javadocSets
 
-  def add(self, name, url):
-    if url in ("",None):
-      return
-    if not isinstance(url,URL):
-      url = URL(str(url))
+  def add(self, javadocSet):
     for docset in self.__javadocSets:
-      if docset.getURL() == url:
-        docset.setName(name)
+      if docset.getURL() == javadocSet.getURL():
+        docset.setName(javadocSet.getName())
+        docset.setEnabled(javadocSet.isEnabled())
         return docset
-      if name!=None and docset.getName().lower() == name.lower() :
-        docset.setURL(url)
+      if docset.getName().lower() == javadocSet.getName().lower() :
+        docset.setURL(javadocSet.getURL())
+        docset.setEnabled(javadocSet.isEnabled())
         return docset
-    if name in ("",None):
-      name = "Javadoc %02d" % len(self.__javadocSets)
-    docset = JavadocSet(name,url)
-    self.__javadocSets.append(docset)
-    return docset
+    self.__javadocSets.append(javadocSet)
+    return javadocSet
 
      
 class Javadoc(object):
-  def __init__(self, config=None, url=None, name=None):
+  def __init__(self, config=None, javadocSet=None):
     if config == None:
       self.__config = JavadocConfig()
     else:
@@ -159,12 +224,15 @@ class Javadoc(object):
     self.__nodes = Package(None,"all")
     self.__packages = list()
     self.__modules = list()
-    for docset in self.__config.getJavadocSets():
-      self.load(docset.getUrl(), docset.getName())
-      
-    if url!=None:
-      self.load(url,name)
+    if javadocSet!=None:
+      self.load(javadocSet)
 
+  def clear(self):
+    self.__nodes = Package(None,"all")
+    self.__packages = list()
+    self.__modules = list()
+    self.__config = JavadocConfig()
+    
   def getConfig(self):
     return self.__config
     
@@ -174,15 +242,13 @@ class Javadoc(object):
   def getModules(self):
     return self.__modules
 
-  def load(self, url, docsetname=None):
-    composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
-    if composer != None:
-      composer.getStatusbar().message("Javadocs: loading javadocset...")
-    try:
-      if isinstance(url,URL):
-        u1 = url
+  def load(self, javadocSet):
+    status = True
+    if javadocSet.isEnabled():
+      if isinstance(javadocSet.getURL(),URL):
+        u1 = javadocSet.getUrl()
       else:
-        u1 = URL(str(url))
+        u1 = URL(str(javadocSet.getURL()))
       lines = 0
       u2 = URL(u1.toExternalForm()+"/allclasses-frame.html")
       try:
@@ -190,7 +256,7 @@ class Javadoc(object):
         allClassesFrameReader = BufferedReader(InputStreamReader(allClassesFrame))
         line = allClassesFrameReader.readLine()
       except Exception,ex:
-        logger("Can't load Javadoc '%s' from '%s'" % (docsetname,u1.toExternalForm()),LOGGER_WARN,ex)
+        logger("Can't load Javadoc '%s' from '%s'" % (javadocSet.getName(),u1.toExternalForm()),LOGGER_WARN,ex)
         return False
       pattern = re.compile('.*href="([^"]*)".*[>]([^<]*)[<][/]a[>].*',re.IGNORECASE)
       n = 0
@@ -208,25 +274,24 @@ class Javadoc(object):
           module = self.__nodes.addModule(pathname,url, packageName)
           self.__modules.append(module)
           if n<10 :
-            print repr(packageName), repr(module)
+            #print repr(packageName), repr(module)
             n+=1
         line = allClassesFrameReader.readLine()
         lines+=1
-      self.__config.add(docsetname,u1)
+      
       allClassesFrameReader.close()
       allClassesFrame.close()
       if lines < 1:
-        return False
-      return True
-    finally:
-      if composer != None:
-        composer.getStatusbar().message("")
+        status = False
+    
+    self.__config.add(javadocSet)
+    return status
 
-  def loadDefaultJavadocSets(self):
-    for docset in self.getDefaultJavadocSets():
-      self.load(docset.getURL(),docset.getName())
+  def loadJavadocSets(self):
+    for docset in self.getJavadocSets():
+      self.load(docset)
 
-  def getDefaultJavadocSets(self):
+  def getJavadocSets(self):
     docsets = list()
     
     # Hay un bug en el component WebView de java que hace que no se carguen correctamente
@@ -252,27 +317,35 @@ class Javadoc(object):
       )
     docsets.append( 
       JavadocSet(
-        "Java Platform SE 8 (online)",
+        "Java Platform SE 8",
         "https://docs.oracle.com/javase/8/docs/api"
       )
     )
-    docsets.append( 
-      JavadocSet(
-        "JavaFX 8 (online)",
-        "http://docs.oracle.com/javase/8/javafx/api"
+    folder = getJavadocUserFolder("sets")
+    files = [os.path.join(folder,f) for f in os.listdir(folder) if fnmatch.fnmatch(f, "*.javadoc")]
+    folder = getResource(__file__, "data", "javadocsets")
+    files.extend([os.path.join(folder,f) for f in os.listdir(folder) if fnmatch.fnmatch(f, "*.javadoc")])
+    for f in files:
+      configfile = ConfigParser.ConfigParser()
+      #print "javadoc: ", f
+      configfile.read(f)
+      set = JavadocSet(
+        configfile.get("javadocset","name"),
+        configfile.get("javadocset","url"),
+        configfile.getboolean("javadocset","enabled")
       )
-    )
-    docsets.append( 
-      JavadocSet(
-        "Apache Commons IO 2.5 API (online)",
-        "http://commons.apache.org/proper/commons-io/javadocs/api-release"
-      )
-    )
-
+      alreadyLoaded = False
+      for x in docsets:
+        if x.getName() == set.getName():
+          alreadyLoaded = True
+          break
+      if not alreadyLoaded:
+        docsets.append(set)
+    docsets.sort(cmp=lambda x,y: cmp(x.getName(),y.getName()))
     return docsets
 
   
 def main(*args):
   url = "jar:file:" + getResource(__file__, "data","gvsig-2_4_0-javadocs.zip!/html")
-  javadoc = Javadoc(url=url,name="gvSIG 2.4.0")
+  javadoc = Javadoc(javadocSet=JavadocSet("gvSIG 2.4.0", url))
   print javadoc.getNodes().hasChildren()

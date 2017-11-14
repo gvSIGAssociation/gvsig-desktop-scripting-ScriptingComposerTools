@@ -1,0 +1,5 @@
+ 
+[javadocset]
+name=NASA World Wind
+url=https://worldwind.arc.nasa.gov/java/v2.1.0/javadoc
+enabled=false

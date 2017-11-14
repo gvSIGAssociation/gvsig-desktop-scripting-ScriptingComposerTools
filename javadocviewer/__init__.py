@@ -13,3 +13,7 @@ except:
   
   def selfRegister():
     pass
+
+
+def main(*args):
+  selfRegister()

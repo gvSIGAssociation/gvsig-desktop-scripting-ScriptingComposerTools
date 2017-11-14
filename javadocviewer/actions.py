@@ -11,6 +11,12 @@ from org.gvsig.scripting.swing.api import ScriptingSwingLocator, JScriptingCompo
 from org.gvsig.tools.swing.api import Component 
 from org.gvsig.tools import ToolsLocator
 
+import javadoc
+reload(javadoc)
+
+import javadocnavigatorpanel
+reload(javadocnavigatorpanel)
+
 from javadoc import Javadoc
 from javadocnavigatorpanel import JavadocNavigatorPanel
 
@@ -22,7 +28,9 @@ class JavadocPanelAction(AbstractAction):
     self.putValue(Action.SMALL_ICON, load_icon((__file__,"images","javadoc.png")))
     self.putValue(Action.SHORT_DESCRIPTION, "Java docs navigator")
 
-  def actionPerformed(self,e):
+  def actionPerformed(self,e=None):
+    composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
+    composer.getStatusbar().message("Javadocs: preparing javadocset...")
     javadoc = Javadoc()
     navigator = JavadocNavigatorPanel(javadoc)
     navigator.getBookmarksPanel().addDocument(
@@ -30,10 +38,8 @@ class JavadocPanelAction(AbstractAction):
       "jar:file:" + getResource(__file__, "data","scripting-developers-guide.zip!/html/index.html"), 
       persistent=False
     )
-    for docset in javadoc.getDefaultJavadocSets():
-      navigator.loadJavadocSet(docset.getName(), docset.getURL())
+    navigator.loadJavadocSets()
 
-    composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
     composer.getDock().add("#JavadocNavigator","Javadoc",navigator,JScriptingComposer.Dock.DOCK_LEFT)
     composer.getDock().select("#JavadocNavigator")    
   
@@ -48,5 +54,7 @@ def selfRegister():
   manager.addComposerMenu(i18nManager.getTranslation("Show"),action1)
   
 def main(*args):
-  selfRegister()
+  action = JavadocPanelAction()
+  action.actionPerformed()
+  #selfRegister()
   
