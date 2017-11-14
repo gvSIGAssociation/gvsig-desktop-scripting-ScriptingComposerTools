@@ -15,6 +15,7 @@ import addimports
 import fileexplorer
 import jgit
 import classbrowser
+import consolejython
 
 def main(*args):
   abeille.selfRegister()
@@ -30,5 +31,5 @@ def main(*args):
   addimports.selfRegister()
   fileexplorer.selfRegister()
   jgit.selfRegister()
-
+  consolejython.selfRegister()
 
