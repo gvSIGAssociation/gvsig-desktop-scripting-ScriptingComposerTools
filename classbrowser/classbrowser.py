@@ -1,11 +1,13 @@
 # encoding: utf-8
 
 import gvsig
+from gvsig import logger
 from gvsig.libs.formpanel import FormPanel, getResource, load_icon
 from gvsig import commonsdialog 
 
 import fnmatch
 import copy
+import sys
 
 from org.gvsig.scripting.swing.api import ScriptingSwingLocator, JScriptingComposer
 from org.gvsig.tools.swing.api import Component 
@@ -178,6 +180,7 @@ def getClassByName(fullClassName):
     exec statement in names
     return names[className]
   except:
+    logger("Can't locate class '%s'." % fullClassName, ex=sys.exc_info()[1])
     return None
 
 class ClassBrowserDialog(FormPanel,Component):
@@ -306,11 +309,14 @@ class ClassBrowserDialog(FormPanel,Component):
     founds = list()
     searchClass = searchClass.lower()
     modules = self.__javadocs.getModules()
+    pattern = searchClass
+    if not ("*" in pattern or "?" in pattern):
+      pattern = "*" + pattern + "*"
     for module in modules:
       if module == None:
         continue
       className = "%s.%s" % (module.getPackageName(), module.getName())
-      if fnmatch.fnmatch(className.lower(), "*"+searchClass+"*"):
+      if fnmatch.fnmatch(className.lower(), pattern):
         founds.append(className)
         if len(founds)>100:
           break
