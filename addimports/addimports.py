@@ -98,6 +98,7 @@ class ResolveImports(object):
   def __init__(self,javadocs):
     self.__suggestions = dict()
     self.__javadocs = javadocs
+    self.__imports = dict()
 
   def add(self, simpleClassName):
     if self.__suggestions.has_key(simpleClassName):
@@ -129,6 +130,9 @@ class ResolveImports(object):
         BaseReporter.__init__(self)
         self.__resolver = resolver
 
+      def _display(self,*args):
+        pass
+
       def handle_message(self, msg):
         if getattr(msg,"symbol",None) == 'undefined-variable':
           m = msg.msg
@@ -145,14 +149,13 @@ class ResolveImports(object):
     args.append(filename)
 
     reporter = MyReporter(self)
-    x = lint.Run(args, reporter=reporter, exit=False)
+    lint.Run(args, reporter=reporter, exit=False)
 
 class AddImportsPanel(FormPanel):
   def __init__(self, editor, suggestions=None, javadocs=None):
     FormPanel.__init__(self, getResource(__file__,"addimportspanel.xml"))
     if suggestions == None:
       if javadocs == None :
-        from org.gvsig.scripting.swing.api import ScriptingSwingLocator
         composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
         p = composer.getDock().get("#JavadocNavigator")
         javadocs = p.getComponent().getJavadoc()
@@ -168,7 +171,7 @@ class AddImportsPanel(FormPanel):
   def setSuggestions(self, suggestions):
     self.__suggestions = suggestions
     model = DefaultListModel()
-    self.__suggestions.sort(cmp=lambda x,y:cmp(str(x),str(y)))
+    self.__suggestions.sort(cmp=lambda x,y:cmp(str(x).lower(),str(y).lower()))
     for suggestion in self.__suggestions:
       model.addElement(suggestion)
     self.lstSuggestions.setModel(model)
@@ -218,7 +221,7 @@ class AddImportsPanel(FormPanel):
 
   def getImports(self):
     x = StringIO()
-    self.__suggestions.sort(cmp=lambda x,y:cmp(str(x),str(y)))
+    self.__suggestions.sort(cmp=lambda x,y:cmp(str(x).lower(),str(y).lower()))
     for suggestion in self.__suggestions:
       x.write(str(suggestion))
       x.write("\n")
@@ -230,15 +233,19 @@ class AddImportsPanel(FormPanel):
     for line in code:
       linelen = len(line)+1
       line = line.lstrip()
-      if not (line=="" or line.startswith("reload(") or line.startswith("#") or line.startswith("from ") or line.startswith("import ")):
+      if not ( line==""
+        or line.startswith("#") 
+        or line.startswith("from ") 
+        or line.startswith("import ")
+        or line.startswith("reload(") 
+        or line.startswith("use_plugin(")
+        ):
         break
       charcount += linelen
     self.__editor.getJTextComponent().insert(self.getImports()+"\n",charcount)
     
         
 def test():
-  from org.gvsig.scripting.swing.api import ScriptingSwingLocator
-
   editor=None
   composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
   if composer.getDock().get("#JavadocNavigator") == None:
@@ -275,4 +282,6 @@ def test2():
   editor.getJTextComponent().insert(charcount)
   
 def main(*args):
-  test()
+  #test()
+  pass
+  
