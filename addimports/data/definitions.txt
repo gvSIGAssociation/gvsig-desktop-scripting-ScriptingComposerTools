@@ -76,11 +76,11 @@ openFileDialog, gvsig.commonsdialog
 openFolderDialog, gvsig.commonsdialog
 saveFileDialog, gvsig.commonsdialog
 
-uselib,
-use_plugin, uselib
-use_jar, uselib
-use_libs, uselib
-use_jars, uselib
+uselib, gvsig
+use_plugin, gvsig.uselib
+use_jar, gvsig.uselib
+use_libs, gvsig.uselib
+use_jars, gvsig.uselib
 
 geom,
 AGGREGATE, geom
