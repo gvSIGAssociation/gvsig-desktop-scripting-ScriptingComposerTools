@@ -150,7 +150,6 @@ class ResolveImports(object):
 class AddImportsPanel(FormPanel):
   def __init__(self, editor, suggestions=None, javadocs=None):
     FormPanel.__init__(self, getResource(__file__,"addimportspanel.xml"))
-    self.setPreferredSize(400,250)
     if suggestions == None:
       if javadocs == None :
         from org.gvsig.scripting.swing.api import ScriptingSwingLocator
@@ -164,6 +163,7 @@ class AddImportsPanel(FormPanel):
       suggestions = resolver.getSuggestions()
     self.setSuggestions(suggestions)
     self.__editor = editor
+    self.setPreferredSize(400,250)
 
   def setSuggestions(self, suggestions):
     self.__suggestions = suggestions

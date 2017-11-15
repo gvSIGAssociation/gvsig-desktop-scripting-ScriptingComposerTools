@@ -24,7 +24,7 @@
     </at>
     <at name="componentclass">com.jeta.forms.gui.form.FormComponent</at>
    </super>
-   <at name="id">/home/jjdelcerro/gvSIG/plugins/org.gvsig.scripting.app.mainplugin/scripts/addons/ScriptingComposerTools/classbrowser/classbrowserdialog.xml</at>
+   <at name="id">/home/jjdelcerro/gvSIG/plugins/org.gvsig.scripting.app.mainplugin/2.4.0/scripts/addons/ScriptingComposerTools/classbrowser/classbrowserdialog.xml</at>
    <at name="path">addons/ScriptingComposerTools/classbrowser/classbrowserdialog.xml</at>
    <at name="rowspecs">CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,FILL:DEFAULT:GROW(1.0),CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,CENTER:2DLU:NONE</at>
    <at name="colspecs">FILL:4DLU:NONE,FILL:DEFAULT:GROW(1.0),FILL:4DLU:NONE</at>
@@ -75,7 +75,7 @@
              </object>
             </at>
             <at name="name">cboSearchs</at>
-            <at name="width">621</at>
+            <at name="width">584</at>
             <at name="items">
              <object classname="com.jeta.forms.store.properties.ItemsProperty">
               <at name="name">items</at>
@@ -134,7 +134,7 @@
              </object>
             </at>
             <at name="name">txtClassName</at>
-            <at name="width">621</at>
+            <at name="width">584</at>
             <at name="height">20</at>
            </object>
           </at>
@@ -190,7 +190,7 @@
             <at name="scrollableTracksViewportHeight">true</at>
             <at name="scrollableTracksViewportWidth">true</at>
             <at name="name">treeClass</at>
-            <at name="width">619</at>
+            <at name="width">582</at>
             <at name="scollBars">
              <object classname="com.jeta.forms.store.properties.ScrollBarsProperty">
               <at name="name">scollBars</at>
@@ -218,7 +218,7 @@
               </at>
              </object>
             </at>
-            <at name="height">331</at>
+            <at name="height">278</at>
            </object>
           </at>
          </object>
@@ -243,7 +243,7 @@
          </at>
          <at name="componentclass">com.jeta.forms.gui.form.FormComponent</at>
         </super>
-        <at name="id">embedded.252792957</at>
+        <at name="id">embedded.1639972299</at>
         <at name="rowspecs">CENTER:DEFAULT:NONE</at>
         <at name="colspecs">FILL:DEFAULT:GROW(1.0),FILL:DEFAULT:NONE,FILL:4DLU:NONE,FILL:DEFAULT:NONE,FILL:4DLU:NONE,FILL:DEFAULT:NONE</at>
         <at name="components">
@@ -433,7 +433,7 @@
               </at>
              </object>
             </at>
-            <at name="name"></at>
+            <at name="name"/>
             <at name="fill">
              <object classname="com.jeta.forms.store.properties.effects.PaintProperty">
               <at name="name">fill</at>
@@ -543,7 +543,7 @@
              </object>
             </at>
             <at name="name">txtSearch</at>
-            <at name="width">621</at>
+            <at name="width">584</at>
             <at name="height">20</at>
            </object>
           </at>
@@ -569,7 +569,7 @@
          </at>
         </object>
        </at>
-       <at name="name"></at>
+       <at name="name"/>
        <at name="fill">
         <object classname="com.jeta.forms.store.properties.effects.PaintProperty">
          <at name="name">fill</at>

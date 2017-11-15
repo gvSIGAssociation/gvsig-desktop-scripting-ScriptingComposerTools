@@ -180,13 +180,12 @@ def getClassByName(fullClassName):
     exec statement in names
     return names[className]
   except:
-    logger("Can't locate class '%s'." % fullClassName, ex=sys.exc_info()[1])
+    #logger("Can't locate class '%s'." % fullClassName, ex=sys.exc_info()[1])
     return None
 
 class ClassBrowserDialog(FormPanel,Component):
   def __init__(self, javadocs=None ):
     FormPanel.__init__(self, getResource(__file__,"classbrowserdialog.xml"))
-    self.setPreferredSize(500,400)
     self.__javadocs = javadocs
     if self.__javadocs == None :
       composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
@@ -205,6 +204,7 @@ class ClassBrowserDialog(FormPanel,Component):
     )    
     self.__root = CodeElement(TYPE_CLASS,"...",0,0)
     self.treeClass.setModel(CodeNavigatorTreeModel(self.__root))
+    self.setPreferredSize(500,400)
 
   def txtClassName_keyPressed(self, event):
     if event.getKeyCode()==27:
@@ -338,7 +338,8 @@ class ClassBrowserDialog(FormPanel,Component):
 class ClassBrowserPanel(FormPanel,Component):
   def __init__(self):
     FormPanel.__init__(self, getResource(__file__,"classbrowserpanel.xml"))
-    
+    self.setPreferredSize(500,400)
+   
   def btnSearch_click(self, *args):
     theClass = getClassByName(self.txtClassName.getText())
     if theClass == None:
