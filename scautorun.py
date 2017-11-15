@@ -16,6 +16,7 @@ import fileexplorer
 import jgit
 import classbrowser
 import consolejython
+import useplugin
 
 def main(*args):
   abeille.selfRegister()
@@ -32,4 +33,4 @@ def main(*args):
   fileexplorer.selfRegister()
   jgit.selfRegister()
   consolejython.selfRegister()
-
+  useplugin.selfRegister()
