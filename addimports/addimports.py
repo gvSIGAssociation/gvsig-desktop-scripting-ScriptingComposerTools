@@ -61,7 +61,36 @@ class Suggestion(object):
     self.__packageName = packageName
   
   def __repr__(self):
-    return "from %s import %s" % (self.getPackageName(), self.getSimpleClassName())
+    if self.getPackageName() in ("", None):
+      return "import %s" % self.getSimpleClassName()
+    else:
+      return "from %s import %s" % (self.getPackageName(), self.getSimpleClassName())
+
+class PyName(object):
+  def __init__(self,name, package=""):
+    self.__name = name.strip()
+    self.__package = package.strip()
+
+  def getName(self):
+    return self.__name
+    
+  def getPackageName(self):
+    return self.__package
+
+def loadNames():
+  names = list()
+  fname = getResource(__file__, "data", "definitions.txt")
+  f = open(fname,"r")
+  for line in f.readlines():
+    line = line.strip()
+    if "," in line:
+      parts = line.split(",")
+      name = PyName(parts[0],parts[1])
+    else:
+      name = PyName(line)
+    names.append(name)
+  f.close()
+  return names
 
 class ResolveImports(object):
   def __init__(self,javadocs):
@@ -77,6 +106,10 @@ class ResolveImports(object):
         continue
       if module.getName() == simpleClassName :
         packages.append(module.getPackageName())
+    for pyname in loadNames():
+      if pyname.getName() == simpleClassName :
+        packages.append(pyname.getPackageName())
+    
     if len(packages) > 0:
       self.__suggestions[simpleClassName] = Suggestion(simpleClassName,packages)
 
@@ -133,6 +166,7 @@ class AddImportsPanel(FormPanel):
   def setSuggestions(self, suggestions):
     self.__suggestions = suggestions
     model = DefaultListModel()
+    self.__suggestions.sort(cmp=lambda x,y:cmp(str(x),str(y)))
     for suggestion in self.__suggestions:
       model.addElement(suggestion)
     self.lstSuggestions.setModel(model)
@@ -182,6 +216,7 @@ class AddImportsPanel(FormPanel):
 
   def getImports(self):
     x = StringIO()
+    self.__suggestions.sort(cmp=lambda x,y:cmp(str(x),str(y)))
     for suggestion in self.__suggestions:
       x.write(str(suggestion))
       x.write("\n")

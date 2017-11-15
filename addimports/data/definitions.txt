@@ -1,0 +1,123 @@
+os,
+sys,
+StringIO,
+StringIO,StringIO
+threading,
+array, jarray
+jarray,
+shutil,
+#
+# gvsig module
+#
+gvsig,
+getResource, gvsig  
+getTempFile, gvsig 
+createSchema,  gvsig
+createFeatureType,  gvsig
+createLayer,  gvsig
+loadShapeFile,  gvsig
+loadRasterFile,  gvsig
+loadLayer,  gvsig
+createShape,  gvsig
+createTable,  gvsig
+createDBF,  gvsig
+loadDBF,  gvsig
+loadTable,  gvsig
+COLORS,  gvsig
+simplePointSymbol,  gvsig
+simpleLineSymbol,  gvsig
+simplePolygonSymbol,  gvsig
+getDataFolder,  gvsig
+getProjectsFolder,  gvsig
+getColorFromRGB,  gvsig
+getDefaultColor,  gvsig
+getCRS,  gvsig
+LOGGER_INFO,  gvsig
+LOGGER_WARN,  gvsig
+LOGGER_ERROR,  gvsig
+logger,  gvsig
+openStore,  gvsig
+currentLayer, gvsig
+currentProject,  gvsig
+currentDocument,  gvsig
+currentView,  gvsig
+currentTable,  gvsig
+#
+# formpanel module
+#
+formpanel, gvsig.libs
+load_icon, gvsig.libs.formpanel
+load_image, gvsig.libs.formpanel
+FormPanel, gvsig.libs.formpanel
+#
+# commonsdialog module
+#
+commonsdialog, gvsig
+FORBIDEN, gvsig.commonsdialog
+IDEA, gvsig.commonsdialog
+WARNING, gvsig.commonsdialog
+QUESTION, gvsig.commonsdialog
+YES_NO, gvsig.commonsdialog
+YES_NO_CANCEL, gvsig.commonsdialog
+ACCEPT_CANCEL, gvsig.commonsdialog
+YES, gvsig.commonsdialog
+NO, gvsig.commonsdialog
+CANCEL, gvsig.commonsdialog
+OPEN_FILE, gvsig.commonsdialog
+OPEN_DIRECTORY, gvsig.commonsdialog
+SAVE_FILE, gvsig.commonsdialog
+FILES_ONLY, gvsig.commonsdialog
+DIRECTORIES_ONLY, gvsig.commonsdialog
+msgbox, gvsig.commonsdialog
+inputbox, gvsig.commonsdialog
+confirmDialog, gvsig.commonsdialog
+filechooser, gvsig.commonsdialog
+openFileDialog, gvsig.commonsdialog
+openFolderDialog, gvsig.commonsdialog
+saveFileDialog, gvsig.commonsdialog
+
+uselib,
+use_plugin, uselib
+use_jar, uselib
+use_libs, uselib
+use_jars, uselib
+
+geom,
+AGGREGATE, geom
+ARC, geom
+CIRCLE, geom
+CURVE, geom
+ELLIPSE, geom
+ELLIPTICARC, geom
+GEOMETRY, geom
+MULTICURVE, geom
+MULTIPOINT, geom
+MULTISOLID, geom
+MULTISURFACE, geom
+NULL, geom
+POINT, geom
+SOLID, geom
+SPLINE, geom
+SURFACE, geom
+POLYGON, geom
+LINE, geom
+MULTILINE, geom
+MULTIPOLYGON, geom
+D2, geom
+D2M, geom
+D3, geom
+D3M, geom
+UNKNOWN, geom
+DIMENSIONS, geom
+createGeometry, geom
+createPoint2D, geom
+createLine2D, geom
+createPolygon2D, geom
+createPoint, geom
+createMultiPoint, geom
+createPolygon, geom
+createMultiPolygon, geom
+createLine, geom
+createMultiLine, geom
+createEnvelope, geom
+createGeometryFromWKT, geom
