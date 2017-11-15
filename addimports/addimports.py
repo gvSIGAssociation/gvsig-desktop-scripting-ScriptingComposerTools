@@ -83,6 +83,8 @@ def loadNames():
   f = open(fname,"r")
   for line in f.readlines():
     line = line.strip()
+    if line.startswith("#"):
+      continue
     if "," in line:
       parts = line.split(",")
       name = PyName(parts[0],parts[1])
