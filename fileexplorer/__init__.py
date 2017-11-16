@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 import gvsig
+from gvsig import commonsdialog
 from gvsig.libs.formpanel import load_icon
 
 from org.gvsig.tools import ToolsLocator
@@ -10,6 +11,18 @@ from org.gvsig.tools.util import ToolsUtilLocator
 from java.io import File
 from java.lang import System
 from javax.swing import Action
+from org.gvsig.scripting import ScriptingFolder
+from org.gvsig.scripting.impl import UserFolder
+
+def getSelectedFolder():
+  composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
+  launcher = composer.getProjects()
+  browser = launcher.getSelectedBrowser()
+  unit = browser.getSelectedNode()
+  if not isinstance(unit,ScriptingFolder):
+    return None
+  return unit
+
 
 class FileExplorerAction(AbstractAction):
 
@@ -21,11 +34,12 @@ class FileExplorerAction(AbstractAction):
 
   def actionPerformed(self,e):
     composer = e.getSource().getContext()
-    editor = composer.getCurrentEditor()
-    if editor == None:
-      uri = File(System.getProperty("user.home")).toURL().toURI()
+    unit = getSelectedFolder()
+    if unit == None:
+      commonsdialog.msgbox("Select a folder in the projects tree.", "Editor", commonsdialog.IDEA, root=composer)
+      return
     else:
-      uri = editor.getUnit().getFile().getParentFile().toURL().toURI()
+      uri = unit.getFile().toURL().toURI()
     desktop = ToolsUtilLocator.getToolsUtilManager().createDesktopOpen()
     desktop.browse(uri)
   
@@ -41,4 +55,5 @@ def selfRegister():
   
 def main(*args):
   selfRegister()
+  
   
