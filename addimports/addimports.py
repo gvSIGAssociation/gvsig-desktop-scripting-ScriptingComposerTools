@@ -3,6 +3,8 @@
 import gvsig
 from gvsig.libs.formpanel import FormPanel, getResource
 
+import os
+
 from javax.swing import DefaultListModel
 from javax.swing import DefaultComboBoxModel 
 
@@ -66,52 +68,49 @@ class Suggestion(object):
     else:
       return "from %s import %s" % (self.getPackageName(), self.getSimpleClassName())
 
-class PyName(object):
-  def __init__(self,name, package=""):
+class SimpleName(object):
+  def __init__(self,name, module=""):
     self.__name = name.strip()
-    self.__package = package.strip()
+    self.__module = module.strip()
 
+  def __str__(self):
+    if self.__module in ("",None):
+      return "import %s" % self.__name
+    return "from %s import %s" % (self.__module, self.__name)
+  __repr__ = __str__
+  
   def getName(self):
     return self.__name
     
-  def getPackageName(self):
-    return self.__package
-
-def loadNames():
-  names = list()
-  fname = getResource(__file__, "data", "definitions.txt")
-  f = open(fname,"r")
-  for line in f.readlines():
-    line = line.strip()
-    if line.startswith("#"):
-      continue
-    if "," in line:
-      parts = line.split(",")
-      name = PyName(parts[0],parts[1])
-    else:
-      name = PyName(line)
-    names.append(name)
-  f.close()
-  return names
+  def getModuleName(self):
+    return self.__module
 
 class ResolveImports(object):
-  def __init__(self,javadocs):
+  def __init__(self,javadocs, message):
     self.__suggestions = dict()
     self.__javadocs = javadocs
     self.__imports = dict()
-
+    self.__globalNames = list()
+    self.__localNames = list()
+    self.__msg = message
+    self.loadGlobalNames()
+    
   def add(self, simpleClassName):
     if self.__suggestions.has_key(simpleClassName):
       return
     packages = list()
-    for module in self.__javadocs.getModules():
-      if module == None:
-        continue
-      if module.getName() == simpleClassName :
-        packages.append(module.getPackageName())
-    for pyname in loadNames():
+    if self.__javadocs!=None:
+      for module in self.__javadocs.getModules():
+        if module == None:
+          continue
+        if module.getName() == simpleClassName :
+          packages.append(module.getPackageName())
+    for pyname in self.__globalNames:
       if pyname.getName() == simpleClassName :
-        packages.append(pyname.getPackageName())
+        packages.append(pyname.getModuleName())
+    for pyname in self.__localNames:
+      if pyname.getName() == simpleClassName :
+        packages.append(pyname.getModuleName())
     
     if len(packages) > 0:
       self.__suggestions[simpleClassName] = Suggestion(simpleClassName,packages)
@@ -119,6 +118,53 @@ class ResolveImports(object):
   def getSuggestions(self):
     return self.__suggestions.values()
 
+  def loadGlobalNames(self):
+    self.__msg("Imports resolver, load global names...")
+    fname = getResource(__file__, "data", "definitions.txt")
+    f = open(fname,"r")
+    for line in f.readlines():
+      line = line.strip()
+      if line.startswith("#"):
+        continue
+      if "," in line:
+        parts = line.split(",")
+        name = SimpleName(parts[0],parts[1])
+      else:
+        name = SimpleName(line)
+      self.__globalNames.append(name)
+    f.close()
+
+  def loadLocalNames(self, pathname):
+    self.__msg("Imports resolver, load local names...")
+    self.__localNames = list()
+    self.__loadLocalNames(pathname, self.__localNames)
+    
+  def __loadLocalNames(self, pathname, localNames, pkg=""):
+    folder = os.path.dirname(pathname)
+    if not pkg in ("",None):
+      pkg = pkg + "."
+    for sourcefile in os.listdir(folder):
+      initfile = os.path.join(folder, sourcefile,"__init__.py")
+      #print "### initfile ", repr(initfile), os.path.isfile(initfile)
+      if os.path.isfile(initfile):
+        self.__loadLocalNames(initfile, localNames, pkg+sourcefile)
+        continue
+      if sourcefile.endswith(".py"):
+        self.__msg("Imports resolver, scanning '%s'..." % sourcefile)
+        moduleName = os.path.splitext(sourcefile)[0]
+        if pkg in ("", None):
+          localNames.append(SimpleName(moduleName,""))
+        else:
+          localNames.append(SimpleName(pkg[:-1], moduleName))
+        try:
+          codeAnalyzer = CodeAnalyzer()
+          codeAnalyzer.load(os.path.join(folder,sourcefile))
+          for name in codeAnalyzer.getModule().getChildren():
+            if name.type in ("class", "function"):
+              localNames.append(SimpleName(name.getName(), pkg+moduleName))
+        except:
+          pass
+    
   def resolve(self, pathname, code):
     self.__imports = dict()
     code = code.strip()
@@ -140,6 +186,7 @@ class ResolveImports(object):
             self.__resolver.add(m[20:-1])
         
 
+    self.__msg("Imports resolver, cheking '%s'..." % os.path.basename(pathname))
     filename = FilePath(pathname)
     filename.source_code = code
 
@@ -148,26 +195,36 @@ class ResolveImports(object):
     args.extend(lint_options)
     args.append(filename)
 
-    reporter = MyReporter(self)
-    lint.Run(args, reporter=reporter, exit=False)
+    try:
+      reporter = MyReporter(self)
+      lint.Run(args, reporter=reporter, exit=False)
+      self.__msg("")
+    except:
+      self.__msg("Imports resolver, can't check file")
 
 class AddImportsPanel(FormPanel):
   def __init__(self, editor, suggestions=None, javadocs=None):
     FormPanel.__init__(self, getResource(__file__,"addimportspanel.xml"))
+    self.__composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
     if suggestions == None:
       if javadocs == None :
-        composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
-        p = composer.getDock().get("#JavadocNavigator")
-        javadocs = p.getComponent().getJavadoc()
-      resolver = ResolveImports(javadocs)
+        self.message("Imports resolver, getings javadocs...")
+        p = self.__composer.getDock().get("#JavadocNavigator")
+        if p != None:
+          javadocs = p.getComponent().getJavadoc()
+      resolver = ResolveImports(javadocs, message=self.message)
       code = editor.getJTextComponent().getText()
-      fname = editor.getScript().getScriptFile()
+      fname = editor.getScript().getScriptFile().getAbsolutePath()
+      resolver.loadLocalNames(fname)
       resolver.resolve(fname,code)
       suggestions = resolver.getSuggestions()
     self.setSuggestions(suggestions)
     self.__editor = editor
-    self.setPreferredSize(400,250)
+    self.setPreferredSize(450,250)
 
+  def message(self, msg):
+    self.__composer.getStatusbar().message(msg)
+    
   def setSuggestions(self, suggestions):
     self.__suggestions = suggestions
     model = DefaultListModel()
@@ -282,6 +339,6 @@ def test2():
   editor.getJTextComponent().insert(charcount)
   
 def main(*args):
-  #test()
+  test()
   pass
   

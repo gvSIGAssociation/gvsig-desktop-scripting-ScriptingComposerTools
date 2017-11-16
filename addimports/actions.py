@@ -36,14 +36,14 @@ class FixImportsAction(AbstractAction):
 
   def actionPerformed(self,e):
     composer = e.getSource().getContext()
-    if composer.getDock().get("#JavadocNavigator") == None:
-      gvsig.commonsdialog.msgbox(
-        "You must open the javadocs in order to use this functionality",
-        "Fix imports", 
-        gvsig.commonsdialog.WARNING, 
-        root=composer
-      )
-      return
+    #if composer.getDock().get("#JavadocNavigator") == None:
+    #  gvsig.commonsdialog.msgbox(
+    #    "You must open the javadocs in order to use this functionality",
+    #    "Fix imports", 
+    #    gvsig.commonsdialog.WARNING, 
+    #    root=composer
+    #  )
+    #  return
     editor = composer.getCurrentEditor()
     if editor == None:
       return
