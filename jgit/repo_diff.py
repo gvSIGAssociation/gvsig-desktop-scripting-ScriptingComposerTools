@@ -102,7 +102,6 @@ def repo_diff(path=None, outdiff=None, git=None):
     out = outdiff
       
   html = diffOutput2html(out)
-  print html
   
   browser = BrowserPanel()  
   browser.setContent(html)
