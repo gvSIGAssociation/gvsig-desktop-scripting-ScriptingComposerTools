@@ -153,6 +153,8 @@ class CodeAnalyzer(object):
                     last.elements.append(element)
                   else:
                     self.module.elements.append(element)
+                else:
+                  self.module.elements.append(element)
     
             elif pos==indent and line[pos:pos+6] == 'class ':
               element = CodeElement(TYPE_CLASS, self.getIdentifier(line,pos+6), indent, lineno,fname=fname)
@@ -296,9 +298,16 @@ class CodeAnalyzer(object):
               out.write("      %s %r [lineno=%s, indent=%s]\n" % (element3.type,element3.name, element3.lineno, element3.indent))
     return out.getvalue()
 
+def test0():
+  analyzer = CodeAnalyzer()
+  analyzer.load(__file__)
+  print analyzer.dump()
+
 def test1():
   analyzer = CodeAnalyzer()
   analyzer.load(__file__,search="CodeElement")
   analyzer.removeEmptyElemens()
   print analyzer.dump()
-  
+
+def main(*args):
+  test0()
