@@ -22,8 +22,16 @@ from javax.swing.tree import TreePath
 from org.gvsig.scripting.swing.api import ScriptingSwingLocator, JScriptingComposer
 from org.gvsig.tools.swing.api import Component 
 
-from codeanalizer import *
-
+from codeanalizer import TYPE_ROOT
+from codeanalizer import TYPE_FOLDER
+from codeanalizer import TYPE_MODULE 
+from codeanalizer import TYPE_CLASS 
+from codeanalizer import TYPE_METHOD 
+from codeanalizer import TYPE_FUNCTION 
+from codeanalizer import TYPE_TEXT
+from codeanalizer import TYPE_IMPORT 
+from codeanalizer import CodeElement
+from codeanalizer import CodeAnalyzer
 
 class CodeNavigatorTreeModel(TreeModel):
   def __init__(self,root):
@@ -266,7 +274,11 @@ class CodeNavigatorPanel(FormPanel,ChangeListener,ActionListener,Component):
     row = 0
     rowCount = self.treeCodeNavigator.getRowCount()
     while row < rowCount:
-      self.treeCodeNavigator.expandRow(row)
+      codeElement = self.treeCodeNavigator.getPathForRow(row).getLastPathComponent()
+      if codeElement.type == TYPE_IMPORT:
+        self.treeCodeNavigator.collapseRow(row)
+      else:
+        self.treeCodeNavigator.expandRow(row)
       rowCount = self.treeCodeNavigator.getRowCount()
       row += 1
 
