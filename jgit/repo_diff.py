@@ -25,6 +25,61 @@ from repo_utils import warning, message
 
 from org.gvsig.scripting.swing.api import JScriptingComposer
 
+
+def diffOutput2html_use_diff2html(diffout):
+  import diff2html
+  html_hdr = """<!DOCTYPE html>
+<html lang="en" dir="ltr"
+    xmlns:dc="http://purl.org/dc/terms/">
+<head>
+    <meta charset="utf-8" />
+    <meta name="generator" content="diff2html.py (http://git.droids-corp.org/gitweb/?p=diff2html)" />
+    <!--meta name="author" content="Fill in" /-->
+    <title>HTML Diff </title>
+    <link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAgMAAABinRfyAAAACVBMVEXAAAAAgAD///+K/HwIAAAAJUlEQVQI12NYBQQM2IgGBQ4mCIEQW7oyK4phampkGIQAc1G1AQCRxCNbyW92oQAAAABJRU5ErkJggg==" type="image/png" />
+    <meta property="dc:language" content="en" />
+    <!--meta property="dc:date" content="" /-->
+    <meta property="dc:modified" content="2017-11-16T03:21:59.799000+01:00" />
+    <meta name="description" content="File comparison" />
+    <meta property="dc:abstract" content="File comparison" />
+    <style>
+        table { border:0px; border-collapse:collapse; width: 100%; font-size:0.75em; font-family: Lucida Console, monospace }
+        td.line { color:#8080a0 }
+        th { background: black; color: white }
+        tr.diffunmodified td { background: #D0D0E0 }
+        tr.diffhunk td { background: #A0A0A0 }
+        tr.diffadded td { background: #CCFFCC }
+        tr.diffdeleted td { background: #FFCCCC }
+        tr.diffchanged td { background: #FFFFA0 }
+        span.diffchanged2 { background: #E0C880 }
+        span.diffponct { color: #B08080 }
+        tr.diffmisc td {}
+        tr.diffseparator td {}
+    </style>
+</head>
+<body>
+"""
+  html_footer = """
+</body></html>
+"""
+  return html_hdr + diff2html.parse_from_memory(diffout, True, False) + html_footer
+  #return diff2html.parse_from_memory(diffout, True, False) 
+
+def diffOutput2html_use_pygments(diffout):
+  html = StringIO.StringIO()
+  lexer = get_lexer_by_name("Diff")
+  formatter = HtmlFormatter(style='default')
+  styles = formatter.get_style_defs()
+  html.write("<style>\n")
+  html.write(styles)
+  html.write("</style>\n")
+  pygments.highlight(diffout, lexer, formatter, html)
+  return html.getvalue()
+
+diffOutput2html = diffOutput2html_use_diff2html
+#diffOutput2html = diffOutput2html_use_pygments
+
+
 def repo_diff(path=None, outdiff=None, git=None):
   if git == None:
     git = getSelectedGit()
@@ -46,20 +101,11 @@ def repo_diff(path=None, outdiff=None, git=None):
   else:
     out = outdiff
       
-  html = StringIO.StringIO()
-  lexer = get_lexer_by_name("Diff")
-  formatter = HtmlFormatter(style='default')
-  styles = formatter.get_style_defs()
-  html.write("<style>\n")
-  html.write(styles)
-  html.write("</style>\n")
-
-  pygments.highlight(out, lexer, formatter, html)
+  html = diffOutput2html(out)
+  print html
   
-  #print html.getvalue()
-
   browser = BrowserPanel()  
-  browser.setContent(html.getvalue())
+  browser.setContent(html)
   composer = getComposer()
   composer.getDock().add(
     "#GitDiff."+path,
