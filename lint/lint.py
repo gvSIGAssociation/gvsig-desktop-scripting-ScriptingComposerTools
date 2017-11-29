@@ -18,6 +18,7 @@ from org.gvsig.tools import ToolsLocator
 
 # lists all messages supported by PyLint 1.1.0,
 # http://pylint-messages.wikidot.com/all-codes
+# https://github.com/PyCQA/pylint/blob/master/pylint/checkers/imports.py
 
 lint_options = [
     "--reports=n",
@@ -44,7 +45,8 @@ lint_options = [
     "--disable=too-many-arguments",
     "--disable=too-many-instance-attributes",
     "--disable=I0011", #I0011: Locally disabling %s
-    "--disable=W0702" #W0702: No exception type(s) specified
+    "--disable=W0702", #W0702: No exception type(s) specified
+    "--disable=C0412" #C0412: Imports from package %s are not grouped
 ]
 def checkFile(pathName):
   composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
