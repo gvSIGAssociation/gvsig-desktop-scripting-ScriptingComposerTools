@@ -30,5 +30,6 @@ def main(*args):
 
   x = SimpleName("hola")
   
-
+  xx= File("Hola")
+  
   
