@@ -206,6 +206,7 @@ class AddImportsPanel(FormPanel):
   def __init__(self, editor, suggestions=None, javadocs=None):
     FormPanel.__init__(self, getResource(__file__,"addimportspanel.xml"))
     self.__composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
+    self.__editor = editor
     if suggestions == None:
       if javadocs == None :
         self.message("Imports resolver, getings javadocs...")
@@ -217,13 +218,21 @@ class AddImportsPanel(FormPanel):
       fname = editor.getScript().getScriptFile().getAbsolutePath()
       resolver.loadLocalNames(fname)
       resolver.resolve(fname,code)
+      selectedText = self.getSelectedText()
+      if selectedText!=None:
+        resolver.add(selectedText)
       suggestions = resolver.getSuggestions()
     self.setSuggestions(suggestions)
-    self.__editor = editor
     self.setPreferredSize(450,250)
 
   def message(self, msg):
     self.__composer.getStatusbar().message(msg)
+
+  def getSelectedText(self):
+    txt = self.__editor.getJTextComponent().getSelectedText()
+    if txt==None or txt.strip()=="":
+      return None
+    return txt
     
   def setSuggestions(self, suggestions):
     self.__suggestions = suggestions
