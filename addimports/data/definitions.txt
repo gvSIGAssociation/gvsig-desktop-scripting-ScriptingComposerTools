@@ -6,6 +6,8 @@ threading,
 array, jarray
 jarray,
 shutil,
+ConfigParser,
+ConfigParser, ConfigParser
 #
 # gvsig module
 #
