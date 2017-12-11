@@ -147,7 +147,7 @@ class ComposerGit(object):
     git = self._open()
     try:
       config = git.getRepository().getConfig()
-      return config.getString("user", None, "name")
+      return config.getString("user", None, "username")
     finally:
       self._close(git)
 
