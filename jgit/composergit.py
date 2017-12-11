@@ -169,7 +169,7 @@ class ComposerGit(object):
     f.write(".directory\n")
     f.close()
     
-  def cloneRepository(self, remote, branch=None, monitor=None):
+  def cloneRepository(self, remote, branch=None, monitor=None, userName=None, userMail=None, userId=None):
     git_clone = Git.cloneRepository()
     git_clone.setDirectory(self.__repopath.getParentFile())
     if branch==None:
@@ -183,6 +183,15 @@ class ComposerGit(object):
       git_clone.setProgressMonitor(monitor)
     
     repo = git_clone.call()
+    if userName!=None or userMail!=None or userId!=None:
+      config = repo.getRepository().getConfig()
+      if userName!=None:
+        config.setString("user", None, "name", userName)
+      if userId!=None:
+        config.setString("user", None, "username", userId)
+      if userMail!=None:
+        config.setString("user", None, "email", userMail)
+      config.save()
     repo.close()
     
   def _open(self):

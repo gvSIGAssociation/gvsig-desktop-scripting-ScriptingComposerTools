@@ -29,7 +29,13 @@ class CloneMonitor(ProgressMonitor, Runnable):
   def run(self):
     
     try:
-      self.__git.cloneRepository(self.__panel.getRepositoryURL(), monitor=self)
+      self.__git.cloneRepository(
+        self.__panel.getRepositoryURL(), 
+        monitor=self, 
+        userName=self.__panel.getUserName(), 
+        userMail=self.__panel.getUserMail(), 
+        userId=self.__panel.getUserId()
+      )
       self.__panel.btnClose.setEnabled(True)
       self.__panel.btnCloneRepository.setEnabled(False)
       self.__panel.pgbMonitor.setMaximum(10)
@@ -87,6 +93,15 @@ class ClonePanel(FormPanel,Component):
     
   def getRemoteBranchName(self):
     return self.txtRemoteBranchName.getText()
+
+  def getUserName(self):
+    return self.txtUserName.getText()
+
+  def getUserMail(self):
+    return self.txtUserMail.getText()
+
+  def getUserId(self):
+    return self.txtUserId.getText()
 
   def getRepositoryURL(self):
     return self.txtURL.getText()
