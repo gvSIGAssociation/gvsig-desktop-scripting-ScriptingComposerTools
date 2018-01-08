@@ -17,10 +17,13 @@ from org.gvsig.scripting.impl import UserFolder
 def getSelectedFolder():
   composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
   launcher = composer.getProjects()
+  
   browser = launcher.getSelectedBrowser()
   unit = browser.getSelectedNode()
+
   if not isinstance(unit,ScriptingFolder):
-    return None
+    unit =  browser.getSelectionPath().getPathComponent(browser.getSelectionPath().getPathCount()-2)
+
   return unit
 
 
