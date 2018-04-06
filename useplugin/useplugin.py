@@ -15,6 +15,7 @@ from gvsig.uselib import use_plugin
 class UsePluginPanel(FormPanel, Component):
   def __init__(self):
     FormPanel.__init__(self,getResource(__file__,"useplugin.xml"))
+    self.setPreferredSize(400,400)
     model = DefaultListModel()
     model.removeAllElements()
     plugins = PluginsLocator.getManager().getPlugins()
