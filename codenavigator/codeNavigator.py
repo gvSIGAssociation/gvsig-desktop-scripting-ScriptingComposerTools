@@ -302,6 +302,7 @@ class CodeNavigatorPanel(FormPanel,ChangeListener,ActionListener,Component):
 def test2():
   p = CodeNavigatorPanel(composer = ScriptingSwingLocator.getUIManager().getActiveComposer())
   p.load_module(__file__)#,search="load")
+  p.setPreferredSize(400,400)
   p.showWindow("xx")
   
   
