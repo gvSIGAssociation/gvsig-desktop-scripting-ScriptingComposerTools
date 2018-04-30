@@ -13,6 +13,9 @@ from  org.gvsig.scripting.swing.api import ScriptingSwingLocator, JScriptingComp
 from javax.swing import AbstractAction, Action
 from java.awt import Color
 
+from java.lang import Runnable
+from javax.swing import SwingUtilities
+
 lint_options_quick = [
     "--reports=n",
     "--errors-only",
@@ -60,27 +63,46 @@ class FilePath(str):
 icon_error = load_icon((__file__,"trackicon_error.png"))
 icon_warn = load_icon((__file__,"trackicon_warn.png"))
 
-def checkFile(pathName, code):
-  composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
-  if composer == None:
-    return
-  composer.getStatusbar().message("Running quick lint to %s..." % basename(pathName))
-  try:
-    #use_libs(join(dirname(__file__),"libs"),isglobal=True)
-    
+class AddLineTrackingIcon(Runnable):
+  def __init__(self, textPanel, iconsGroup, line, icon, msg, color):
+    self.textPanel = textPanel
+    self.iconsGroup = iconsGroup
+    self.line = line
+    self.icon = icon
+    self.msg = msg
+    self.color = color
+
+  def run(self):
+    self.textPanel.addLineTrackingIcon(
+      self.iconsGroup, 
+      self.line, 
+      self.icon, 
+      self.msg, 
+      self.color
+    )
+
+  def call(self):
+    if SwingUtilities.isEventDispatchThread():
+      self.run()
+    else:
+      SwingUtilities.invokeLater(self)
+
+
+
+def checkFile(pathName, code, background=False):
+
+  def check(pathName, code, textPanel):
     from pylint import lint
     reload(lint)
     from pylint.reporters import BaseReporter
     import astroid.builder
-
+  
     code = code.strip()
     if code.startswith("# encoding:"):
       code = code.replace("# encoding:","# e n c o d i n g:",1)
-    editor = composer.getCurrentEditor()
-    textPanel = editor.getSyntaxtHighlightTextComponent()
         
     class MyReporter(BaseReporter):
-      def __init__(self, composer):
+      def __init__(self):
         BaseReporter.__init__(self)
   
       def handle_message(self, msg):
@@ -91,8 +113,8 @@ def checkFile(pathName, code):
         else:
           icon = icon_warn
           color = Color.YELLOW.darker()
-        textPanel.addLineTrackingIcon("#quicklint",msg.line-1, icon, msg.msg, color)
-
+        AddLineTrackingIcon(textPanel, "#quicklint",msg.line-1, icon, msg.msg, color).call()
+  
     filename = FilePath(pathName)
     filename.source_code = code
     
@@ -101,12 +123,26 @@ def checkFile(pathName, code):
     args.extend(lint_options_quick)
     args.append(filename)
   
-    reporter = MyReporter(composer)
-    textPanel.removeTrackingIcons("#quicklint")
+    reporter = MyReporter()
     #t1= time.time()
     x = lint.Run(args, reporter=reporter, exit=False)
     #print "quick-lint: ",int((time.time()-t1)*1000)
     composer.getStatusbar().clear()
+
+  composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
+  if composer == None:
+    return
+  composer.getStatusbar().message("Running quick lint to %s..." % basename(pathName))
+  try:
+    #use_libs(join(dirname(__file__),"libs"),isglobal=True)
+    editor = composer.getCurrentEditor()
+    textPanel = editor.getSyntaxtHighlightTextComponent()
+    textPanel.removeTrackingIcons("#quicklint")
+
+    if background:
+      thread.start_new_thread(check,(pathName, code, textPanel))
+    else:
+      check(pathName, code, textPanel)
 
   except Exception, ex:
     gvsig.logger(str(ex))
