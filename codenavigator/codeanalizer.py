@@ -170,24 +170,11 @@ class CodeAnalyzer(object):
               else:
                 last = self.module.elements[-1]
                 if last.type == TYPE_IMPORT:
-                  last.elements.append(element)
+                  import_element = last
                 else:
-                  import_element = None
-                  if last.type == TYPE_CLASS:
-                    if indent > last.indent:
-                      if len(last.elements) >= 0:
-                        last = last.elements[-1]
-                        if len(last.elements) > 0 and last.elements[-1].type == TYPE_IMPORT:
-                          import_element = last.elements[-1]
-                  elif last.type == TYPE_FUNCTION:
-                    if indent > last.indent:
-                        if len(last.elements) > 0 and last.elements[-1].type == TYPE_IMPORT:
-                          import_element = last.elements[-1]
-                  
-                  if import_element==None:
-                    import_element = CodeElement(TYPE_IMPORT, "import", indent, lineno,fname=fname)
-                    last.elements.append(import_element)
-                  import_element.elements.append(element)
+                  import_element = CodeElement(TYPE_IMPORT, "import", indent, lineno,fname=fname)
+                  self.module.elements.append(import_element)
+              import_element.elements.append(element)
     
             elif pos==indent and line[pos:pos+7] == 'import ':
               element = CodeElement(TYPE_TEXT,"%5d: %s" % (lineno,line[pos:-1]),indent, lineno,fname=fname)
@@ -198,25 +185,12 @@ class CodeAnalyzer(object):
               else:
                 last = self.module.elements[-1]
                 if last.type == TYPE_IMPORT:
-                  last.elements.append(element)
+                  import_element = last
                 else:
-                  import_element = None
-                  if last.type == TYPE_CLASS:
-                    if indent > last.indent:
-                      if len(last.elements) >= 0:
-                        last = last.elements[-1]
-                        if len(last.elements) > 0 and last.elements[-1].type == TYPE_IMPORT:
-                          import_element = last.elements[-1]
-                  elif last.type == TYPE_FUNCTION:
-                    if indent > last.indent:
-                        if len(last.elements) > 0 and last.elements[-1].type == TYPE_IMPORT:
-                          import_element = last.elements[-1]
-                  
-                  if import_element==None:
-                    import_element = CodeElement(TYPE_IMPORT, "import", indent, lineno,fname=fname)
-                    last.elements.append(import_element)
-                  import_element.elements.append(element)
-
+                  import_element = CodeElement(TYPE_IMPORT, "import", indent, lineno,fname=fname)
+                  self.module.elements.append(import_element)
+              import_element.elements.append(element)
+    
             else:
               pos += 1
         pass
@@ -322,19 +296,16 @@ class CodeAnalyzer(object):
           if len(element2.elements)!=0:
             for element3 in element2.elements:
               out.write("      %s %r [lineno=%s, indent=%s]\n" % (element3.type,element3.name, element3.lineno, element3.indent))
-              if len(element3.elements)!=0:
-                for element4 in element3.elements:
-                  out.write("        %s %r [lineno=%s, indent=%s]\n" % (element4.type,element4.name, element4.lineno, element4.indent))
     return out.getvalue()
 
 def test0():
   analyzer = CodeAnalyzer()
-  analyzer.load(__file__)
+  analyzer.load(getResource(__file__))
   print analyzer.dump()
 
 def test1():
   analyzer = CodeAnalyzer()
-  analyzer.load(__file__,search="CodeElement")
+  analyzer.load(getResource(__file__),search="CodeElement")
   analyzer.removeEmptyElemens()
   print analyzer.dump()
 

@@ -24,7 +24,7 @@ class CodeNavigatorDialogAction(AbstractAction):
   def __init__(self):
     AbstractAction.__init__(self,"Code navigator")
     self.putValue(Action.ACTION_COMMAND_KEY, "CodeNavigator")
-    self.putValue(Action.SMALL_ICON, load_icon(join(dirname(__file__),"images","codeNavigator.png")))
+    self.putValue(Action.SMALL_ICON, load_icon((__file__,"images","codeNavigator.png")))
     self.putValue(Action.SHORT_DESCRIPTION, "Code navigator")
     self.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK ))
 

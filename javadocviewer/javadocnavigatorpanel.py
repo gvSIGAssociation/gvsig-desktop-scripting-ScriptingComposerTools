@@ -215,7 +215,7 @@ class Bookmarks(object):
     
   def save(self, fname=None):
     if fname == None:
-      fname = os.path.join(os.path.dirname(__file__),"bookmarks.xml")
+      fname = getResource(__file__,"bookmarks.xml")
     buffer = StringIO()
     self.writeNode(buffer, self.root)
     xml = buffer.getvalue().encode("utf-8")
@@ -241,7 +241,7 @@ class Bookmarks(object):
 
   def load(self, fname=None):
     if fname == None:
-      fname = os.path.join(os.path.dirname(__file__),"bookmarks.xml")
+      fname = getResource(__file__,"bookmarks.xml")
     if os.path.exists(fname):
       fin = open(fname,"r")
       d = xmltodic.parse(fin)
@@ -347,8 +347,8 @@ class BookmarksPanel(FormComponent):
     self.bookmarks = Bookmarks()
     self.treeBookmarks.setCellRenderer( 
       BookmarksCellRenderer(
-        self.load_icon(os.path.join(os.path.dirname(__file__),"images","folder.png")),
-        self.load_icon(os.path.join(os.path.dirname(__file__),"images","bookmark.png")),
+        self.load_icon(getResource(__file__,"images","folder.png")),
+        self.load_icon(getResource(__file__,"images","bookmark.png")),
       )
     )
     self.treeBookmarks.setModel(DefaultTreeModel(self.bookmarks.getRoot()))

@@ -21,12 +21,10 @@ import codeNavigator
 reload(codeNavigator)
 
 from codeNavigator import *
-from codeanalizer import MODE_TEXT,MODE_IDENTIFIER,MODE_CLASS,MODE_METHOD,MODE_FUNCTION
-
 
 class SearchReferencesPanel(FormPanel, Visitor):
   def __init__(self):
-    FormPanel.__init__(self,os.path.join(os.path.dirname(__file__),"searchReferences.xml"))
+    FormPanel.__init__(self,getResource(__file__,"searchReferences.xml"))
     self.composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
     self.navigator = None
     try:

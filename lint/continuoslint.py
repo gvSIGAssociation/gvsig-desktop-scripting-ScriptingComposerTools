@@ -63,7 +63,7 @@ class ContinuosLint(Thread):
       script = self.composer.getCurrentScript()
       if editor != None and script != None:
         fname = script.getResource(script.getId()+".py").getAbsolutePath()
-        checkFile(fname,editor.getJTextComponent().getText(), background=True)
+        checkFile(fname,editor.getJTextComponent().getText())
     finally:
       self.composer.getStatusbar().clear()
       self.processing = False

@@ -1,5 +1,6 @@
 
 from gvsig import *
+from gvsig import getResource
 
 from jarray import array
 from os.path import dirname, join
@@ -33,7 +34,7 @@ class ListThreadsItem:
 class ThreadList(FormPanel, Component):
   def __init__(self):
     #self.timerAutorefresh = javax.swing.Timer(5000,None)
-    self.load(File(join(dirname(__file__),"threadlist.xml")))
+    self.load(getResource(__file__,"threadlist.xml"))
     self.setPreferredSize(400,400)
     self.refresh()
     #self.timerAutorefresh.start()
@@ -82,7 +83,7 @@ class ThreadListAction(AbstractAction):
   def __init__(self):
     AbstractAction.__init__(self,"Thread list")
     self.putValue(Action.ACTION_COMMAND_KEY, "ThreadList");
-    self.putValue(Action.SMALL_ICON, load_icon(join(dirname(__file__),"threadlist.png")));
+    self.putValue(Action.SMALL_ICON, load_icon(getResource(__file__,"threadlist.png")));
     self.putValue(Action.SHORT_DESCRIPTION, "List running threads");
 
   def actionPerformed(self,e):

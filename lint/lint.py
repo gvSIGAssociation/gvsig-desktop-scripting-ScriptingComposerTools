@@ -54,8 +54,6 @@ def checkFile(pathName):
     return
   composer.getStatusbar().message("Running lint to %s..." % basename(pathName))
   try:
-    #use_libs(join(dirname(__file__),"libs"))
-    
     from pylint import lint
     from pylint.reporters import BaseReporter
     import astroid.builder
@@ -98,7 +96,7 @@ class LintAction(AbstractAction):
   def __init__(self):
     AbstractAction.__init__(self,"Lint")
     self.putValue(Action.ACTION_COMMAND_KEY, "Lint")
-    self.putValue(Action.SMALL_ICON, load_icon(join(dirname(__file__),"lint.png")))
+    self.putValue(Action.SMALL_ICON, load_icon(getResource(__file__,"lint.png")))
     self.putValue(Action.SHORT_DESCRIPTION, "Lint, check file syntax")
     #self.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK ))
 

@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 import gvsig
+from gvsig import getResource
 
 from os.path import dirname, join
 
@@ -25,7 +26,7 @@ class FontChooserAction(AbstractAction):
   def __init__(self):
     AbstractAction.__init__(self,"Font chooser")
     self.putValue(Action.ACTION_COMMAND_KEY, "FontChooser");
-    self.putValue(Action.SMALL_ICON, load_icon(join(dirname(__file__),"fontchooser.png")));
+    self.putValue(Action.SMALL_ICON, load_icon(getResource(__file__,"fontchooser.png")));
     self.putValue(Action.SHORT_DESCRIPTION, "Set the editor font");
 
   def actionPerformed(self,e):
