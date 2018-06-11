@@ -87,7 +87,8 @@ def checkFile(pathName):
     x = lint.Run(args, reporter=reporter, exit=False)
     #print "lint: ",int((time.time()-t1)*1000)
     
-  except Exception, ex:
+  except:
+    ex = sys.exc_info()[1]
     composer.getProblems().add("Error", "Can't execute lint", basename(pathName), 0, 0)
     composer.getDock().select(JScriptingComposer.DOCKED_PROBLEMS)
   composer.getStatusbar().clear()

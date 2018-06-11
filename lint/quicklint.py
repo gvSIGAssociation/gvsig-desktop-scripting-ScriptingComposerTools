@@ -106,8 +106,9 @@ def checkFile(pathName, code):
     #print "quick-lint: ",int((time.time()-t1)*1000)
     composer.getStatusbar().clear()
 
-  except Exception, ex:
-    gvsig.logger(str(ex))
+  except:
+    ex = sys.exc_info()[1]
+    gvsig.logger(str(ex), ex=ex)
     
 def main(*args):
   composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
