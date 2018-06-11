@@ -171,6 +171,7 @@ class ComposerGit(object):
       if password[-1] == "\n":
         password = password[:-1]
       config.setString("user", None, "password", password )
+      config.save()
     finally:
       self._close(git)
 
