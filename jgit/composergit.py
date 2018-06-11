@@ -10,6 +10,7 @@ import gvsig
 #
 
 import os
+import base64
 
 from java.io import File
 
