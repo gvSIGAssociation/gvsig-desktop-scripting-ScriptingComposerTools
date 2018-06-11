@@ -65,7 +65,7 @@ class PushParamsPanel(FormPanel,Component):
     FormPanel.__init__(self,getResource(__file__,"repo_push.xml"))
     self.__monitor = PushMonitor(git, self)
     self.pgbPushMonitor.setVisible(False)
-    self.setPreferredSize(300,120)
+    self.setPreferredSize(300,140)
     self.txtUserName.setText(git.getUserName())
     password = git.getPassword()
     if password!=None:
