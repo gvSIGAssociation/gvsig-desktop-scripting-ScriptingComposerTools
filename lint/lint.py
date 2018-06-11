@@ -57,6 +57,7 @@ def checkFile(pathName):
     from pylint import lint
     from pylint.reporters import BaseReporter
     import astroid.builder
+    
 
     class MyReporter(BaseReporter):
       def __init__(self, composer):

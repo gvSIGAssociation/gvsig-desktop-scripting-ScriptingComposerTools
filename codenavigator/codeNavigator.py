@@ -7,6 +7,8 @@ import copy
 from StringIO import StringIO
 from os.path import basename, dirname, join
 
+from javax.swing import SwingUtilities
+from java.lang import Runnable
 
 from java.awt.event import MouseEvent
 from java.awt.event import ActionListener
@@ -19,8 +21,12 @@ from javax.swing.event import ChangeListener
 from javax.swing.event import TreeModelEvent
 from javax.swing.tree import TreePath
 
+from org.gvsig.scripting import ScriptingLocator
 from org.gvsig.scripting.swing.api import ScriptingSwingLocator, JScriptingComposer
 from org.gvsig.tools.swing.api import Component 
+from java.io import File
+import codeanalizer
+reload(codeanalizer)
 
 from codeanalizer import TYPE_ROOT
 from codeanalizer import TYPE_FOLDER
@@ -89,7 +95,7 @@ class NavigatorCellRenderer(DefaultTreeCellRenderer):
     
   def getTreeCellRendererComponent(self, tree, value, selected, expanded, isLeaf, row, focused):
     c = DefaultTreeCellRenderer.getTreeCellRendererComponent(self, tree, value, selected, expanded, isLeaf, row, focused)
-    if isinstance(value,CodeElement):
+    if isinstance(value,codeanalizer.CodeElement):
       if value.type == TYPE_ROOT:
         icon = self.icon_root
       elif value.type == TYPE_FOLDER:
@@ -191,10 +197,10 @@ class CodeNavigatorDialog(FormPanel):
     element = path.getLastPathComponent()
     if element == None:
       return
-    self.goToLine(element.lineno+1)
+    self.goToLine(element.fname, element.lineno+1)
     self.hide()
     
-  def goToLine(self, lineno):
+  def goToLine(self, pathname, lineno):
     if self.editor == None:
       return
     self.editor.gotoline(lineno)
@@ -290,14 +296,31 @@ class CodeNavigatorPanel(FormPanel,ChangeListener,ActionListener,Component):
       element = path.getLastPathComponent()
       if element == None:
         return
-      self.goToLine(element.lineno+1)
+      self.goToLine(element.fname, element.lineno)
     
-  def goToLine(self, lineno):
-    if self.editor == None:
+  def goToLine(self, pathname, lineno):
+    composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
+    manager = ScriptingLocator.getManager()
+    f = File(pathname)
+    script = manager.getUnit(f)
+    if script == None:
+      folder = manager.getFolder(f.getParentFile())
+      script = manager.createExternalFile(folder,f.getName())
+    composer.scriptEdit(script)  
+    editor = self.composer.getDock().getSelected(JScriptingComposer.Dock.DOCK_CENTER).getComponent()
+    if editor == None:
       return
-    self.editor.gotoline(lineno)
-    self.editor.getJTextComponent().requestFocus()
+    SwingUtilities.invokeLater(DelayedGoToLine(editor,lineno))
     
+class DelayedGoToLine(Runnable):
+  def __init__(self, editor, lineno):
+    self.editor = editor
+    self.lineno = lineno
+
+  def run(self):
+    self.editor.gotoline(self.lineno)
+    self.editor.getJTextComponent().requestFocus()
+  
   
 def test2():
   p = CodeNavigatorPanel(composer = ScriptingSwingLocator.getUIManager().getActiveComposer())

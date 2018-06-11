@@ -19,8 +19,11 @@ from org.gvsig.scripting import ScriptingScript
 
 import codeNavigator
 reload(codeNavigator)
+import codeanalizer
+reload(codeanalizer)
 
 from codeNavigator import *
+from codeanalizer import *
 
 class SearchReferencesPanel(FormPanel, Visitor):
   def __init__(self):
@@ -125,9 +128,9 @@ class SearchReferencesPanel(FormPanel, Visitor):
     self.hide()
 
   def searchReferences(self, unit):
+    mode = self.getMode()
+    search = self.getSearchText()
     try:
-      mode = self.getMode()
-      search = self.getSearchText()
       self.composer.getStatusbar().message("Searching...")
       if isinstance(unit,ScriptingScript ):
         fname = unit.getResource(unit.getId()+".py").getAbsolutePath()
@@ -135,11 +138,14 @@ class SearchReferencesPanel(FormPanel, Visitor):
         analyzer = CodeAnalyzer()
         analyzer.load(fname,search=search, inputFile=inputFile)
         analyzer.removeEmptyElemens()
+        module = analyzer.getModule()
+        module.name = self.getPath(File(module.fname))
         model = self.navigator.getModel()
-        model.getRoot().addChild(analyzer.getModule())
+        model.getRoot().addChild(module)
         model.fireChanged()
       else:
         unit.accept(self)
+      self.navigator.expandAll()
       self.composer.getStatusbar().clear()
         
     except Exception, ex:
@@ -147,7 +153,10 @@ class SearchReferencesPanel(FormPanel, Visitor):
       
   def getPath(self,unit):
     root = ScriptingLocator.getManager().getUserFolder()
-    p1 = unit.getFile().getCanonicalPath()
+    if isinstance(unit,File):
+      p1 = unit.getCanonicalPath()
+    else:
+      p1 = unit.getFile().getCanonicalPath()
     p2 = root.getFile().getCanonicalPath()
     if p1.startswith(p2):
       return p1[len(p2)+1:]
@@ -170,6 +179,7 @@ class SearchReferencesPanel(FormPanel, Visitor):
       analyzer.removeEmptyElemens()
       module = analyzer.getModule()
       if module.has_children():
+        module.name = self.getPath(File(module.fname))
         model = self.navigator.getModel()
         model.getRoot().addChild(module)
         model.fireChanged()

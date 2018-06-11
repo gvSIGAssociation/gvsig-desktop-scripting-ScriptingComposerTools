@@ -9,10 +9,11 @@ version =
 main = main
 Lang = python
 enable = true
-usePyclasspath = false
-isolationGroup = gvsig-script-composer
+useSysPath = true
+isolationGroup = gvsig-script-composer-unsafe
 
 [properties]
-autorun.group.name=gvsig-script-composer
+autorun.group.name=gvsig-script-composer-unsafe
 autorun.group.order=10000
-autorun.order=10000
+autorun.order=8000
+

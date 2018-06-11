@@ -25,9 +25,9 @@ from repo_utils import warning, message
 
 from org.gvsig.scripting.swing.api import JScriptingComposer
 
+import diff2html
 
 def diffOutput2html_use_diff2html(diffout):
-  import diff2html
   html_hdr = """<!DOCTYPE html>
 <html lang="en" dir="ltr"
     xmlns:dc="http://purl.org/dc/terms/">

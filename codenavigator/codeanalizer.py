@@ -26,7 +26,7 @@ class CodeElement(object):
     self.name = name
     self.indent = indent
     self.type = type
-    self.lineno = lineno
+    self.lineno = lineno+1
     self.elements = list()
     self.fname = fname
 
@@ -161,7 +161,7 @@ class CodeAnalyzer(object):
               pos += 6 + len(element.name)
               self.module.elements.append(element)
     
-            elif pos==indent and line[pos:pos+5] == 'from ':
+            elif pos==indent and line[pos:pos+5] == 'from ' and search == None:
               element = CodeElement(TYPE_TEXT,"%5d: %s" % (lineno,line[pos:-1]),indent, lineno,fname=fname)
               pos += 6
               if len(self.module.elements) == 0:
@@ -176,7 +176,7 @@ class CodeAnalyzer(object):
                   self.module.elements.append(import_element)
               import_element.elements.append(element)
     
-            elif pos==indent and line[pos:pos+7] == 'import ':
+            elif pos==indent and line[pos:pos+7] == 'import ' and search == None:
               element = CodeElement(TYPE_TEXT,"%5d: %s" % (lineno,line[pos:-1]),indent, lineno,fname=fname)
               pos += 6
               if len(self.module.elements) == 0:
@@ -204,7 +204,8 @@ class CodeAnalyzer(object):
       return self.module
     last = self.module.elements[-1]
     if len(last.elements)>0:
-      last = last.elements[-1]
+      if last.elements[-1].type != TYPE_TEXT:
+        last = last.elements[-1]
     return last
     
   def filter(self, search, element=None, mode=MODE_TEXT):

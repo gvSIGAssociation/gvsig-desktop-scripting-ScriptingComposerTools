@@ -70,7 +70,7 @@ def checkFile(pathName, code):
     reload(lint)
     from pylint.reporters import BaseReporter
     import astroid.builder
-
+    
     code = code.strip()
     if code.startswith("# encoding:"):
       code = code.replace("# encoding:","# e n c o d i n g:",1)
