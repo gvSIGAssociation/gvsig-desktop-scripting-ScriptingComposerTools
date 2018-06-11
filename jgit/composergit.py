@@ -147,7 +147,29 @@ class ComposerGit(object):
     git = self._open()
     try:
       config = git.getRepository().getConfig()
-      return config.getString("user", None, "name")
+      return config.getString("user", None, "username")
+    finally:
+      self._close(git)
+
+  def getPassword(self):
+    git = self._open()
+    try:
+      config = git.getRepository().getConfig()
+      password = config.getString("user", None, "password")
+      if password in ("",None):
+        return None
+      return base64.decodestring(password)
+    finally:
+      self._close(git)
+
+  def setPassword(self, password):
+    git = self._open()
+    try:
+      config = git.getRepository().getConfig()
+      password = base64.encodestring(password)
+      if password[-1] == "\n":
+        password = password[:-1]
+      config.setString("user", None, "password", password )
     finally:
       self._close(git)
 

@@ -56,6 +56,8 @@ class PushMonitor(ProgressMonitor, Runnable):
     self.__panel.pgbPushMonitor.setValue(10)
     self.__panel.pgbPushMonitor.setStringPainted(True)
     self.__panel.pgbPushMonitor.setString("Finished")
+    if self.__panel.rememberPassword():
+      self.__git.setPassword(self.__panel.getPassword())
     
 class PushParamsPanel(FormPanel,Component):
         
@@ -65,6 +67,9 @@ class PushParamsPanel(FormPanel,Component):
     self.pgbPushMonitor.setVisible(False)
     self.setPreferredSize(300,120)
     self.txtUserName.setText(git.getUserName())
+    password = git.getPassword()
+    if password!=None:
+      self.txtPassword.setText(password)
     self.txtPassword.requestFocusInWindow()
 
 
@@ -74,6 +79,9 @@ class PushParamsPanel(FormPanel,Component):
   def getPassword(self):
     return self.txtPassword.getText()
 
+  def rememberPassword(self):
+    return self.chkRememberPassword.isSelected()
+    
   def showWindow(self, title="Git - Push"):
     manager = ScriptingSwingLocator.getUIManager()
     manager.showWindow(self.asJComponent(),title)
