@@ -1,0 +1,5 @@
+[javadocset]
+name = Apache SIS
+url = http://sis.apache.org/apidocs/
+enabled = false
+

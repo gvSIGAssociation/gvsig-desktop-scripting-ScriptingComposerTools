@@ -1,0 +1,5 @@
+[javadocset]
+name = GeoTools
+url = http://docs.geotools.org/stable/javadocs/
+enabled = false
+
