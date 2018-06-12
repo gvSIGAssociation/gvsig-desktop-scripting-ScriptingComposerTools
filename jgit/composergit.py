@@ -148,6 +148,22 @@ class ComposerGit(object):
     git = self._open()
     try:
       config = git.getRepository().getConfig()
+      return config.getString("user", None, "name")
+    finally:
+      self._close(git)
+
+  def getUserMail(self):
+    git = self._open()
+    try:
+      config = git.getRepository().getConfig()
+      return config.getString("user", None, "email")
+    finally:
+      self._close(git)
+
+  def getUserId(self):
+    git = self._open()
+    try:
+      config = git.getRepository().getConfig()
       return config.getString("user", None, "username")
     finally:
       self._close(git)
@@ -171,6 +187,33 @@ class ComposerGit(object):
       if password[-1] == "\n":
         password = password[:-1]
       config.setString("user", None, "password", password )
+      config.save()
+    finally:
+      self._close(git)
+
+  def setUserId(self, userId):
+    git = self._open()
+    try:
+      config = git.getRepository().getConfig()
+      config.setString("user", None, "username", userId )
+      config.save()
+    finally:
+      self._close(git)
+
+  def setUserName(self, userName):
+    git = self._open()
+    try:
+      config = git.getRepository().getConfig()
+      config.setString("user", None, "name", userName )
+      config.save()
+    finally:
+      self._close(git)
+
+  def setUserMail(self, email):
+    git = self._open()
+    try:
+      config = git.getRepository().getConfig()
+      config.setString("user", None, "email", email )
       config.save()
     finally:
       self._close(git)

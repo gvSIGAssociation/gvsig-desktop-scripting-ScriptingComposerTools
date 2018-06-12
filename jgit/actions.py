@@ -128,7 +128,7 @@ class GitInfoAction(AbstractAction):
   def __init__(self):
     AbstractAction.__init__(self,"Show repository information")
     self.putValue(Action.ACTION_COMMAND_KEY, "GitInfo")
-    #self.putValue(Action.SMALL_ICON, load_icon(getResource(__file__,"images","gitinfo.png")))
+    self.putValue(Action.SMALL_ICON, load_icon(getResource(__file__,"images","git-info.png")))
     #self.putValue(Action.SHORT_DESCRIPTION, "Show repository information.")
 
   def actionPerformed(self,e):

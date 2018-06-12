@@ -27,7 +27,7 @@ class PushMonitor(ProgressMonitor, Runnable):
     self.__totalTasks = 0
     
   def run(self):
-    status = self.__git.push(self.__panel.getUserName(), self.__panel.getPassword(), monitor=self)
+    status = self.__git.push(self.__panel.getUserId(), self.__panel.getPassword(), monitor=self)
     self.__panel.pgbPushMonitor.setString("Finished: %s" % status)
     if status ==  "REJECTED_NONFASTFORWARD":
       message('The local copy needs to be updated in order to send the changes to the remote server.\nRun "pull" and fly to try.')
@@ -58,6 +58,7 @@ class PushMonitor(ProgressMonitor, Runnable):
     self.__panel.pgbPushMonitor.setString("Finished")
     if self.__panel.rememberPassword():
       self.__git.setPassword(self.__panel.getPassword())
+      self.__git.setUserId(self.__panel.getUserId())
     
 class PushParamsPanel(FormPanel,Component):
         
@@ -66,14 +67,14 @@ class PushParamsPanel(FormPanel,Component):
     self.__monitor = PushMonitor(git, self)
     self.pgbPushMonitor.setVisible(False)
     self.setPreferredSize(400,140)
-    self.txtUserName.setText(git.getUserName())
+    self.txtUserName.setText(git.getUserId())
     password = git.getPassword()
     if password!=None:
       self.txtPassword.setText(password)
     self.txtPassword.requestFocusInWindow()
 
 
-  def getUserName(self):
+  def getUserId(self):
     return self.txtUserName.getText()
 
   def getPassword(self):

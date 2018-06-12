@@ -19,15 +19,30 @@ class RepoInfoPanel(FormPanel):
     self.txtRepoPath.setText(git.getRepoPath())
     self.txtWorkingPath.setText(git.getWorkingPath())
     self.txtRemoteURL.setText(git.getRemoteURL())
+    self.txtUserName.setText(git.getUserName())    
+    self.txtUserId.setText(git.getUserId())
+    self.txtUserMail.setText(git.getUserMail())
 
-
+  def getUserName(self):
+    return self.txtUserName.getText()
+    
+  def getUserId(self):
+    return self.txtUserId.getText()
+    
+  def getUserMail(self):
+    return self.txtUserMail.getText()
+    
 def repo_info():
   git = getSelectedGit()
   if git == None:
     return 
   panel = RepoInfoPanel(git)
-  dialog = SimpleDialog(panel, WindowManager_v2.BUTTONS_OK)
+  dialog = SimpleDialog(panel, WindowManager_v2.BUTTONS_OK_CANCEL)
   dialog.showModal()
+  if dialog.isOk():
+    git.setUserName(panel.getUserName())
+    git.setUserId(panel.getUserId())
+    git.setUserMail(panel.getUserMail())
 
 
 def main(*args):

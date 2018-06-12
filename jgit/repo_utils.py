@@ -11,13 +11,15 @@ from org.gvsig.scripting import ScriptingFolder
 from org.gvsig.tools.swing.api import ToolsSwingLocator
 from org.gvsig.scripting.impl import UserFolder
 
+from org.gvsig.tools.swing.impl.windowmanager import DefaultWindowManager
+
 import composergit
 reload(composergit)
 from composergit import ComposerGit as Git
 
 from java.io import File
 
-windowManager = ToolsSwingLocator.getWindowManager()
+windowManager = DefaultWindowManager()
 
 def getComposer():
   composer = ScriptingSwingLocator.getUIManager().getActiveComposer()

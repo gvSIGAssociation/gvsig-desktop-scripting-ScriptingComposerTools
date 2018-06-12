@@ -30,6 +30,8 @@ reload(repo_pull)
 import repo_diff
 reload(repo_diff)
 
+import repo_info
+
 from org.gvsig.scripting import ScriptingLocator
 
 from java.io import File
@@ -139,6 +141,9 @@ class ShowChangesPanel(FormPanel,Component):
     change = self.__last_status[selectedRows[0]]
     repo_diff.repo_diff(change.getWorkingPath(), git=self.__git)
 
+  def btnGitInfo_click(self, *args):
+    repo_info.repo_info()
+    
   def btnEdit_click(self, *args):
     selectedRows = self.tableChanges.getSelectedRows()
     if len(selectedRows)<1:
