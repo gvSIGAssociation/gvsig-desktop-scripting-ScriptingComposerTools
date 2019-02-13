@@ -17,6 +17,8 @@ from addons.ScriptingComposerTools import consolejython
 from addons.ScriptingComposerTools import useplugin
 
 def main(*args):
+  script.registerDataFolder("ScriptingComposerTools")
+
   abeille.selfRegister()
   codenavigator.selfRegister()
   classbrowser.selfRegister()

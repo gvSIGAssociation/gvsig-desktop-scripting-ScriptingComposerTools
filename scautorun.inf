@@ -13,6 +13,7 @@ usePyclasspath = false
 isolationGroup = gvsig-script-composer
 
 [properties]
-autorun.group.name=gvsig-script-composer
-autorun.group.order=10000
-autorun.order=10000
+autorun.group.name = gvsig-script-composer
+autorun.group.order = 10000
+autorun.order = 10000
+
