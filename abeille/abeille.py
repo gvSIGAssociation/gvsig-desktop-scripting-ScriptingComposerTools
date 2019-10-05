@@ -23,25 +23,34 @@ import javax.swing.ImageIcon
 import javax.imageio.ImageIO
 from javax.swing import AbstractAction, Action
 
-def updateUserDataProperties():
+def updateUserDataProperties(folder = None):
   fis = None
   fos = None
   try:
-    composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
-    try:
-      editor = composer.getDock().getSelected(JScriptingComposer.Dock.DOCK_CENTER).getComponent()
-    except:
-      editor = None    
-    if editor == None:
-      return
-    folder = editor.getUnit().getFile().getParent()
+    if folder == None:
+      composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
+      try:
+        editor = composer.getDock().getSelected(JScriptingComposer.Dock.DOCK_CENTER).getComponent()
+      except:
+        editor = None    
+      if editor == None:
+        return
+      folder = editor.getUnit().getFile().getParent()
+    folder = folder.getAbsolutePath()
+    print "updateUserDataProperties: Folder=%r" % folder
     home = os.path.expanduser("~")
     abeillehome = os.path.join(home,".abeilleforms13")
     if not os.path.isdir(abeillehome):
+      #print "updateUserDataProperties: mkdir %r" % abeillehome
       os.mkdir(abeillehome)
-    if not os.path.isfile(os.path.join(abeillehome,"userdata.properties")):
-      shutil.copyfile(getResource(__file__,"data","userdata.properties"), abeillehome)
+    target_user_data = os.path.join(abeillehome, "userdata.properties")
+    #print "updateUserDataProperties: target user.data  %r" % target_user_data
+    if not os.path.isfile(target_user_data):
+      src_user_data = getResource(__file__,"data","userdata.properties")
+      print "updateUserDataProperties: copy  %r to %r" % (src_user_data,target_user_data)
+      shutil.copyfile(src_user_data, target_user_data)
     lastProject = getResource(__file__,"data","abeille.jfpr")
+    print "updateUserDataProperties: lastProject=%r" % lastProject
     prop = Properties()
     fis = FileInputStream(os.path.join(abeillehome,"userdata.properties"))
     prop .load(fis)
@@ -63,8 +72,8 @@ def updateUserDataProperties():
     if fos!=None:
       fos.close()
       
-def launchAbeille():
-  updateUserDataProperties()
+def launchAbeille(folder = None):
+  updateUserDataProperties(folder)
   java = os.path.join( System.getProperties().getProperty("java.home"), "bin", "java")
   pluginsManager = PluginsLocator.getManager()
   plugin = pluginsManager.getPlugin(ScriptingExtension)
