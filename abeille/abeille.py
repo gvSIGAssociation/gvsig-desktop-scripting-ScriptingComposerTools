@@ -31,11 +31,12 @@ def updateUserDataProperties(folder = None):
       composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
       try:
         editor = composer.getDock().getSelected(JScriptingComposer.Dock.DOCK_CENTER).getComponent()
+        
       except:
-        editor = None    
+        editor = None
       if editor == None:
         return
-      folder = editor.getUnit().getFile().getParent()
+      folder = editor.getUnit().getFile().getParentFile()
     folder = folder.getAbsolutePath()
     print "updateUserDataProperties: Folder=%r" % folder
     home = os.path.expanduser("~")
