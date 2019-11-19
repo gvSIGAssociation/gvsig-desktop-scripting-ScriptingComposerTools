@@ -4,6 +4,7 @@ import gvsig
 from gvsig import getResource
 from gvsig.libs.formpanel import load_icon
 
+from org.gvsig.tools.swing.api import ToolsSwingLocator
 from javax.swing import JScrollPane
 from javax.swing import Action
 from org.gvsig.scripting.swing.api import JScriptingComposer
@@ -25,6 +26,9 @@ class Console(Component):
     self.__console.errorColor = Color(0x18,0x18,0xb2)        
     self.__console.output.setCaretColor(Color(0xb2,0xb2,0xb2))
     self.__console.doc.remove(0, self.__console.doc.length)
+    
+    ToolsSwingLocator.getToolsSwingManager().setDefaultPopupMenu(self.__console.output)
+    
     for line in "\n".join(console.console.Console.BANNER):
       self.__console.write(line)
     self.__console.printPrompt()
