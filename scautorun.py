@@ -8,7 +8,7 @@ from addons.ScriptingComposerTools import abeille
 from addons.ScriptingComposerTools import javadocviewer
 from addons.ScriptingComposerTools import editors
 from addons.ScriptingComposerTools import fontchooser
-from addons.ScriptingComposerTools import rstpreview
+from addons.ScriptingComposerTools import markuptextpreview
 from addons.ScriptingComposerTools import loadlayer
 from addons.ScriptingComposerTools import fileexplorer
 from addons.ScriptingComposerTools import jgit
@@ -26,7 +26,7 @@ def main(*args):
   javadocviewer.selfRegister()
   editors.selfRegister()
   fontchooser.selfRegister()
-  rstpreview.selfRegister()
+  markuptextpreview.selfRegister()
   loadlayer.selfRegister()
   fileexplorer.selfRegister()
   jgit.selfRegister()

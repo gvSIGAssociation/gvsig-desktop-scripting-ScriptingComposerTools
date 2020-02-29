@@ -1,14 +1,12 @@
-[script]
+[Script]
 enable = true
+main = main
+Lang = python
 
 [Unit]
 type = Script
-name = rstpreview
+name = markdown
 description = 
 createdBy = 
 version = 
-
-[Script]
-main = main
-Lang = python
 

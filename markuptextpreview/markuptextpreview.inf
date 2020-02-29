@@ -3,7 +3,7 @@ enable = true
 
 [Unit]
 type = Script
-name = __init__
+name = markuptextpreview
 description = 
 createdBy = 
 version = 
@@ -11,4 +11,5 @@ version =
 [Script]
 main = main
 Lang = python
+enable = true
 
