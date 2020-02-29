@@ -86,6 +86,16 @@ class MarkupTextPreviewAction(AbstractAction):
     f.write(html)
     f.close()
     
+    #
+    # Molaria poder generar tambien PDF directamente desde el IDE de scripting.
+    # En el siguiente enlace cuenta como hacerlo usando itext.
+    # Generaria otra herramienta (Herramientas->Generar PDF) copiada de
+    # esta que genere el html y lo convierta a PDF junto al fichero fuente
+    # Presentandolo usando el visor de PDFs en lugar del HTML Browser.
+    #
+    # https://stackoverflow.com/questions/46791708/convert-html-with-images-to-pdf-using-itext
+    #
+        
     dockPanel = composer.getDock().get("#MarkupTextPreview")
     if dockPanel == None:
       browser = ToolsSwingLocator.getToolsSwingManager().createJWebBrowser()
