@@ -74,9 +74,9 @@ class MarkupTextPreviewAction(AbstractAction):
     markuptext = editor.getJTextComponent().getText()
     file_ext = os.path.splitext(getFile().getName())[1].lower()
     if file_ext == ".md":
-      html = markdown.toHtml(markuptext, getFile().getAbsolutePath()) 
+      html = markdown.toHtml(markuptext, getFile().getAbsolutePath(), allowgui=True) 
     elif file_ext == ".rst":
-      html = restructuredtext.toHtml(markuptext, getFile().getAbsolutePath()) 
+      html = restructuredtext.toHtml(markuptext, getFile().getAbsolutePath(), **kwargs) 
     elif file_ext in (".htm","html") :
       html = markuptext
     else:

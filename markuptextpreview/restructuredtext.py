@@ -40,7 +40,7 @@ def fixurls(rest,prefix):
     rest=out.getvalue()
   return rest  
 
-def toHtml(markuptext, pathname):
+def toHtml(markuptext, pathname, **kwargs):
   markuptext = fixurls(markuptext,os.path.dirname(pathname)+"/")
   html = publish_string( source=markuptext, source_path=os.path.basename(pathname), writer_name="html" )
   return html

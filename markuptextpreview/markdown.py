@@ -44,6 +44,9 @@ class ImageProcessVisitor(Visitor):
     
   def hasAbsolutePaths(self):
     return self.absolutePaths
+
+  def setFolder(self, folder):
+    self.folder = folder
     
   def visit(self, node):
     if isinstance(node,Image):
@@ -115,6 +118,7 @@ def toHtml(markdown, mdpathname, **kwargs):
             text = '<div style="page-break-after: always"></div>\n'
           else:
             text = loadMDFile(folder, includeFile)
+            imageProcess.setFolder(os.path.dirname(os.path.join(folder, includeFile)))
           if includeFile.endswith(".md") :
             includeDoc = parser.parse(text)
             imageProcess.visit(includeDoc)
@@ -136,6 +140,16 @@ def toHtml(markdown, mdpathname, **kwargs):
 <html>
 <head>
 <meta charset=\"UTF-8\">
+<style>
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  page-break-before: auto; /* 'always,' 'avoid,' 'left,' 'inherit,' or 'right' */
+  page-break-after: auto; /* 'always,' 'avoid,' 'left,' 'inherit,' or 'right' */
+  page-break-inside: avoid; /* or 'auto' */
+}
+</style>
 </head>
 <body>
 """ + html + """
