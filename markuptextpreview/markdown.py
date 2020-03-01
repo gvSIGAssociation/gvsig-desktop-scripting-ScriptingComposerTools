@@ -20,6 +20,7 @@ from org.gvsig.scripting.swing.api import ScriptingSwingLocator, JScriptingCompo
 from com.vladsch.flexmark.html import HtmlRenderer
 from com.vladsch.flexmark.parser import Parser
 from com.vladsch.flexmark.util.data import MutableDataSet
+
 from com.vladsch.flexmark.ext.autolink import AutolinkExtension
 from com.vladsch.flexmark.ext.jekyll.tag import JekyllTag
 from com.vladsch.flexmark.ext.jekyll.tag import JekyllTagExtension
@@ -31,6 +32,16 @@ from com.vladsch.flexmark.ext.footnotes import FootnoteExtension
 from com.vladsch.flexmark.ext.toc import TocExtension
 from com.vladsch.flexmark.ext.typographic import TypographicExtension
 from com.vladsch.flexmark.pdf.converter import PdfConverterExtension
+from com.vladsch.flexmark.ext.emoji import EmojiExtension
+from com.vladsch.flexmark.ext.definition import DefinitionExtension
+from com.vladsch.flexmark.ext.gfm.issues import GfmIssuesExtension
+from com.vladsch.flexmark.ext.gfm.strikethrough import StrikethroughExtension
+from com.vladsch.flexmark.ext.gfm.tasklist import TaskListExtension
+from com.vladsch.flexmark.ext.gfm.users import GfmUsersExtension
+from com.vladsch.flexmark.ext.gitlab import GitLabExtension
+from com.vladsch.flexmark.ext.xwiki.macros import MacroExtension
+from com.vladsch.flexmark.ext.attributes import AttributesExtension
+from com.vladsch.flexmark.ext.yaml.front.matter import YamlFrontMatterExtension
 
 from com.vladsch.flexmark.ast import Image
 from com.vladsch.flexmark.util.ast import VisitHandler, Visitor
@@ -122,12 +133,26 @@ def toHtml(markdown, pathname, **kwargs):
      AdmonitionExtension.create(),
      FootnoteExtension.create(),
      TocExtension.create(),
-     TypographicExtension.create()
+     TypographicExtension.create(),
+     EmojiExtension.create(),
+     DefinitionExtension.create(),
+     GfmIssuesExtension.create(),
+     StrikethroughExtension.create(),
+     TaskListExtension.create(),
+     GfmUsersExtension.create(),
+     GitLabExtension.create(),
+     MacroExtension.create(), # https://extensions.xwiki.org/xwiki/bin/view/Extension/Markdown%20Syntax%201.2#HMacroSyntax
+     AttributesExtension.create(),
+     YamlFrontMatterExtension.create()
     ]
   )
   options.set(JekyllTagExtension.ENABLE_INLINE_TAGS, True)
   options.set(JekyllTagExtension.ENABLE_BLOCK_TAGS, True)
   options.set(JekyllTagExtension.ENABLE_RENDERING, False)
+  #options.set(EmojiExtension.ROOT_IMAGE_PATH, "/img/")
+  options.set(GfmIssuesExtension.GIT_HUB_ISSUES_URL_ROOT,"https://redmine.gvsig.net/redmine/issues/")
+  options.set(GitLabExtension.RENDER_BLOCK_MATH,False)
+  options.set(GitLabExtension.RENDER_BLOCK_MERMAID,False)
 
   parser = Parser.builder(options).build()
   renderer = HtmlRenderer.builder(options).build()
@@ -207,6 +232,19 @@ def test(*args):
   browser.location(temp_html.toURI().toURL())
 
 def main(*args):
+  """
+  Ejemplo de insercion de una imagen muy grande que se redimensiona al
+  tamaño adecuado para que quepa en la pagina (650).
+![Menu de conexión al espacio de trabajo](importacion_datos_files/menu_conexion_espacio_trabajo.png){ width=650 }  
+
+  Estaria bien tener herramientas como:
+  - Insertar imagen (que seleccionamos un fichero imagen, el alt, el caption, with y height y la inserte)  
+  - Editar imagen (este para nota, siempre se puede eliminar y volver a insertar)
+  - Incluir fichero
+  - asignar encoding
+  - Que al cargar md lea el encoding
+
+"""
   test()
   
   
