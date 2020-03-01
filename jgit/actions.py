@@ -11,6 +11,7 @@ from org.gvsig.scripting.swing.api import ScriptingSwingLocator
 from javax.swing import KeyStroke
 from java.awt.event import InputEvent
 from javax.swing import AbstractAction
+from repo_utils import Git, getComposer, getSelectedGit, confirm
 
 import repo_show_changes
 reload(repo_show_changes)
@@ -38,6 +39,9 @@ reload(repo_show_log)
 
 import repo_diff
 reload(repo_diff)
+
+import repo_reset
+reload(repo_reset)
 
 class ShowChangesAction(AbstractAction):
 
@@ -77,6 +81,18 @@ class GitInitAction(AbstractAction):
 
   def actionPerformed(self,e):
     repo_init.repo_init()
+  
+  def isEnabled(self):
+    return True
+
+class GitResetAction(AbstractAction):
+
+  def __init__(self):
+    AbstractAction.__init__(self,"Reset...")
+    self.putValue(Action.ACTION_COMMAND_KEY, "GitReset")
+
+  def actionPerformed(self,e):
+    repo_reset.repo_reset()
   
   def isEnabled(self):
     return True
@@ -165,6 +181,29 @@ class GitDiffAction(AbstractAction):
   def isEnabled(self):
     return True
     
+class GitDeleteLocalRepositoryAction(AbstractAction):
+
+  def __init__(self):
+    AbstractAction.__init__(self,"Delete local repository")
+    self.putValue(Action.ACTION_COMMAND_KEY, "GitDeleteLocalRepository")
+
+  def actionPerformed(self,e):
+    composer = getComposer();
+    git = getSelectedGit()
+    if git == None:
+      composer.msgbox(
+        "Git - Delete local repository",
+        "Select a folder in tree with a Git repository asssocite to it."
+      )
+      return
+    if not confirm("Are you sure to delete local repository '%s'?" % git.getRepoName()):
+      return
+    import shutil
+    shutil.rmtree(git.getRepoPath())
+    
+  def isEnabled(self):
+    return True
+    
 def selfRegister():
   i18nManager = ToolsLocator.getI18nManager()
   manager = ScriptingSwingLocator.getUIManager()
@@ -180,6 +219,12 @@ def selfRegister():
 
   gitPull = GitPullAction()
   manager.addComposerMenu(i18nManager.getTranslation("Tools")+"/Git",gitPull)
+
+  gitReset = GitResetAction()
+  manager.addComposerMenu(i18nManager.getTranslation("Tools")+"/Git",gitReset)
+
+  gitDeleteLocalRepository = GitDeleteLocalRepositoryAction()
+  manager.addComposerMenu(i18nManager.getTranslation("Tools")+"/Git",gitDeleteLocalRepository)
 
   gitIgnore = GitIgnoreAction()
   manager.addComposerMenu(i18nManager.getTranslation("Tools")+"/Git",gitIgnore)

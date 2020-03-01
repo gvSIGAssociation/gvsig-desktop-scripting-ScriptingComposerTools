@@ -30,7 +30,9 @@ class PullMonitor(ProgressMonitor, Runnable):
   def run(self):
     
     try:
-      status = self.__git.pull(self.__panel.getRemoteBranchName(), self.__panel.getMergeStrategy(), monitor=self)
+      strategy = str(self.__panel.getMergeStrategy())
+      print "STRATEGY: [%s] %s" % (repr(strategy),type(strategy))
+      status = self.__git.pull(self.__panel.getRemoteBranchName(), strategy, monitor=self)
       self.__panel.pgbMonitor.setString("Finished: %s" % status)
       #if status ==  "REJECTED_NONFASTFORWARD":
       #  message('The local copy needs to be updated in order to send the changes to the remote server.\nRun "pull" and fly to try.')

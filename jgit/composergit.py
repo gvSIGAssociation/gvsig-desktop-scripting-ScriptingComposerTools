@@ -16,6 +16,7 @@ from java.io import File
 
 from org.eclipse.jgit.storage.file import FileRepositoryBuilder
 from org.eclipse.jgit.api import Git
+from org.eclipse.jgit.api.ResetCommand import ResetType
 
 from org.gvsig.scripting import ScriptingLocator
 
@@ -41,11 +42,19 @@ def getBaseRepoPath():
   return path
 
 pullStrategies = {
-  "OURS" : MergeStrategy.OURS,
-  "RECURSIVE" : ThreeWayMergeStrategy.RECURSIVE,
-  "RESOLVE" : ThreeWayMergeStrategy.RESOLVE,
+  "OURS"                   : MergeStrategy.OURS,
+  "RECURSIVE"              : ThreeWayMergeStrategy.RECURSIVE,
+  "RESOLVE"                : ThreeWayMergeStrategy.RESOLVE,
   "SIMPLE_TWO_WAY_IN_CORE" : ThreeWayMergeStrategy.SIMPLE_TWO_WAY_IN_CORE,
-  "THEIRS" : MergeStrategy.THEIRS
+  "THEIRS"                 : MergeStrategy.THEIRS
+}
+
+resetModes = {
+  "HARD"    : ResetType.HARD,
+  "KEEP"    : ResetType.KEEP,
+  "MERGE"   : ResetType.MERGE,
+  "MIXED"   : ResetType.MIXED,
+  "SOFT"    : ResetType.SOFT
 }
 
 class ComposerGitStatus(object):
@@ -395,10 +404,26 @@ class ComposerGit(object):
     finally:
       self._close(git)
 
-  def pull(self, branch="refs/heads/master", strategy=None, monitor=None):
+  def reset(self, mode="MIXED"):
     git = self._open()
     try:
-      strategy = pullStrategies.get(strategy,ThreeWayMergeStrategy.RESOLVE)
+      # clear the merge state
+      repository = git.getRepository()
+      repository.writeMergeCommitMsg(None)
+      repository.writeMergeHeads(None)
+      
+      mode = pullStrategies.get(str(mode),ResetType.MIXED)
+      # reset the index and work directory to HEAD
+      git_reset = git.reset()
+      git_reset.setMode(mode).call() 
+
+    finally:
+      self._close(git)
+    
+  def pull(self, branch="refs/heads/master", strategy="RESOLVE", monitor=None):
+    git = self._open()
+    try:
+      strategy = pullStrategies.get(str(strategy),ThreeWayMergeStrategy.RESOLVE)
       git_pull = git.pull()
       git_pull.setStrategy(strategy)
       if branch != "":
@@ -438,6 +463,8 @@ class ComposerGit(object):
       return commits
     finally:
       self._close(git)
+
+
   
 def main(*args):
     pass
