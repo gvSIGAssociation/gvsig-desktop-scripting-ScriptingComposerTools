@@ -43,11 +43,19 @@ from com.vladsch.flexmark.ext.xwiki.macros import MacroExtension
 from com.vladsch.flexmark.ext.attributes import AttributesExtension
 from com.vladsch.flexmark.ext.yaml.front.matter import YamlFrontMatterExtension
 
+
 from com.vladsch.flexmark.ast import Image
 from com.vladsch.flexmark.util.ast import VisitHandler, Visitor
 from com.vladsch.flexmark.util.sequence import BasedSequenceImpl
 
-class ImageProcessVisitor(Visitor):
+from com.vladsch.flexmark.ext.attributes import AttributeNode
+from com.vladsch.flexmark.ext.xwiki.macros import Macro
+from com.vladsch.flexmark.ext.xwiki.macros import MacroClose
+
+from com.vladsch.flexmark.util.sequence import BasedSequence
+from com.vladsch.flexmark.ast import HtmlInline
+
+class ProcessNodesVisitor(Visitor):
   def __init__(self, folder):
     Visitor.__init__(self)
     self.folder = folder
@@ -61,7 +69,16 @@ class ImageProcessVisitor(Visitor):
     #print "FOLDER: ", repr(folder)
     
   def visit(self, node):
-    if isinstance(node,Image):
+    #print type(node)
+    if isinstance(node, Macro):
+      if node.isClosedTag():
+        if unicode(node.getName())=="pagebreak":
+          node.getParent().insertBefore(
+            HtmlInline(
+              BasedSequenceImpl.of('<div style="page-break-after: always"></div>\n')
+            )
+          )
+    elif isinstance(node,Image):
       url = str(node.url)
       if url.startswith("/") :
         self.absolutePaths = True
@@ -88,11 +105,11 @@ def loadMDFile(folder, fname):
   f.close()
   return markdown
 
-def process_document(parser, renderer, imageProcess, includeHtmlMap, pathname, doc):
+def process_document(parser, renderer, processNodes, includeHtmlMap, pathname, doc):
   #print "PROCES: ", repr(pathname)
   folder = os.path.dirname(pathname)
-  imageProcess.setFolder(folder)
-  imageProcess.visit(doc)
+  processNodes.setFolder(folder)
+  processNodes.visit(doc)
   
   # see if document has includes
   if doc.contains(JekyllTagExtension.TAG_LIST):
@@ -111,7 +128,7 @@ def process_document(parser, renderer, imageProcess, includeHtmlMap, pathname, d
             tag.setParameters(BasedSequenceImpl.of(includeFile))
             if includeFile.endswith(".md") :
               includeDoc = parser.parse(text)
-              process_document(parser, renderer, imageProcess, includeHtmlMap, includeFile, includeDoc)
+              process_document(parser, renderer, processNodes, includeHtmlMap, includeFile, includeDoc)
               includeHtml = renderer.render(includeDoc)
               includeHtmlMap.put(includeFile, includeHtml)
               # copy any definition of reference elements from included file to our document
@@ -141,7 +158,7 @@ def toHtml(markdown, pathname, **kwargs):
      TaskListExtension.create(),
      GfmUsersExtension.create(),
      GitLabExtension.create(),
-     MacroExtension.create(), # https://extensions.xwiki.org/xwiki/bin/view/Extension/Markdown%20Syntax%201.2#HMacroSyntax
+     MacroExtension.create(),
      AttributesExtension.create(),
      YamlFrontMatterExtension.create()
     ]
@@ -153,14 +170,15 @@ def toHtml(markdown, pathname, **kwargs):
   options.set(GfmIssuesExtension.GIT_HUB_ISSUES_URL_ROOT,"https://redmine.gvsig.net/redmine/issues/")
   options.set(GitLabExtension.RENDER_BLOCK_MATH,False)
   options.set(GitLabExtension.RENDER_BLOCK_MERMAID,False)
+  options.set(MacroExtension.ENABLE_RENDERING,False)
 
   parser = Parser.builder(options).build()
   renderer = HtmlRenderer.builder(options).build()
-  imageProcess = ImageProcessVisitor(os.path.dirname(pathname))
+  processNodes = ProcessNodesVisitor(os.path.dirname(pathname))
   includeHtmlMap = HashMap()
 
   doc = parser.parse(markdown)
-  process_document(parser, renderer, imageProcess, includeHtmlMap, pathname, doc)
+  process_document(parser, renderer, processNodes, includeHtmlMap, pathname, doc)
   html = renderer.render(doc);
   
   html = html.encode("utf-8",'replace')
@@ -183,7 +201,7 @@ img {
 """ + html + """
 </body>
 </html>"""
-  if imageProcess.hasAbsolutePaths() and kwargs.get("allowgui",False):
+  if processNodes.hasAbsolutePaths() and kwargs.get("allowgui",False):
     composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
     commonsdialog.msgbox(
       "Se han utilizado rutas absolutas en alguna de las imagenes\nEs recomendable usar solo rutas relativas.", 
