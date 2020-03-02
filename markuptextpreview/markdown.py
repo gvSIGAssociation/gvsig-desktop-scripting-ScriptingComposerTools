@@ -53,11 +53,12 @@ from com.vladsch.flexmark.ext.xwiki.macros import Macro
 from com.vladsch.flexmark.ext.xwiki.macros import MacroClose
 
 from com.vladsch.flexmark.util.sequence import BasedSequence
-from com.vladsch.flexmark.ast import HtmlInline
+from com.vladsch.flexmark.ast import HtmlInline, Text
 
 class ProcessNodesVisitor(Visitor):
-  def __init__(self, folder):
+  def __init__(self, processor, folder):
     Visitor.__init__(self)
+    self.processor = processor
     self.folder = folder
     self.absolutePaths = False
     
@@ -71,19 +72,16 @@ class ProcessNodesVisitor(Visitor):
   def visit(self, node):
     #print type(node)
     if isinstance(node, Macro):
+      print type(node), node.isClosedTag(), unicode(node.getName())
       if node.isClosedTag():
-        if unicode(node.getName())=="pagebreak":
-          node.getParent().insertBefore(
-            HtmlInline(
-              BasedSequenceImpl.of('<div style="page-break-after: always"></div>\n')
-            )
-          )
+        macroValue = self.processor.getMacroValue(unicode(node.getName()))
+        if macroValue!=None:
+          node.getParent().insertBefore(HtmlInline(BasedSequenceImpl.of(macroValue)))
     elif isinstance(node,Image):
-      url = str(node.url)
+      url = unicode(node.url)
       if url.startswith("/") :
         self.absolutePaths = True
       url_abs = os.path.join(self.folder, url)
-      #print "IMAGE : %s (%s)" % (url, url_abs)
       node.setUrl(BasedSequenceImpl.of(url_abs))
     self.visitChildren(node)
 
@@ -105,84 +103,94 @@ def loadMDFile(folder, fname):
   f.close()
   return markdown
 
-def process_document(parser, renderer, processNodes, includeHtmlMap, pathname, doc):
-  #print "PROCES: ", repr(pathname)
-  folder = os.path.dirname(pathname)
-  processNodes.setFolder(folder)
-  processNodes.visit(doc)
-  
-  # see if document has includes
-  if doc.contains(JekyllTagExtension.TAG_LIST):
-    tagList = JekyllTagExtension.TAG_LIST.get(doc)
-    for tag in tagList:
-      tagName = tag.getTag()
-      if tagName.equals("include"):
-        includeFile = tag.getParameters().toString()
-        if not includeFile in ("",None):
-          if includeFile in("page-break","pagebreak"):
-            text = '<div style="page-break-after: always"></div>\n'
-            includeHtmlMap.put(includeFile, text)
-          else:
+class MarkdownProcessor(object):
+  def __init__(self,markdown, pathname, options):
+    self.markdown = markdown
+    self.pathname = pathname
+    self.options = options
+    self.parser=None
+    self.renderer=None
+    self.processNodes=None
+    self.includeHtmlMap = HashMap()
+    self.macros = dict()
+    self.macros["pagebreak"] = '<div style="page-break-after: always"></div>\n'
+
+  def getMacroValue(self, name):
+    return self.macros.get(name,None)
+    
+  def process_document(self, pathname, doc):
+    #print "PROCES: ", repr(pathname)
+    folder = os.path.dirname(pathname)
+    self.processNodes.setFolder(folder)
+    self.processNodes.visit(doc)
+    
+    # see if document has includes
+    if doc.contains(JekyllTagExtension.TAG_LIST):
+      tagList = JekyllTagExtension.TAG_LIST.get(doc)
+      for tag in tagList:
+        tagName = tag.getTag()
+        if tagName.equals("include"):
+          includeFile = tag.getParameters().toString()
+          if not includeFile in ("",None):
             text = loadMDFile(folder, includeFile)            
             includeFile = os.path.join(folder, includeFile)
             tag.setParameters(BasedSequenceImpl.of(includeFile))
             if includeFile.endswith(".md") :
-              includeDoc = parser.parse(text)
-              process_document(parser, renderer, processNodes, includeHtmlMap, includeFile, includeDoc)
-              includeHtml = renderer.render(includeDoc)
-              includeHtmlMap.put(includeFile, includeHtml)
+              includeDoc = self.parser.parse(text)
+              self.process_document(includeFile, includeDoc)
+              includeHtml = self.renderer.render(includeDoc)
+              self.includeHtmlMap.put(includeFile, includeHtml)
               # copy any definition of reference elements from included file to our document
-              parser.transferReferences(doc, includeDoc, None)
+              self.parser.transferReferences(doc, includeDoc, None)
             else:
-              includeHtmlMap.put(includeFile, text)
-    if not includeHtmlMap.isEmpty():
-      doc.set(JekyllTagExtension.INCLUDED_HTML, includeHtmlMap)
-
+              self.includeHtmlMap.put(includeFile, text)
+      if not self.includeHtmlMap.isEmpty():
+        doc.set(JekyllTagExtension.INCLUDED_HTML, self.includeHtmlMap)
   
-def toHtml(markdown, pathname, **kwargs):
-  options = MutableDataSet()
-  options.set(Parser.EXTENSIONS, [
-     AutolinkExtension.create(), 
-     JekyllTagExtension.create(),
-     JekyllFrontMatterExtension.create(),
-     MacrosExtension.create(),
-     TablesExtension.create(),
-     AdmonitionExtension.create(),
-     FootnoteExtension.create(),
-     TocExtension.create(),
-     TypographicExtension.create(),
-     EmojiExtension.create(),
-     DefinitionExtension.create(),
-     GfmIssuesExtension.create(),
-     StrikethroughExtension.create(),
-     TaskListExtension.create(),
-     GfmUsersExtension.create(),
-     GitLabExtension.create(),
-     MacroExtension.create(),
-     AttributesExtension.create(),
-     YamlFrontMatterExtension.create()
-    ]
-  )
-  options.set(JekyllTagExtension.ENABLE_INLINE_TAGS, True)
-  options.set(JekyllTagExtension.ENABLE_BLOCK_TAGS, True)
-  options.set(JekyllTagExtension.ENABLE_RENDERING, False)
-  #options.set(EmojiExtension.ROOT_IMAGE_PATH, "/img/")
-  options.set(GfmIssuesExtension.GIT_HUB_ISSUES_URL_ROOT,"https://redmine.gvsig.net/redmine/issues/")
-  options.set(GitLabExtension.RENDER_BLOCK_MATH,False)
-  options.set(GitLabExtension.RENDER_BLOCK_MERMAID,False)
-  options.set(MacroExtension.ENABLE_RENDERING,False)
-
-  parser = Parser.builder(options).build()
-  renderer = HtmlRenderer.builder(options).build()
-  processNodes = ProcessNodesVisitor(os.path.dirname(pathname))
-  includeHtmlMap = HashMap()
-
-  doc = parser.parse(markdown)
-  process_document(parser, renderer, processNodes, includeHtmlMap, pathname, doc)
-  html = renderer.render(doc);
+    
+  def toHtml(self):
+    options = MutableDataSet()
+    options.set(Parser.EXTENSIONS, [
+       AutolinkExtension.create(), 
+       JekyllTagExtension.create(),
+       JekyllFrontMatterExtension.create(),
+       MacrosExtension.create(),
+       TablesExtension.create(),
+       AdmonitionExtension.create(),
+       FootnoteExtension.create(),
+       TocExtension.create(),
+       TypographicExtension.create(),
+       EmojiExtension.create(),
+       DefinitionExtension.create(),
+       GfmIssuesExtension.create(),
+       StrikethroughExtension.create(),
+       TaskListExtension.create(),
+       GfmUsersExtension.create(),
+       GitLabExtension.create(),
+       MacroExtension.create(),
+       AttributesExtension.create(),
+       YamlFrontMatterExtension.create()
+      ]
+    )
+    options.set(JekyllTagExtension.ENABLE_INLINE_TAGS, True)
+    options.set(JekyllTagExtension.ENABLE_BLOCK_TAGS, True)
+    options.set(JekyllTagExtension.ENABLE_RENDERING, False)
+    #options.set(EmojiExtension.ROOT_IMAGE_PATH, "/img/")
+    options.set(GfmIssuesExtension.GIT_HUB_ISSUES_URL_ROOT,"https://redmine.gvsig.net/redmine/issues/")
+    options.set(GitLabExtension.RENDER_BLOCK_MATH,False)
+    options.set(GitLabExtension.RENDER_BLOCK_MERMAID,False)
+    options.set(MacroExtension.ENABLE_RENDERING,False)
   
-  html = html.encode("utf-8",'replace')
-  html = """<!DOCTYPE html>
+    self.parser = Parser.builder(options).build()
+    self.renderer = HtmlRenderer.builder(options).build()
+    self.processNodes = ProcessNodesVisitor(self, os.path.dirname(self.pathname))
+  
+    doc = self.parser.parse(self.markdown)
+    self.process_document(self.pathname, doc)
+    html = self.renderer.render(doc);
+    
+    html = html.encode("utf-8",'replace')
+    html = """<!DOCTYPE html>
 <html>
 <head>
 <meta charset=\"UTF-8\">
@@ -201,17 +209,21 @@ img {
 """ + html + """
 </body>
 </html>"""
-  if processNodes.hasAbsolutePaths() and kwargs.get("allowgui",False):
-    composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
-    commonsdialog.msgbox(
-      "Se han utilizado rutas absolutas en alguna de las imagenes\nEs recomendable usar solo rutas relativas.", 
-      "MarkupText preview", 
-      commonsdialog.IDEA, 
-      root=composer
-    )
-    
-  return html
+    if self.processNodes.hasAbsolutePaths() and self.options.get("allowgui",False):
+      composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
+      commonsdialog.msgbox(
+        "Se han utilizado rutas absolutas en alguna de las imagenes\nEs recomendable usar solo rutas relativas.", 
+        "MarkupText preview", 
+        commonsdialog.IDEA, 
+        root=composer
+      )
+      
+    return html
 
+def toHtml(markdown, pathname, **kwargs):
+  processor = MarkdownProcessor(markdown,pathname,kwargs)
+  return processor.toHtml()
+  
 def selfRegister():
   pass
 
