@@ -1,9 +1,6 @@
 # encoding: utf-8
 """
-Este modulo registra el editor de ficheros ".properties".
-
-Precisamos un editor especial para los ficheros properties ya que 
-estos requieren de una codificacion especial de caracteres.
+Este modulo registra el editor de ficheros ".html".
 
 """
 import gvsig
@@ -30,7 +27,7 @@ class HTMLEditorFactory(AbstractEditorFactory):
     if isinstance(unit,ScriptingExternalFile):
       f = unit.getExternalFile()
       extension = os.path.splitext(f.getName())[1]
-      if extension.lower() in (".htm", ".html", ".png"):
+      if extension.lower() in (".htm", ".html"):
         return True
     return False
 

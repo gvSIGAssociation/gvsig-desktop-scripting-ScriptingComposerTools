@@ -28,4 +28,8 @@ class PDFViewer(ExternalFileEditor):
   def set(self, unit):
     ExternalFileEditor.set(self, unit)
     self.__controller.openDocument(unit.getExternalFile().toURI().toURL())  
+    try:
+      self.getTabbedPane().setSelectedIndex(1)
+    except:
+      pass
 

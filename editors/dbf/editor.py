@@ -50,6 +50,10 @@ class DBFEditor(ExternalFileEditor):
       self.__formpanel.add(form.asJComponent(),BorderLayout.CENTER)
       self.__tablepanel.removeAll()
       self.__tablepanel.add(self.__table.asJComponent(),BorderLayout.CENTER)
+      try:
+        self.getTabbedPane().setSelectedIndex(1)
+      except:
+        pass
     except Exception, ex:
       logger("Can't set unit.",LOGGER_WARN,ex)
     
