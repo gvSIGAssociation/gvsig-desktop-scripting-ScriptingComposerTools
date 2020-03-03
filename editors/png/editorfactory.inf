@@ -1,0 +1,16 @@
+[script]
+enable = true
+isolation = 0
+
+[Unit]
+type = Script
+name = editorfactory
+description = 
+createdBy = 
+version = 
+
+[Script]
+main = main
+Lang = python
+enable = true
+
