@@ -157,6 +157,7 @@ class MarkdownProcessor(object):
     if doc.contains(JekyllTagExtension.TAG_LIST):
       tagList = JekyllTagExtension.TAG_LIST.get(doc)
       for tag in tagList:
+        print type(tag), type(tag.getParent()), type(tag.getParent().getParent())
         tagName = tag.getTag()
         if tagName.equals("include"):
           includeFile = tag.getParameters().toString()
@@ -167,10 +168,11 @@ class MarkdownProcessor(object):
             if includeFile.endswith(".md") :
               includeDoc = self.parser.parse(text)
               self.process_document(includeFile, includeDoc)
-              includeHtml = self.renderer.render(includeDoc)
-              self.includeHtmlMap.put(includeFile, includeHtml)
+              tag.getParent().insertBefore(includeDoc)
+              #includeHtml = self.renderer.render(includeDoc)
+              #self.includeHtmlMap.put(includeFile, includeHtml)
               # copy any definition of reference elements from included file to our document
-              self.parser.transferReferences(doc, includeDoc, None)
+              #self.parser.transferReferences(doc, includeDoc, None)
             else:
               self.includeHtmlMap.put(includeFile, text)
       if not self.includeHtmlMap.isEmpty():
