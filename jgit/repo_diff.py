@@ -13,8 +13,6 @@ import gvsig
 import os
 import StringIO
 
-from addons.ScriptingComposerTools.javadocviewer.webbrowserpanel.browserpanel import BrowserPanel
-
 from repo_utils import Git, getComposer, getSelectedGit, getSelectedUnit
 from repo_utils import warning, message
 
