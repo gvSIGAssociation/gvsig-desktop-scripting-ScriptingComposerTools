@@ -7,6 +7,7 @@ from gvsig import commonsdialog
 import os
 import os.path
 import io
+import StringIO
 
 from gvsig import getResource
 from java.util import HashMap
@@ -53,7 +54,23 @@ from com.vladsch.flexmark.ext.xwiki.macros import Macro
 from com.vladsch.flexmark.ext.xwiki.macros import MacroClose
 
 from com.vladsch.flexmark.util.sequence import BasedSequence
-from com.vladsch.flexmark.ast import HtmlInline, Text
+from com.vladsch.flexmark.ast import HtmlInline, Text, FencedCodeBlock
+
+def format_code(langname, code):
+  import pygments
+  from pygments.formatters.html import HtmlFormatter
+  from pygments.lexers import get_lexer_by_name
+  from pygments.styles import get_style_by_name
+  
+  html = StringIO.StringIO()
+  lexer = get_lexer_by_name(langname)
+  formatter = HtmlFormatter(style='default')
+  #styles = formatter.get_style_defs()
+  #html.write("<style>\n")
+  #html.write(styles)
+  #html.write("</style>\n")
+  pygments.highlight(code, lexer, formatter, html)
+  return html.getvalue()
 
 class ProcessNodesVisitor(Visitor):
   def __init__(self, processor, folder):
@@ -70,13 +87,25 @@ class ProcessNodesVisitor(Visitor):
     #print "FOLDER: ", repr(folder)
     
   def visit(self, node):
-    #print type(node)
+    #print type(node) 
+    if isinstance(node, FencedCodeBlock):
+      try:
+        code = StringIO.StringIO()
+        for l in node.getContentLines():
+          code.write(unicode(l))
+        html = format_code(unicode(node.getInfo()), code.getvalue())
+        node.insertBefore(HtmlInline(BasedSequenceImpl.of(html)))
+        node.unlink()
+      except:
+        pass
+      
     if isinstance(node, Macro):
       print type(node), node.isClosedTag(), unicode(node.getName())
       if node.isClosedTag():
         macroValue = self.processor.getMacroValue(unicode(node.getName()))
         if macroValue!=None:
           node.getParent().insertBefore(HtmlInline(BasedSequenceImpl.of(macroValue)))
+          
     elif isinstance(node,Image):
       url = unicode(node.url)
       if url.startswith("/") :
@@ -203,6 +232,77 @@ img {
   page-break-after: auto; /* 'always,' 'avoid,' 'left,' 'inherit,' or 'right' */
   page-break-inside: avoid; /* or 'auto' */
 }
+
+/* pygments styles */
+.hll { background-color: #ffffcc }
+.c { color: #408080; font-style: italic } /* Comment */
+.err { border: 1px solid #FF0000 } /* Error */
+.k { color: #008000; font-weight: bold } /* Keyword */
+.o { color: #666666 } /* Operator */
+.ch { color: #408080; font-style: italic } /* Comment.Hashbang */
+.cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.cp { color: #BC7A00 } /* Comment.Preproc */
+.cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
+.c1 { color: #408080; font-style: italic } /* Comment.Single */
+.cs { color: #408080; font-style: italic } /* Comment.Special */
+.gd { color: #A00000 } /* Generic.Deleted */
+.ge { font-style: italic } /* Generic.Emph */
+.gr { color: #FF0000 } /* Generic.Error */
+.gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.gi { color: #00A000 } /* Generic.Inserted */
+.go { color: #888888 } /* Generic.Output */
+.gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.gs { font-weight: bold } /* Generic.Strong */
+.gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.gt { color: #0044DD } /* Generic.Traceback */
+.kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.kp { color: #008000 } /* Keyword.Pseudo */
+.kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.kt { color: #B00040 } /* Keyword.Type */
+.m { color: #666666 } /* Literal.Number */
+.s { color: #BA2121 } /* Literal.String */
+.na { color: #7D9029 } /* Name.Attribute */
+.nb { color: #008000 } /* Name.Builtin */
+.nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.no { color: #880000 } /* Name.Constant */
+.nd { color: #AA22FF } /* Name.Decorator */
+.ni { color: #999999; font-weight: bold } /* Name.Entity */
+.ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.nf { color: #0000FF } /* Name.Function */
+.nl { color: #A0A000 } /* Name.Label */
+.nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.nt { color: #008000; font-weight: bold } /* Name.Tag */
+.nv { color: #19177C } /* Name.Variable */
+.ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.w { color: #bbbbbb } /* Text.Whitespace */
+.mb { color: #666666 } /* Literal.Number.Bin */
+.mf { color: #666666 } /* Literal.Number.Float */
+.mh { color: #666666 } /* Literal.Number.Hex */
+.mi { color: #666666 } /* Literal.Number.Integer */
+.mo { color: #666666 } /* Literal.Number.Oct */
+.sa { color: #BA2121 } /* Literal.String.Affix */
+.sb { color: #BA2121 } /* Literal.String.Backtick */
+.sc { color: #BA2121 } /* Literal.String.Char */
+.dl { color: #BA2121 } /* Literal.String.Delimiter */
+.sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.s2 { color: #BA2121 } /* Literal.String.Double */
+.se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.sh { color: #BA2121 } /* Literal.String.Heredoc */
+.si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.sx { color: #008000 } /* Literal.String.Other */
+.sr { color: #BB6688 } /* Literal.String.Regex */
+.s1 { color: #BA2121 } /* Literal.String.Single */
+.ss { color: #19177C } /* Literal.String.Symbol */
+.bp { color: #008000 } /* Name.Builtin.Pseudo */
+.fm { color: #0000FF } /* Name.Function.Magic */
+.vc { color: #19177C } /* Name.Variable.Class */
+.vg { color: #19177C } /* Name.Variable.Global */
+.vi { color: #19177C } /* Name.Variable.Instance */
+.vm { color: #19177C } /* Name.Variable.Magic */
+.il { color: #666666 } /* Literal.Number.Integer.Long */
+.highlight {background-color: #f1f1f1 }
 </style>
 </head>
 <body>
