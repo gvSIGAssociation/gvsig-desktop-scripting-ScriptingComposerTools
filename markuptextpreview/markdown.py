@@ -11,7 +11,7 @@ import StringIO
 
 from gvsig import getResource
 from java.util import HashMap
-from java.io import FileOutputStream
+from java.io import FileOutputStream, File
 
 from org.gvsig.tools import ToolsLocator
 from org.gvsig.tools.swing.api import ToolsSwingLocator
@@ -56,7 +56,7 @@ from com.vladsch.flexmark.ext.xwiki.macros import MacroClose
 from com.vladsch.flexmark.util.sequence import BasedSequence
 from com.vladsch.flexmark.ast import HtmlInline, Text, FencedCodeBlock
 
-def format_code(langname, code):
+def format_codeblock(langname, code):
   import pygments
   from pygments.formatters.html import HtmlFormatter
   from pygments.lexers import get_lexer_by_name
@@ -71,6 +71,22 @@ def format_code(langname, code):
   #html.write("</style>\n")
   pygments.highlight(code, lexer, formatter, html)
   return html.getvalue()
+
+def format_img(url, alt, title, anchor=None):
+  html = '<img src="%s"' % url
+  if not alt in ("",None):
+    html = html + ' alt="%s"' % alt
+  if not title in ("",None):
+    html = html + ' title="%s"' % title
+  if url.startswith("/"):
+    try:
+      image = ToolsSwingLocator.getToolsSwingManager().createSimpleImage(File(url))
+      if image!=None and image.getWidth()>650:
+        html = html + ' width="650" height="%d"' % (int(image.getHeight()*650-0)/image.getWidth())
+    except:
+      print "No se ha podido cargar la url: ", repr(url)
+  html = html + ">"
+  return html
 
 class ProcessNodesVisitor(Visitor):
   def __init__(self, processor, folder):
@@ -93,7 +109,7 @@ class ProcessNodesVisitor(Visitor):
         code = StringIO.StringIO()
         for l in node.getContentLines():
           code.write(unicode(l))
-        html = format_code(unicode(node.getInfo()), code.getvalue())
+        html = format_codeblock(unicode(node.getInfo()), code.getvalue())
         node.insertBefore(HtmlInline(BasedSequenceImpl.of(html)))
         node.unlink()
       except:
@@ -112,6 +128,10 @@ class ProcessNodesVisitor(Visitor):
         self.absolutePaths = True
       url_abs = os.path.join(self.folder, url)
       node.setUrl(BasedSequenceImpl.of(url_abs))
+      html = format_img(unicode(node.url), unicode(node.text), unicode(node.title), unicode(node.anchorRef))
+      node.insertBefore(HtmlInline(BasedSequenceImpl.of(html)))
+      node.unlink()
+      
     self.visitChildren(node)
 
   def visitChildren(self, parent):
@@ -234,7 +254,10 @@ img {
   page-break-after: auto; /* 'always,' 'avoid,' 'left,' 'inherit,' or 'right' */
   page-break-inside: avoid; /* or 'auto' */
 }
-
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
 /* pygments styles */
 .hll { background-color: #ffffcc }
 .c { color: #408080; font-style: italic } /* Comment */
