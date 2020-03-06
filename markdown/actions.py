@@ -55,12 +55,13 @@ class MarkdownFormatTextAction(AbstractAction):
     format_text(self._pre, self._post, self._block)  
 
 class MarkdownIncludeAction(AbstractAction):
-  def __init__(self, tagName="Include"):
-    AbstractAction.__init__(self,tagName.replace("_"," "))
-    self.putValue(Action.ACTION_COMMAND_KEY, "Markdown%s" % tagName.replace(" ",""))
+  def __init__(self, name="Include", tagName="include"):
+    AbstractAction.__init__(self,name)
+    self.putValue(Action.ACTION_COMMAND_KEY, "Markdown%s" % name.replace(" ",""))
     #self.putValue(Action.SMALL_ICON, load_icon((__file__,"images","format-text-%s.png" % name.lower())))
-    self.putValue(Action.SHORT_DESCRIPTION, tagName.replace("_"," "))
+    self.putValue(Action.SHORT_DESCRIPTION, name)
     self._tagName = tagName
+    self._name = name
 
   def isEnabled(self):
     return isEditingMarkdown()
@@ -98,8 +99,8 @@ class MarkdownInsertTextBlockAction(AbstractAction):
   def __init__(self, name, text):
     AbstractAction.__init__(self,name.replace("_"," "))
     self.putValue(Action.ACTION_COMMAND_KEY, "Markdown%s" % name.replace(" ",""))
-    self.putValue(Action.SMALL_ICON, load_icon((__file__,"images","%s.png" % name.lower().replace("_","-"))))
-    self.putValue(Action.SHORT_DESCRIPTION, name.replace("_"," "))
+    self.putValue(Action.SMALL_ICON, load_icon((__file__,"images","%s.png" % name.lower().replace(" ","-").replace("_","-"))))
+    self.putValue(Action.SHORT_DESCRIPTION, name)
     self._text = text
 
   def isEnabled(self):
@@ -107,6 +108,27 @@ class MarkdownInsertTextBlockAction(AbstractAction):
     
   def actionPerformed(self,e):
     insert_text_block(self._text)
+
+class MarkdownInsertLinkAction(AbstractAction):
+  def __init__(self):
+    AbstractAction.__init__(self,"Insert link")
+    self.putValue(Action.ACTION_COMMAND_KEY, "MarkdownLink")
+    self.putValue(Action.SMALL_ICON, load_icon((__file__,"images","insert-link.png")))
+    self.putValue(Action.SHORT_DESCRIPTION, "Insert link to local file")
+
+  def isEnabled(self):
+    return isEditingMarkdown()
+    
+  def actionPerformed(self,e):
+    composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
+    if composer == None:
+      return
+    commonsdialog.msgbox(
+      "Include link not yet implemented",
+      "Markdown",
+      commonsdialog.IDEA,
+      composer.asJComponent()
+     )
 
 def selfRegister():
   add_in_toolbar = True
@@ -119,17 +141,17 @@ def selfRegister():
       MarkdownFormatTextAction("Underline", "__", "__"),
       MarkdownFormatTextAction("Code", "\n```","```\n", block=True),
       MarkdownInsertImageAction(),
+      MarkdownInsertLinkAction(),
       MarkdownFormatTitleAction(1),
       MarkdownFormatTitleAction(2),
       MarkdownFormatTitleAction(3),
       MarkdownFormatTitleAction(4),
       MarkdownFormatTitleAction(5),
       MarkdownFormatTitleAction(6),
-      MarkdownIncludeAction("Include"),
-      MarkdownIncludeAction("Include_relative"),
-      MarkdownInsertTextBlockAction("Insert_pagebreak","{{pagebreak /}}"),
+      MarkdownIncludeAction("Include (for preview)", "include"),
+      MarkdownIncludeAction("Include (for GitHub)", "include_relative"),
+      MarkdownInsertTextBlockAction("Insert pagebreak","{{pagebreak /}}"),
     ):
-    print repr(action.getValue(Action.NAME)), repr(action.getValue(Action.SMALL_ICON))
     if add_in_toolbar and action.getValue(Action.SMALL_ICON)!=None :
       manager.addComposerTool(action)
     manager.addComposerMenu(i18nManager.getTranslation("Tools")+"/Markdown",action)
