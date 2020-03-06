@@ -56,6 +56,8 @@ from com.vladsch.flexmark.ext.xwiki.macros import MacroClose
 from com.vladsch.flexmark.util.sequence import BasedSequence
 from com.vladsch.flexmark.ast import HtmlInline, Text, FencedCodeBlock
 
+IMAGE_MAX_WIDTH = 600
+
 def format_codeblock(langname, code):
   import pygments
   from pygments.formatters.html import HtmlFormatter
@@ -81,8 +83,11 @@ def format_img(url, alt, title, anchor=None):
   if url.startswith("/"):
     try:
       image = ToolsSwingLocator.getToolsSwingManager().createSimpleImage(File(url))
-      if image!=None and image.getWidth()>650:
-        html = html + ' width="650" height="%d"' % (int(image.getHeight()*650-0)/image.getWidth())
+      if image!=None and image.getWidth()>IMAGE_MAX_WIDTH:
+        html = html + ' width="%d" height="%d"' % (
+          IMAGE_MAX_WIDTH,
+          (int(float(image.getHeight())*float(IMAGE_MAX_WIDTH))/float(image.getWidth()))
+        )
     except:
       print "No se ha podido cargar la url: ", repr(url)
   html = html + ">"

@@ -15,6 +15,7 @@ from addons.ScriptingComposerTools import jgit
 from addons.ScriptingComposerTools import classbrowser
 from addons.ScriptingComposerTools import consolejython
 from addons.ScriptingComposerTools import useplugin
+from addons.ScriptingComposerTools import markdown
 
 def main(*args):
   script.registerDataFolder("ScriptingComposerTools")
@@ -32,3 +33,4 @@ def main(*args):
   jgit.selfRegister()
   consolejython.selfRegister()
   useplugin.selfRegister()
+  markdown.selfRegister()
