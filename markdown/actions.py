@@ -22,6 +22,7 @@ from addons.ScriptingComposerTools.markdown.markdownutils import insert_image
 from addons.ScriptingComposerTools.markdown.markdownutils import insert_include
 from addons.ScriptingComposerTools.markdown.markdownutils import insert_text_block
 from addons.ScriptingComposerTools.markdown.markdownutils import insert_text
+from addons.ScriptingComposerTools.markdown.markdownutils import insert_link
 
 class MarkdownFormatTitleAction(AbstractAction):
   def __init__(self, num_title):
@@ -31,6 +32,11 @@ class MarkdownFormatTitleAction(AbstractAction):
     self.putValue(Action.SMALL_ICON, load_icon((__file__,"images","format-text-h%d.png" % num_title)))
     self.putValue(Action.SHORT_DESCRIPTION, "Title %d" % num_title)
 
+  def getValue(self, name):
+    if name=="Visible":
+      return isEditingMarkdown()
+    return AbstractAction.getValue(self,name)
+    
   def isEnabled(self):
     return isEditingMarkdown()
     
@@ -48,6 +54,11 @@ class MarkdownFormatTextAction(AbstractAction):
     self._post = post
     self._block = block
 
+  def getValue(self, name):
+    if name=="Visible":
+      return isEditingMarkdown()
+    return AbstractAction.getValue(self,name)
+    
   def isEnabled(self):
     return isEditingMarkdown()
     
@@ -63,6 +74,11 @@ class MarkdownIncludeAction(AbstractAction):
     self._tagName = tagName
     self._name = name
 
+  def getValue(self, name):
+    if name=="Visible":
+      return isEditingMarkdown()
+    return AbstractAction.getValue(self,name)
+    
   def isEnabled(self):
     return isEditingMarkdown()
     
@@ -83,6 +99,11 @@ class MarkdownInsertImageAction(AbstractAction):
     self.putValue(Action.SMALL_ICON, load_icon((__file__,"images","image-add.png")))
     self.putValue(Action.SHORT_DESCRIPTION, "Insert image")
 
+  def getValue(self, name):
+    if name=="Visible":
+      return isEditingMarkdown()
+    return AbstractAction.getValue(self,name)
+    
   def isEnabled(self):
     return isEditingMarkdown()
     
@@ -103,6 +124,11 @@ class MarkdownInsertTextBlockAction(AbstractAction):
     self.putValue(Action.SHORT_DESCRIPTION, name)
     self._text = text
 
+  def getValue(self, name):
+    if name=="Visible":
+      return isEditingMarkdown()
+    return AbstractAction.getValue(self,name)
+    
   def isEnabled(self):
     return isEditingMarkdown()
     
@@ -116,19 +142,26 @@ class MarkdownInsertLinkAction(AbstractAction):
     self.putValue(Action.SMALL_ICON, load_icon((__file__,"images","insert-link.png")))
     self.putValue(Action.SHORT_DESCRIPTION, "Insert link to local file")
 
+  def getValue(self, name):
+    if name=="Visible":
+      return isEditingMarkdown()
+    return AbstractAction.getValue(self,name)
+    
   def isEnabled(self):
     return isEditingMarkdown()
     
   def actionPerformed(self,e):
+    if not SwingUtilities.isEventDispatchThread():
+      SwingUtilities.invokeLater(main)
+      return
     composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
     if composer == None:
       return
-    commonsdialog.msgbox(
-      "Include link not yet implemented",
-      "Markdown",
-      commonsdialog.IDEA,
-      composer.asJComponent()
-     )
+    folder = os.path.dirname(getCurrentFile())
+    f = commonsdialog.openFileDialog("Select file to link",folder, composer.asJComponent())
+    if f==None or len(f)==0:
+      return
+    insert_link(folder, f[0])
 
 def selfRegister():
   add_in_toolbar = True

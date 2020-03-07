@@ -180,6 +180,32 @@ def insert_image(currentfolder, imagePath, text="Alt text"):
   comp.setSelectionEnd(sel_start + len(html))
 
 
+def insert_link(currentfolder, targetpath):
+  comp = getJTextComponent()
+  if comp == None:
+    return
+  doc = comp.getDocument()
+  if doc == None:
+    return
+  
+  currentfolder = getCanonicalPath(currentfolder)
+  targetpath = getCanonicalPath(targetpath)
+  targetpath = os.path.relpath(targetpath, currentfolder)
+
+  text = ""
+  sel_start = comp.getSelectionStart()
+  sel_end = comp.getSelectionEnd()
+  print "[%d:%d] doc len %d" % (sel_start, sel_end, doc.getLength())
+  if sel_start != sel_end:
+    text = doc.getText(sel_start, sel_end-sel_start)
+    doc.remove(sel_start,sel_end-sel_start)
+  html = "[%s](%s)" % (text, targetpath)
+  sel_start = comp.getSelectionStart()
+  doc.insertString(sel_start,html,None)
+  comp.setSelectionStart(sel_start)
+  comp.setSelectionEnd(sel_start + len(html))
+
+
 def insert_include(currentfolder, pathname, tagname="include"):
   comp = getJTextComponent()
   if comp == None:
@@ -248,8 +274,23 @@ def test_include():
     return
   insert_include(folder, f[0])
 
+def test_insert_link():
+  if not SwingUtilities.isEventDispatchThread():
+    SwingUtilities.invokeLater(main)
+    return
+  composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
+  if composer == None:
+    return
+  folder = os.path.dirname(getCurrentFile())
+  f = commonsdialog.openFileDialog("Select file to link",folder, composer.asJComponent())
+  if f==None or len(f)==0:
+    return
+  insert_link(folder, f[0])
+
 
 def main(**args):
   #test_insert_image()
   #test_title()
-  test_include()
+  #test_include()
+  test_insert_link()
+  
