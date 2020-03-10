@@ -4,6 +4,7 @@ import gvsig
 from gvsig.libs.formpanel import getResource
 from gvsig import logger,LOGGER_WARN
 
+import sys
 import os
 import re 
 import urllib2
@@ -251,13 +252,19 @@ class Javadoc(object):
         u1 = URL(str(javadocSet.getURL()))
       lines = 0
       u2 = URL(u1.toExternalForm()+"/allclasses-frame.html")
+      logger("Loading javadoc set %s (%s)..." % (javadocSet.getName(),u1.toExternalForm()))
       try:
         allClassesFrame = u2.openConnection().getInputStream()
         allClassesFrameReader = BufferedReader(InputStreamReader(allClassesFrame))
         line = allClassesFrameReader.readLine()
       except Exception,ex:
-        logger("Can't load Javadoc '%s' from '%s'" % (javadocSet.getName(),u1.toExternalForm()),LOGGER_WARN,ex)
+        logger("Can't load (1) Javadoc '%s' from '%s'" % (javadocSet.getName(),u1.toExternalForm()),LOGGER_WARN,ex)
         return False
+      except:
+        ex = sys.exc_info()[1]
+        logger("Can't load (2) Javadoc '%s' from '%s'" % (javadocSet.getName(),u1.toExternalForm()),LOGGER_WARN,ex)
+        return False
+      
       pattern = re.compile('.*href="([^"]*)".*[>]([^<]*)[<][/]a[>].*',re.IGNORECASE)
       n = 0
       while line != None:    
