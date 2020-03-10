@@ -1,8 +1,8 @@
 #
-#Sun Mar 01 21:50:09 CET 2020
+#Tue Mar 10 14:57:26 CET 2020
 owner=gvSIG association
 code=ScriptingComposerTools
-download-url=https\://github.com/gvSIGAssociation/gvsig-desktop-scripting-ScriptingComposerTools/releases/download/1.0.0-25/gvSIG-desktop-2.5.1-ScriptingComposerTools-1.0.0-25-testing-all-all-j1_8.gvspkg
+download-url=https\://github.com/gvSIGAssociation/gvsig-desktop-scripting-ScriptingComposerTools/releases/download/1.0.0-26/gvSIG-desktop-2.5.1-ScriptingComposerTools-1.0.0-26-testing-all-all-j1_8.gvspkg
 java-version=j1_8
 operating-system=all
 description=Utilities that extend the scripts editor interface made in python.\n\nAdd tools like\:\n- Buttons to run the abeille forms designer, integrated with scripting editor.\n- Automatic light syntax check for python. Syntax errors are marked in the editor \n  automatically. (pytlint integration)\n- On demand python syntaxt checker (pytlint integration)\n- Quick search of classes, methods and functions in a module\n- Code navigator panel, tree of editing module\n- Search references in module, current folder and user selected folder\n- list of running thread with interrupt functionality\n- Git integration (using JGit)\n- Javadoc viewer\n- import assistant\n- RST and MD text markup preview\n\n\nIn the current version some tools are partially developed\n
