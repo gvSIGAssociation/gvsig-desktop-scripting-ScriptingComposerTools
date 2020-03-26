@@ -374,7 +374,7 @@ def test(*args):
   
   foldersManager = ToolsLocator.getFoldersManager()
   temp_html = foldersManager.getTemporaryFile("markuptext-preview.html")
-  f = open(temp_html.getAbsolutePath(),"w")
+  f = open(temp_html.getAbsolutePath(),"w",encoding="utf-8")
   f.write(html)
   f.close()
 
@@ -394,8 +394,8 @@ def test(*args):
 def main(*args):
   """
   Ejemplo de insercion de una imagen muy grande que se redimensiona al
-  tamaño adecuado para que quepa en la pagina (650).
-![Menu de conexión al espacio de trabajo](importacion_datos_files/menu_conexion_espacio_trabajo.png){ width=650 }  
+  tamano adecuado para que quepa en la pagina (650).
+![Menu de conexion al espacio de trabajo](importacion_datos_files/menu_conexion_espacio_trabajo.png){ width=650 }  
 
   Estaria bien tener herramientas como:
   - Insertar imagen (que seleccionamos un fichero imagen, el alt, el caption, with y height y la inserte)  
