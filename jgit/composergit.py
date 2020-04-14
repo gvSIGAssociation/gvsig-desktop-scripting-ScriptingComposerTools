@@ -61,10 +61,10 @@ class ComposerGitStatus(object):
   def __init__(self, modified, status, workingpath):
     self.__modified = modified
     self.__status = status
-    self.__workingpath = workingpath
+    self.__workingpath = unicode(workingpath)
 
   def __repr__(self):
-    return "status(%r,%r)" % (self.__status, str(self.__workingpath))
+    return "status(%r,%r)" % (self.__status, self.__workingpath)
 
   def __str__(self):
     return self.__workingpath
@@ -73,7 +73,7 @@ class ComposerGitStatus(object):
     return self.__status
 
   def getWorkingPath(self):
-    return str(self.__workingpath)
+    return self.__workingpath
 
 class Changes(dict):
   def __init__(self):
@@ -105,7 +105,7 @@ class Commit(object):
     return treeParser
 
   def __str__(self):
-    return str(self.__revCommit)
+    return unicode(self.__revCommit)
   
   def getId(self):
     return self.__revCommit.getId()
@@ -135,7 +135,7 @@ class ComposerGit(object):
   def __init__(self, workingpath, repopath=None):
     self.__workingpath = workingpath
     if not isinstance(self.__workingpath, File):
-      self.__workingpath = File(str(workingpath))
+      self.__workingpath = File(unicode(workingpath))
     if repopath == None:
       repopath = os.path.join(getBaseRepoPath(),self.getRepoName(),".git")
     self.__repopath = File(repopath)
@@ -145,10 +145,10 @@ class ComposerGit(object):
     return self.__repopath.getAbsolutePath()
     
   def getWorkingPath(self):
-    return str(self.__workingpath)
+    return unicode(self.__workingpath)
     
   def getRepoPath(self):
-    return str(self.__repopath)
+    return unicode(self.__repopath)
 
   def getRepoName(self):
     return self.__workingpath.getName()
@@ -323,7 +323,7 @@ class ComposerGit(object):
       #print "###git add ",files
       git_add = git.add()
       for f in files:
-        git_add.addFilepattern(str(f))
+        git_add.addFilepattern(unicode(f))
       git_add.call()
     finally:
       self._close(git)
@@ -334,7 +334,7 @@ class ComposerGit(object):
       #print "###git rm ",files
       git_rm = git.rm()
       for f in files:
-        git_rm.addFilepattern(str(f))
+        git_rm.addFilepattern(unicode(f))
       git_rm.call()
       for f in files:
         f = os.path.join(self.__workingpath.getAbsolutePath(),f)
@@ -373,7 +373,7 @@ class ComposerGit(object):
       if monitor!=None:
         git_push.setProgressMonitor(monitor)
       responses = git_push.call()
-      status = str(responses[0].getRemoteUpdate("refs/heads/master" ).getStatus())
+      status = unicode(responses[0].getRemoteUpdate("refs/heads/master" ).getStatus())
       return status
     finally:
       self._close(git)
@@ -412,7 +412,7 @@ class ComposerGit(object):
       repository.writeMergeCommitMsg(None)
       repository.writeMergeHeads(None)
       
-      mode = pullStrategies.get(str(mode),ResetType.MIXED)
+      mode = pullStrategies.get(unicode(mode),ResetType.MIXED)
       # reset the index and work directory to HEAD
       git_reset = git.reset()
       git_reset.setMode(mode).call() 
@@ -423,7 +423,7 @@ class ComposerGit(object):
   def pull(self, branch="refs/heads/master", strategy="RESOLVE", monitor=None):
     git = self._open()
     try:
-      strategy = pullStrategies.get(str(strategy),ThreeWayMergeStrategy.RESOLVE)
+      strategy = pullStrategies.get(unicode(strategy),ThreeWayMergeStrategy.RESOLVE)
       git_pull = git.pull()
       git_pull.setStrategy(strategy)
       if branch != "":
@@ -444,7 +444,7 @@ class ComposerGit(object):
         print "### pull, mergeResult.getCheckoutConflicts():", rebaseResult.getCheckoutConflicts()
       if result.isSuccessful():
         return "OK"
-      return str(result)
+      return unicode(result)
       
     finally:
       self._close(git)
