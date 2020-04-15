@@ -11,10 +11,12 @@ try:
     continuoslint.selfRegister()
 except:
   import sys
-  ex = sys.exc_info()[1]
-  gvsig.logger("Can't load module 'lint'. " + str(ex), gvsig.LOGGER_WARN, ex)
+  import traceback
+  ex = sys.exc_info()
+  gvsig.logger("Can't load module 'lint'. %s\n%s" % (ex[1], "".join(traceback.format_exception(*ex))), gvsig.LOGGER_WARN)
   del ex
   del sys
+  del traceback
   
   def selfRegister():
     pass

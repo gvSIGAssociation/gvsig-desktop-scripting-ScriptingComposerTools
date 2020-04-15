@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-from gvsig import *
+import gvsig
 
 from addons.ScriptingComposerTools import lint
 

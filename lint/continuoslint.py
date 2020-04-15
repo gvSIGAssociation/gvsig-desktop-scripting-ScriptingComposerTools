@@ -2,9 +2,12 @@
 
 from gvsig import *
 
+import sys
+
 from org.gvsig.scripting.swing.api import ScriptingSwingLocator
 from org.gvsig.scripting.swing.api import JScriptingComposer
 from org.gvsig.scripting.swing.api import CreateComponentListener
+from org.gvsig.scripting import ScriptingScript
 
 from javax.swing import Timer
 from javax.swing.event import ChangeListener
@@ -19,7 +22,7 @@ class ContinuosLint(Thread):
   def __init__(self, composer):
     Thread.__init__(self,name="ContinuosLint")
     self.composer = composer
-    self.processing = False
+    self.process = False
 
   def run(self):
     from gvsig.libs.formpanel import ActionListenerAdapter, ChangeListenerAdapter
@@ -30,9 +33,12 @@ class ContinuosLint(Thread):
     dockSelectedListener = ActionListenerAdapter(self.dockSelected)
     self.composer.addChangeEditorListener(editorChangedListener)
     self.composer.getDock().addActivateListener(dockSelectedListener)
+    self.process = True
     try:
       while True:
-        sleep(10)
+        sleep(5)
+        if self.process :
+          self.doLint()
     except KeyboardInterrupt as ex:
       pass 
     self.composer.removeChangeEditorListener(editorChangedListener)
@@ -42,7 +48,7 @@ class ContinuosLint(Thread):
   def timerActivated(self, *args):
     #print "[%d] timerActivated: %s" % (time(),args)
     self.timer.stop()
-    self.update()
+    self.process = True
     
   def editorChanged(self,*args):
     #print "[%d] editorChanged: %s" % (time(),args)
@@ -52,22 +58,25 @@ class ContinuosLint(Thread):
     #print "[%d] dockSelected: %s" % (time(),args)
     self.timer.restart()
 
-  def update(self):
-    #print "Lint start."
-    if self.processing:
-      return
+  def doLint(self):
     try:
-      self.processing = True
       self.composer.getStatusbar().message("Checking syntax...")
       editor = self.composer.getCurrentEditor()
       script = self.composer.getCurrentScript()
-      if editor != None and script != None:
+      if editor != None and  isinstance(script,ScriptingScript) and script.getLangName() == "python" :
         fname = script.getResource(script.getId()+".py").getAbsolutePath()
         checkFile(fname,editor.getJTextComponent().getText())
-    finally:
       self.composer.getStatusbar().clear()
-      self.processing = False
+      
+    except:
+      ex = sys.exc_info()[1]
+      #print "### lint error: ", str(ex)
+      self.composer.getStatusbar().message("Errors in lint")
     
+    finally:
+      self.process = False
+
+
 class ContinuosLintInstaller(CreateComponentListener):
   def __init__(self):
     pass
