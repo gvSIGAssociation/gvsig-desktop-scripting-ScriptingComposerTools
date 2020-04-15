@@ -16,6 +16,7 @@ from addons.ScriptingComposerTools import classbrowser
 from addons.ScriptingComposerTools import consolejython
 from addons.ScriptingComposerTools import useplugin
 from addons.ScriptingComposerTools import markdown
+from addons.ScriptingComposerTools import cosa
 
 def main(*args):
   script.registerDataFolder("ScriptingComposerTools")
@@ -34,3 +35,4 @@ def main(*args):
   consolejython.selfRegister()
   useplugin.selfRegister()
   markdown.selfRegister()
+  cosa.selfRegister()
