@@ -245,7 +245,7 @@ class ComposerGit(object):
     f.write(".directory\n")
     f.close()
     
-  def cloneRepository(self, remote, branch=None, monitor=None):
+  def cloneRepository(self, remote, branch=None, monitor=None, user=None, password=None):
     git_clone = Git.cloneRepository()
     git_clone.setDirectory(self.__repopath.getParentFile())
     if branch==None:
@@ -255,6 +255,9 @@ class ComposerGit(object):
       git_clone.setBranchesToClone([branch,])
     git_clone.setNoCheckout(False)
     git_clone.setURI(remote)
+    if user!=None:
+      git_clone.setCredentialsProvider(UsernamePasswordCredentialsProvider(user, password))
+      
     if monitor!=None:
       git_clone.setProgressMonitor(monitor)
     

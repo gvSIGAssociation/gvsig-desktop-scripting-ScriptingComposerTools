@@ -29,7 +29,13 @@ class CloneMonitor(ProgressMonitor, Runnable):
   def run(self):
     
     try:
-      self.__git.cloneRepository(self.__panel.getRepositoryURL(), monitor=self)
+      if self.__panel.useAuthentication():
+        user = self.__panel.getUser()
+        password = self.__panel.getPassword()
+      else:
+        user = None
+        password = None
+      self.__git.cloneRepository(self.__panel.getRepositoryURL(), monitor=self, user=user, password=password)
       self.__panel.btnClose.setEnabled(True)
       self.__panel.btnCloneRepository.setEnabled(False)
       self.__panel.pgbMonitor.setMaximum(10)
@@ -77,14 +83,23 @@ class ClonePanel(FormPanel,Component):
     FormPanel.__init__(self,getResource(__file__,"repo_clone.xml"))
     self.__monitor = CloneMonitor(git, self)
     self.pgbMonitor.setVisible(False)
-    self.setPreferredSize(450,120)
+    self.setPreferredSize(450,200)
 
   def btnCloneRepository_click(self, *event):
     self.pgbMonitor.setVisible(True)
     self.btnClose.setEnabled(False)
     self.btnCloneRepository.setEnabled(False)
     Thread(self.__monitor).start()  
-    
+
+  def useAuthentication(self):
+    return self.chkUseAuthentication.isSelected()
+
+  def getUser(self):
+    return self.txtUser.getText()
+
+  def getPassword(self):
+    return self.txtPassword.getText()
+  
   def getRemoteBranchName(self):
     return self.txtRemoteBranchName.getText()
 
