@@ -120,7 +120,11 @@ class MarkdownInsertTextBlockAction(AbstractAction):
   def __init__(self, name, text):
     AbstractAction.__init__(self,name.replace("_"," "))
     self.putValue(Action.ACTION_COMMAND_KEY, "Markdown%s" % name.replace(" ",""))
-    self.putValue(Action.SMALL_ICON, load_icon((__file__,"images","%s.png" % name.lower().replace(" ","-").replace("_","-"))))
+    try:
+      self.putValue(Action.SMALL_ICON, load_icon((__file__,"images","%s.png" % name.lower().replace(" ","-").replace("_","-"))))
+    except:
+      self.putValue(Action.SMALL_ICON, None)
+      
     self.putValue(Action.SHORT_DESCRIPTION, name)
     self._text = text
 
@@ -184,6 +188,8 @@ def selfRegister():
       MarkdownIncludeAction("Include (for preview)", "include"),
       MarkdownIncludeAction("Include (for GitHub)", "include_relative"),
       MarkdownInsertTextBlockAction("Insert pagebreak","{{pagebreak /}}"),
+      MarkdownInsertTextBlockAction("Insert ToC","[TOC markdown numbered hierarchy levels=1-6]"),
+      MarkdownInsertTextBlockAction("Insert table","|-----------|----------|---------------\n|**Header1**|**Header2**|**Header3**\n|  |  |\n")
     ):
     if add_in_toolbar and action.getValue(Action.SMALL_ICON)!=None :
       manager.addComposerTool(action)
