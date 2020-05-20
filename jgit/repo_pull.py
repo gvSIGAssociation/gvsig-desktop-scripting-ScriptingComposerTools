@@ -30,9 +30,14 @@ class PullMonitor(ProgressMonitor, Runnable):
   def run(self):
     
     try:
+      if self.__panel.useAuthentication():
+        user = self.__panel.getUser()
+        password = self.__panel.getPassword()
+      else:
+        user = None
+        password = None
       strategy = str(self.__panel.getMergeStrategy())
-      print "STRATEGY: [%s] %s" % (repr(strategy),type(strategy))
-      status = self.__git.pull(self.__panel.getRemoteBranchName(), strategy, monitor=self)
+      status = self.__git.pull(self.__panel.getRemoteBranchName(), strategy, monitor=self, user=user, password=password)
       self.__panel.pgbMonitor.setString("Finished: %s" % status)
       #if status ==  "REJECTED_NONFASTFORWARD":
       #  message('The local copy needs to be updated in order to send the changes to the remote server.\nRun "pull" and fly to try.')
@@ -87,6 +92,15 @@ class PullPanel(FormPanel,Component):
     self.btnPull.setEnabled(False)
     Thread(self.__monitor).start()  
     
+  def useAuthentication(self):
+    return self.chkUseAuthentication.isSelected()
+
+  def getUser(self):
+    return self.txtUser.getText()
+
+  def getPassword(self):
+    return self.txtPassword.getText()
+  
   def getRemoteBranchName(self):
     return self.txtRemoteBranchName.getText()
 

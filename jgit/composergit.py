@@ -423,7 +423,7 @@ class ComposerGit(object):
     finally:
       self._close(git)
     
-  def pull(self, branch="refs/heads/master", strategy="RESOLVE", monitor=None):
+  def pull(self, branch="refs/heads/master", strategy="RESOLVE", monitor=None, user=None, password=None):
     git = self._open()
     try:
       strategy = pullStrategies.get(unicode(strategy),ThreeWayMergeStrategy.RESOLVE)
@@ -433,6 +433,8 @@ class ComposerGit(object):
         git_pull.setRemoteBranchName(branch)
       if monitor!=None:
         git_pull.setProgressMonitor(monitor)
+      if user!=None:
+        git_pull.setCredentialsProvider(UsernamePasswordCredentialsProvider(user, password))
       result = git_pull.call()
       rebaseResult = result.getRebaseResult()
       mergeResult = result.getMergeResult()
