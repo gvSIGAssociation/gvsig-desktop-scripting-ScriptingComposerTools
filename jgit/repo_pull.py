@@ -81,9 +81,14 @@ class PullPanel(FormPanel,Component):
     FormPanel.__init__(self,getResource(__file__,"repo_pull.xml"))
     self.__monitor = PullMonitor(git, self)
     self.pgbMonitor.setVisible(False)
-    self.setPreferredSize(450,130)
+    self.setPreferredSize(450,180)
     #self.addEscapeKeyListener(fn)
     #self.addEnterKeyListener(fn)
+    self.txtUser.setText(git.getUserId())
+    password = git.getPassword()
+    if password!=None:
+      self.txtPassword.setText(password)
+      self.chkUseAuthentication.setSelected(True)
     self.cboMergeStrategy.setSelectedIndex(3)
 
   def btnPull_click(self, *event):
