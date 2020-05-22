@@ -30,6 +30,8 @@ from org.eclipse.jgit.merge import ThreeWayMergeStrategy
 from org.eclipse.jgit.merge import MergeStrategy
 from org.eclipse.jgit.revwalk import RevWalk
 from org.eclipse.jgit.treewalk import CanonicalTreeParser
+from org.eclipse.jgit.lib.BranchConfig import BranchRebaseMode
+
 
 def getBaseRepoPath():
   manager = ScriptingLocator.getManager()
@@ -47,6 +49,12 @@ pullStrategies = {
   "RESOLVE"                : ThreeWayMergeStrategy.RESOLVE,
   "SIMPLE_TWO_WAY_IN_CORE" : ThreeWayMergeStrategy.SIMPLE_TWO_WAY_IN_CORE,
   "THEIRS"                 : MergeStrategy.THEIRS
+}
+
+pullRebaseModes = {
+  "NONE"     : BranchRebaseMode.NONE,
+  "REBASE"   : BranchRebaseMode.REBASE,
+  "PRESERVE" : BranchRebaseMode.PRESERVE
 }
 
 resetModes = {
@@ -255,7 +263,7 @@ class ComposerGit(object):
       git_clone.setBranchesToClone([branch,])
     git_clone.setNoCheckout(False)
     git_clone.setURI(remote)
-    if user!=None:
+    if user!=None and password!=None :
       git_clone.setCredentialsProvider(UsernamePasswordCredentialsProvider(user, password))
       
     if monitor!=None:
@@ -423,17 +431,19 @@ class ComposerGit(object):
     finally:
       self._close(git)
     
-  def pull(self, branch="refs/heads/master", strategy="RESOLVE", monitor=None, user=None, password=None):
+  def pull(self, branch="refs/heads/master", strategy="RESOLVE", monitor=None, user=None, password=None, rebase=None):
     git = self._open()
     try:
       strategy = pullStrategies.get(unicode(strategy),ThreeWayMergeStrategy.RESOLVE)
+      rebase = pullRebaseModes.get(unicode(rebase),BranchRebaseMode.NONE)
       git_pull = git.pull()
       git_pull.setStrategy(strategy)
+      git_pull.setRebase(rebase)
       if branch != "":
         git_pull.setRemoteBranchName(branch)
       if monitor!=None:
         git_pull.setProgressMonitor(monitor)
-      if user!=None:
+      if user!=None and password!=None :
         git_pull.setCredentialsProvider(UsernamePasswordCredentialsProvider(user, password))
       result = git_pull.call()
       rebaseResult = result.getRebaseResult()

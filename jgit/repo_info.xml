@@ -24,7 +24,7 @@
     </at>
     <at name="componentclass">com.jeta.forms.gui.form.FormComponent</at>
    </super>
-   <at name="id">/home/jjdelcerro/gvSIG/plugins/org.gvsig.scripting.app.mainplugin/2.4.0/scripts/addons/ScriptingComposerTools/jgit/repo_info.xml</at>
+   <at name="id">/home/jjdelcerro/gvSIG/plugins/org.gvsig.scripting.app.mainplugin/2.5.1/scripts/addons/ScriptingComposerTools/jgit/repo_info.xml</at>
    <at name="path">addons/ScriptingComposerTools/jgit/repo_info.xml</at>
    <at name="rowspecs">CENTER:4DLU:NONE,CENTER:DEFAULT:NONE,CENTER:4DLU:NONE,CENTER:DEFAULT:NONE,CENTER:4DLU:NONE,CENTER:DEFAULT:NONE,CENTER:4DLU:NONE,CENTER:DEFAULT:NONE,CENTER:4DLU:NONE,CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,CENTER:4DLU:NONE</at>
    <at name="colspecs">FILL:4DLU:NONE,FILL:DEFAULT:NONE,FILL:4DLU:NONE,FILL:DEFAULT:GROW(1.0),FILL:4DLU:NONE</at>
@@ -74,7 +74,7 @@
               </at>
              </object>
             </at>
-            <at name="width">668</at>
+            <at name="width">915</at>
             <at name="name"/>
             <at name="text">Git information</at>
             <at name="fill">
@@ -82,7 +82,7 @@
               <at name="name">fill</at>
              </object>
             </at>
-            <at name="height">14</at>
+            <at name="height">15</at>
            </object>
           </at>
          </object>
@@ -134,7 +134,7 @@
               </at>
              </object>
             </at>
-            <at name="width">105</at>
+            <at name="width">132</at>
             <at name="name"/>
             <at name="text">Repository name</at>
             <at name="fill">
@@ -142,7 +142,7 @@
               <at name="name">fill</at>
              </object>
             </at>
-            <at name="height">14</at>
+            <at name="height">15</at>
            </object>
           </at>
          </object>
@@ -197,8 +197,8 @@
             <at name="background" object="color">236,233,216</at>
             <at name="editable">false</at>
             <at name="name">txtRepoName</at>
-            <at name="width">552</at>
-            <at name="height">20</at>
+            <at name="width">770</at>
+            <at name="height">19</at>
            </object>
           </at>
          </object>
@@ -250,7 +250,7 @@
               </at>
              </object>
             </at>
-            <at name="width">105</at>
+            <at name="width">132</at>
             <at name="name"/>
             <at name="text">Working folder</at>
             <at name="fill">
@@ -258,7 +258,7 @@
               <at name="name">fill</at>
              </object>
             </at>
-            <at name="height">14</at>
+            <at name="height">15</at>
            </object>
           </at>
          </object>
@@ -313,8 +313,8 @@
             <at name="background" object="color">236,233,216</at>
             <at name="editable">false</at>
             <at name="name">txtWorkingPath</at>
-            <at name="width">552</at>
-            <at name="height">20</at>
+            <at name="width">770</at>
+            <at name="height">19</at>
            </object>
           </at>
          </object>
@@ -366,7 +366,7 @@
               </at>
              </object>
             </at>
-            <at name="width">105</at>
+            <at name="width">132</at>
             <at name="name"/>
             <at name="text">Local repository</at>
             <at name="fill">
@@ -374,7 +374,7 @@
               <at name="name">fill</at>
              </object>
             </at>
-            <at name="height">14</at>
+            <at name="height">15</at>
            </object>
           </at>
          </object>
@@ -426,7 +426,7 @@
               </at>
              </object>
             </at>
-            <at name="width">105</at>
+            <at name="width">132</at>
             <at name="name"/>
             <at name="text">Remote repository</at>
             <at name="fill">
@@ -434,7 +434,7 @@
               <at name="name">fill</at>
              </object>
             </at>
-            <at name="height">14</at>
+            <at name="height">15</at>
            </object>
           </at>
          </object>
@@ -489,8 +489,8 @@
             <at name="background" object="color">236,233,216</at>
             <at name="editable">false</at>
             <at name="name">txtRemoteURL</at>
-            <at name="width">552</at>
-            <at name="height">20</at>
+            <at name="width">770</at>
+            <at name="height">19</at>
            </object>
           </at>
          </object>
@@ -545,8 +545,8 @@
             <at name="background" object="color">236,233,216</at>
             <at name="editable">false</at>
             <at name="name">txtRepoPath</at>
-            <at name="width">552</at>
-            <at name="height">20</at>
+            <at name="width">770</at>
+            <at name="height">19</at>
            </object>
           </at>
          </object>
@@ -598,15 +598,15 @@
               </at>
              </object>
             </at>
-            <at name="name"></at>
-            <at name="width">105</at>
+            <at name="width">132</at>
+            <at name="name"/>
             <at name="text">User name</at>
             <at name="fill">
              <object classname="com.jeta.forms.store.properties.effects.PaintProperty">
               <at name="name">fill</at>
              </object>
             </at>
-            <at name="height">14</at>
+            <at name="height">15</at>
            </object>
           </at>
          </object>
@@ -658,15 +658,15 @@
               </at>
              </object>
             </at>
-            <at name="name"></at>
-            <at name="width">105</at>
+            <at name="width">132</at>
+            <at name="name"/>
             <at name="text">User id</at>
             <at name="fill">
              <object classname="com.jeta.forms.store.properties.effects.PaintProperty">
               <at name="name">fill</at>
              </object>
             </at>
-            <at name="height">14</at>
+            <at name="height">15</at>
            </object>
           </at>
          </object>
@@ -719,14 +719,14 @@
              </object>
             </at>
             <at name="name"></at>
-            <at name="width">105</at>
+            <at name="width">132</at>
             <at name="text">User mail</at>
             <at name="fill">
              <object classname="com.jeta.forms.store.properties.effects.PaintProperty">
               <at name="name">fill</at>
              </object>
             </at>
-            <at name="height">14</at>
+            <at name="height">15</at>
            </object>
           </at>
          </object>
@@ -779,8 +779,8 @@
              </object>
             </at>
             <at name="name">txtUserName</at>
-            <at name="width">552</at>
-            <at name="height">20</at>
+            <at name="width">770</at>
+            <at name="height">19</at>
            </object>
           </at>
          </object>
@@ -833,8 +833,8 @@
              </object>
             </at>
             <at name="name">txtUserId</at>
-            <at name="width">552</at>
-            <at name="height">20</at>
+            <at name="width">770</at>
+            <at name="height">19</at>
            </object>
           </at>
          </object>
@@ -887,8 +887,8 @@
              </object>
             </at>
             <at name="name">txtUserMail</at>
-            <at name="width">552</at>
-            <at name="height">20</at>
+            <at name="width">770</at>
+            <at name="height">19</at>
            </object>
           </at>
          </object>
@@ -913,7 +913,7 @@
          </at>
         </object>
        </at>
-       <at name="name"></at>
+       <at name="name"/>
        <at name="fill">
         <object classname="com.jeta.forms.store.properties.effects.PaintProperty">
          <at name="name">fill</at>

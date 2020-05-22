@@ -28,54 +28,61 @@ class CloneMonitor(ProgressMonitor, Runnable):
     
   def run(self):
     
+    panel = self.__panel
+    progressbar = panel.pgbMonitor
+    git = self.__git
     try:
-      if self.__panel.useAuthentication():
-        user = self.__panel.getUser()
-        password = self.__panel.getPassword()
-      else:
-        user = None
-        password = None
-      self.__git.cloneRepository(self.__panel.getRepositoryURL(), monitor=self, user=user, password=password)
-      self.__panel.btnClose.setEnabled(True)
-      self.__panel.btnCloneRepository.setEnabled(False)
-      self.__panel.pgbMonitor.setMaximum(10)
-      self.__panel.pgbMonitor.setMinimum(1)
-      self.__panel.pgbMonitor.setValue(10)
-      self.__panel.pgbMonitor.setStringPainted(True)
-      self.__panel.pgbMonitor.setString("Finished")
+      git.cloneRepository(panel.getRepositoryURL(), monitor=self, user=panel.getUserId(), password=panel.getPassword())
+      git.setUserMail(panel.getUserMail())     
+      if panel.getUserId()!=None:
+        git.setUserId(panel.getUserId())
+      if panel.rememberPassword() and panel.getPassword()!=None:
+        git.setPassword(panel.getPassword())
+      panel.btnClose.setEnabled(True)
+      panel.btnCloneRepository.setEnabled(False)
+      progressbar.setMaximum(10)
+      progressbar.setMinimum(1)
+      progressbar.setValue(10)
+      progressbar.setStringPainted(True)
+      progressbar.setString("Finished")
     
     except Throwable, ex:
       self.endTask()
-      self.__panel.pgbMonitor.setString("ERROR (%s)" % str(ex))
+      progressbar.setString("ERROR (%s)" % str(ex))
 
     except :
       self.endTask()
-      self.__panel.pgbMonitor.setString("ERROR (%s)" % ( sys.exc_info()[1]))
+      progressbar.setString("ERROR (%s)" % ( sys.exc_info()[1]))
     
   def start(self, totalTasks):
     self.__totalTasks = totalTasks
     
   def beginTask(self, title, totalWork):
-    self.__panel.pgbMonitor.setMaximum(totalWork)
-    self.__panel.pgbMonitor.setMinimum(totalWork)
-    self.__panel.pgbMonitor.setValue(0)
-    self.__panel.pgbMonitor.setStringPainted(True)
-    self.__panel.pgbMonitor.setString("%s (%s/%s)" % (title,self.__curtask,self.__totalTasks))
+    progressbar = self.__panel.pgbMonitor
+    progressbar.setMaximum(totalWork)
+    progressbar.setMinimum(totalWork)
+    progressbar.setValue(0)
+    progressbar.setStringPainted(True)
+    progressbar.setString("%s (%s/%s)" % (title,self.__curtask,self.__totalTasks))
     
   def update(self, completed):
-    self.__panel.pgbMonitor.setValue(completed)
+    progressbar = self.__panel.pgbMonitor
+    progressbar.setValue(completed)
 
   def isCancelled(self):
     return False
 
   def endTask(self):
-    self.__panel.btnClose.setEnabled(True)
-    self.__panel.btnCloneRepository.setEnabled(False)
-    self.__panel.pgbMonitor.setMaximum(10)
-    self.__panel.pgbMonitor.setMinimum(1)
-    self.__panel.pgbMonitor.setValue(10)
-    self.__panel.pgbMonitor.setStringPainted(True)
-    self.__panel.pgbMonitor.setString("Finished")
+    panel = self.__panel
+    progressbar = panel.pgbMonitor
+    
+    panel.btnClose.setEnabled(True)
+    panel.btnCloneRepository.setEnabled(False)
+    progressbar.setMaximum(10)
+    progressbar.setMinimum(1)
+    progressbar.setValue(10)
+    progressbar.setStringPainted(True)
+    progressbar.setString("Finished")
     
 class ClonePanel(FormPanel,Component):
         
@@ -91,15 +98,27 @@ class ClonePanel(FormPanel,Component):
     self.btnCloneRepository.setEnabled(False)
     Thread(self.__monitor).start()  
 
-  def useAuthentication(self):
-    return self.chkUseAuthentication.isSelected()
-
-  def getUser(self):
-    return self.txtUser.getText()
+  def getUserId(self):
+    userId = self.txtUser.getText().trim()
+    if userId == "":
+      return None
+    return userId
 
   def getPassword(self):
-    return self.txtPassword.getText()
+    password = self.txtPassword.getText().trim()
+    if password == "":
+      return None
+    return password
+
+  def rememberPassword(self):
+    return self.chkRememberPassword.isSelected()
   
+  def getUserMail(self):
+    userMail = self.txtUserMail.getText().trim()
+    if userMail == "":
+      return None
+    return userMail
+    
   def getRemoteBranchName(self):
     return self.txtRemoteBranchName.getText()
 

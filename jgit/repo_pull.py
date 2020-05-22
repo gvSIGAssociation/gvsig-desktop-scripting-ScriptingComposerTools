@@ -29,66 +29,75 @@ class PullMonitor(ProgressMonitor, Runnable):
     
   def run(self):
     
+    panel = self.__panel
+    progressbar = panel.pgbMonitor
+    git = self.__git
     try:
-      if self.__panel.useAuthentication():
-        user = self.__panel.getUser()
-        password = self.__panel.getPassword()
-      else:
-        user = None
-        password = None
-      strategy = str(self.__panel.getMergeStrategy())
-      status = self.__git.pull(self.__panel.getRemoteBranchName(), strategy, monitor=self, user=user, password=password)
-      self.__panel.pgbMonitor.setString("Finished: %s" % status)
-      #if status ==  "REJECTED_NONFASTFORWARD":
-      #  message('The local copy needs to be updated in order to send the changes to the remote server.\nRun "pull" and fly to try.')
+      status = git.pull(
+        panel.getRemoteBranchName(), 
+        panel.getMergeStrategy(), 
+        monitor=self, 
+        user=panel.getUserId(), 
+        password=panel.getPassword(), 
+        rebase=panel.getRebase()
+      )
+      if panel.getUserId()!=None:
+        git.setUserId(panel.getUserId())
+      if panel.rememberPassword() and panel.getPassword()!=None:
+        git.setPassword(panel.getPassword())
+      progressbar.setString("Finished: %s" % status)
     
     except Throwable, ex:
       self.endTask()
-      self.__panel.pgbMonitor.setString("ERROR (%s)" % str(ex))
+      progressbar.setString("ERROR (%s)" % str(ex))
     
     except:
       self.endTask()
-      self.__panel.pgbMonitor.setString("ERROR")
+      progressbar.setString("ERROR")
     
   def start(self, totalTasks):
     self.__totalTasks = totalTasks
     
   def beginTask(self, title, totalWork):
-    self.__panel.pgbMonitor.setMaximum(totalWork)
-    self.__panel.pgbMonitor.setMinimum(totalWork)
-    self.__panel.pgbMonitor.setValue(0)
-    self.__panel.pgbMonitor.setStringPainted(True)
-    self.__panel.pgbMonitor.setString("%s (%s/%s)" % (title,self.__curtask,self.__totalTasks))
-    
+    progressbar = self.__panel.pgbMonitor
+    progressbar.setMaximum(totalWork)
+    progressbar.setMinimum(totalWork)
+    progressbar.setValue(0)
+    progressbar.setStringPainted(True)
+    progressbar.setString("%s (%s/%s)" % (title,self.__curtask,self.__totalTasks))
+
   def update(self, completed):
-    self.__panel.pgbMonitor.setValue(completed)
+    progressbar = self.__panel.pgbMonitor
+    progressbar.setValue(completed)
 
   def isCancelled(self):
     return False
 
   def endTask(self):
-    self.__panel.btnClose.setEnabled(True)
-    self.__panel.btnPull.setEnabled(False)
-    self.__panel.pgbMonitor.setMaximum(10)
-    self.__panel.pgbMonitor.setMinimum(1)
-    self.__panel.pgbMonitor.setValue(10)
-    self.__panel.pgbMonitor.setStringPainted(True)
-    self.__panel.pgbMonitor.setString("Finished")
+    panel = self.__panel
+    progressbar = panel.pgbMonitor
     
+    panel.btnClose.setEnabled(True)
+    panel.btnCloneRepository.setEnabled(False)
+    progressbar.setMaximum(10)
+    progressbar.setMinimum(1)
+    progressbar.setValue(10)
+    progressbar.setStringPainted(True)
+    progressbar.setString("Finished")
+
 class PullPanel(FormPanel,Component):
         
   def __init__(self, git):
     FormPanel.__init__(self,getResource(__file__,"repo_pull.xml"))
     self.__monitor = PullMonitor(git, self)
     self.pgbMonitor.setVisible(False)
-    self.setPreferredSize(450,180)
+    self.setPreferredSize(450,195)
     #self.addEscapeKeyListener(fn)
     #self.addEnterKeyListener(fn)
     self.txtUser.setText(git.getUserId())
     password = git.getPassword()
-    if password!=None:
+    if password!=None :
       self.txtPassword.setText(password)
-      self.chkUseAuthentication.setSelected(True)
     self.cboMergeStrategy.setSelectedIndex(3)
 
   def btnPull_click(self, *event):
@@ -97,20 +106,29 @@ class PullPanel(FormPanel,Component):
     self.btnPull.setEnabled(False)
     Thread(self.__monitor).start()  
     
-  def useAuthentication(self):
-    return self.chkUseAuthentication.isSelected()
-
-  def getUser(self):
-    return self.txtUser.getText()
+  def getUserId(self):
+    userId = self.txtUser.getText().trim()
+    if userId == "":
+      return None
+    return userId
 
   def getPassword(self):
-    return self.txtPassword.getText()
+    password = self.txtPassword.getText().trim()
+    if password == "":
+      return None
+    return password
+
+  def rememberPassword(self):
+    return self.chkRememberPassword.isSelected()
   
   def getRemoteBranchName(self):
     return self.txtRemoteBranchName.getText()
 
   def getMergeStrategy(self):
-    return self.cboMergeStrategy.getSelectedItem()
+    return str(self.cboMergeStrategy.getSelectedItem())
+
+  def getRebase(self):
+    return str(self.cboRebase.getSelectedItem())
 
   def showWindow(self, title="Git - Pull"):
     manager = ScriptingSwingLocator.getUIManager()

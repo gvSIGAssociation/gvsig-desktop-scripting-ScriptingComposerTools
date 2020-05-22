@@ -56,9 +56,9 @@ class PushMonitor(ProgressMonitor, Runnable):
     self.__panel.pgbPushMonitor.setValue(10)
     self.__panel.pgbPushMonitor.setStringPainted(True)
     self.__panel.pgbPushMonitor.setString("Finished")
+    self.__git.setUserId(self.__panel.getUserId())
     if self.__panel.rememberPassword():
       self.__git.setPassword(self.__panel.getPassword())
-      self.__git.setUserId(self.__panel.getUserId())
     
 class PushParamsPanel(FormPanel,Component):
         
@@ -66,7 +66,7 @@ class PushParamsPanel(FormPanel,Component):
     FormPanel.__init__(self,getResource(__file__,"repo_push.xml"))
     self.__monitor = PushMonitor(git, self)
     self.pgbPushMonitor.setVisible(False)
-    self.setPreferredSize(400,140)
+    self.setPreferredSize(400,125)
     self.txtUserName.setText(git.getUserId())
     password = git.getPassword()
     if password!=None:
