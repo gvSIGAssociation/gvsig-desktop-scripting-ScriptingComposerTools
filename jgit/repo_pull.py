@@ -6,6 +6,7 @@ from gvsig import getResource
 from gvsig.libs.formpanel import FormPanel
 
 import os
+import sys
 
 from org.gvsig.tools.swing.api import Component
 
@@ -48,10 +49,14 @@ class PullMonitor(ProgressMonitor, Runnable):
       progressbar.setString("Finished: %s" % status)
     
     except Throwable, ex:
+      ex = sys.exc_info()[1]
+      gvsig.logger("Can't load module 'jgit'. " + str(ex), gvsig.LOGGER_WARN, ex)
       self.endTask()
       progressbar.setString("ERROR (%s)" % str(ex))
     
     except:
+      ex = sys.exc_info()[1]
+      gvsig.logger("Can't load module 'jgit'. " + str(ex), gvsig.LOGGER_WARN, ex)
       self.endTask()
       progressbar.setString("ERROR")
     
@@ -78,7 +83,7 @@ class PullMonitor(ProgressMonitor, Runnable):
     progressbar = panel.pgbMonitor
     
     panel.btnClose.setEnabled(True)
-    panel.btnCloneRepository.setEnabled(False)
+    panel.btnPull.setEnabled(False)
     progressbar.setMaximum(10)
     progressbar.setMinimum(1)
     progressbar.setValue(10)
@@ -107,13 +112,13 @@ class PullPanel(FormPanel,Component):
     Thread(self.__monitor).start()  
     
   def getUserId(self):
-    userId = self.txtUser.getText().trim()
+    userId = self.txtUser.getText().strip()
     if userId == "":
       return None
     return userId
 
   def getPassword(self):
-    password = self.txtPassword.getText().trim()
+    password = self.txtPassword.getText().strip()
     if password == "":
       return None
     return password

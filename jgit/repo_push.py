@@ -6,6 +6,7 @@ from gvsig import getResource
 from gvsig.libs.formpanel import FormPanel
 
 import os
+import sys
 
 from org.eclipse.jgit.lib import ProgressMonitor
 

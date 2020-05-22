@@ -7,7 +7,6 @@ from gvsig.libs.formpanel import FormPanel
 import os
 
 import repo_utils
-reload(repo_utils)
 from repo_utils import Git, getSelectedFolder, warning, inputbox, message
 
 import sys
@@ -47,10 +46,14 @@ class CloneMonitor(ProgressMonitor, Runnable):
       progressbar.setString("Finished")
     
     except Throwable, ex:
+      ex = sys.exc_info()[1]
+      gvsig.logger("Can't load module 'jgit'. " + str(ex), gvsig.LOGGER_WARN, ex)
       self.endTask()
       progressbar.setString("ERROR (%s)" % str(ex))
 
     except :
+      ex = sys.exc_info()[1]
+      gvsig.logger("Can't load module 'jgit'. " + str(ex), gvsig.LOGGER_WARN, ex)
       self.endTask()
       progressbar.setString("ERROR (%s)" % ( sys.exc_info()[1]))
     
@@ -99,13 +102,13 @@ class ClonePanel(FormPanel,Component):
     Thread(self.__monitor).start()  
 
   def getUserId(self):
-    userId = self.txtUser.getText().trim()
+    userId = self.txtUser.getText().strip()
     if userId == "":
       return None
     return userId
 
   def getPassword(self):
-    password = self.txtPassword.getText().trim()
+    password = self.txtPassword.getText().strip()
     if password == "":
       return None
     return password
@@ -114,7 +117,7 @@ class ClonePanel(FormPanel,Component):
     return self.chkRememberPassword.isSelected()
   
   def getUserMail(self):
-    userMail = self.txtUserMail.getText().trim()
+    userMail = self.txtUserMail.getText().strip()
     if userMail == "":
       return None
     return userMail
