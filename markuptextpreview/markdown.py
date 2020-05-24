@@ -4,6 +4,7 @@ import gvsig
 
 from gvsig import commonsdialog
 
+import sys
 import os
 import os.path
 import io
@@ -90,7 +91,8 @@ def format_img(url, alt, title, anchor=None):
           (int(float(image.getHeight())*float(IMAGE_MAX_WIDTH))/float(image.getWidth()))
         )
     except:
-      print "No se ha podido cargar la url: ", repr(url)
+      ex = sys.exc_info()[1]
+      gvsig.logger("Can't load image from url '%s'. %s" % (repr(url), str(ex)), gvsig.LOGGER_WARN, ex)
   html = html + ">"
   return html
 
