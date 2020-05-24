@@ -8,6 +8,7 @@ import os
 import os.path
 import io
 import StringIO
+import cgi
 
 from gvsig import getResource
 from java.util import HashMap
@@ -43,7 +44,7 @@ from com.vladsch.flexmark.ext.gitlab import GitLabExtension
 from com.vladsch.flexmark.ext.xwiki.macros import MacroExtension
 from com.vladsch.flexmark.ext.attributes import AttributesExtension
 from com.vladsch.flexmark.ext.yaml.front.matter import YamlFrontMatterExtension
-
+from com.vladsch.flexmark.ext.yaml.front.matter import AbstractYamlFrontMatterVisitor
 
 from com.vladsch.flexmark.ast import Image
 from com.vladsch.flexmark.util.ast import VisitHandler, Visitor
@@ -120,8 +121,8 @@ class ProcessNodesVisitor(Visitor):
       except:
         pass
       
-    if isinstance(node, Macro):
-      print type(node), node.isClosedTag(), unicode(node.getName())
+    elif isinstance(node, Macro):
+      #print type(node), node.isClosedTag(), unicode(node.getName())
       if node.isClosedTag():
         macroValue = self.processor.getMacroValue(unicode(node.getName()))
         if macroValue!=None:
@@ -169,6 +170,47 @@ class MarkdownProcessor(object):
     self.macros = dict()
     self.macros["pagebreak"] = '<div style="page-break-after: always"></div>\n'
 
+  def getMetadata(self, document):
+    visitor = AbstractYamlFrontMatterVisitor()
+    visitor.visit(document)
+    data = visitor.getData()
+
+    for k,v in data.iteritems():
+      if len(v)>0:
+        self.macros[k] = v[0]
+        
+    code = StringIO.StringIO()
+    titles = data.get("title")
+    if titles != None :
+      for title in titles:
+        code.write("<title>")
+        code.write(cgi.escape(title))
+        code.write("</title>\n")
+    descriptions = data.get("description")
+    if descriptions != None :
+      for description in descriptions:
+        code.write('<meta name="description" content="')
+        code.write(cgi.escape(description))
+        code.write('">\n')
+          
+    keywords = data.get("keywords")
+    if keywords != None :
+      for keyword in keywords:
+        code.write('<meta name="keywords" content="')
+        code.write(cgi.escape(keyword))
+        code.write('">\n')
+
+    authors = data.get("authors")
+    if authors != None :
+      for author in authors:
+        code.write('<meta name="author" content="')
+        code.write(cgi.escape(author))
+        code.write('">\n')
+
+    html = code.getvalue()
+    html = html.encode("utf-8",'replace')
+    return html
+
   def getMacroValue(self, name):
     return self.macros.get(name,None)
     
@@ -182,7 +224,7 @@ class MarkdownProcessor(object):
     if doc.contains(JekyllTagExtension.TAG_LIST):
       tagList = JekyllTagExtension.TAG_LIST.get(doc)
       for tag in tagList:
-        print type(tag), type(tag.getParent()), type(tag.getParent().getParent())
+        #print type(tag), type(tag.getParent()), type(tag.getParent().getParent())
         tagName = tag.getTag()
         if tagName.equals("include"):
           includeFile = tag.getParameters().toString()
@@ -209,7 +251,6 @@ class MarkdownProcessor(object):
     options.set(Parser.EXTENSIONS, [
        AutolinkExtension.create(), 
        JekyllTagExtension.create(),
-       JekyllFrontMatterExtension.create(),
        MacrosExtension.create(),
        TablesExtension.create(),
        AdmonitionExtension.create(),
@@ -242,11 +283,14 @@ class MarkdownProcessor(object):
     self.processNodes = ProcessNodesVisitor(self, os.path.dirname(self.pathname))
   
     doc = self.parser.parse(self.markdown)
+    metadata = self.getMetadata(doc)
+
     self.process_document(self.pathname, doc)
-    html = self.renderer.render(doc);
+    body = self.renderer.render(doc);
     
-    html = html.encode("utf-8",'replace')
-    html = """<!DOCTYPE html>
+    body = body.encode("utf-8",'replace')
+    html = StringIO.StringIO()
+    html.write("""<!DOCTYPE html>
 <html>
 <head>
 <meta charset=\"UTF-8\">
@@ -599,11 +643,11 @@ table, th, td {
     color: #fcbb6a;
 }
 </style>
-</head>
-<body>
-""" + html + """
-</body>
-</html>"""
+""")
+    html.write(metadata)
+    html.write("</head>\n<body>\n")
+    html.write(body)
+    html.write("</body>\n</html>")
     if self.processNodes.hasAbsolutePaths() and self.options.get("allowgui",False):
       composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
       commonsdialog.msgbox(
@@ -613,7 +657,7 @@ table, th, td {
         root=composer
       )
       
-    return html
+    return html.getvalue()
 
 def toHtml(markdown, pathname, **kwargs):
   processor = MarkdownProcessor(markdown,pathname,kwargs)
@@ -671,5 +715,3 @@ def main(*args):
 
 """
   test()
-  
-  
