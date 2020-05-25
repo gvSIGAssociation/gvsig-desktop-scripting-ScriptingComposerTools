@@ -453,10 +453,11 @@ class ComposerGit(object):
         print "### pull, rebaseResult.getStatus():", rebaseResult.getStatus()
         print "### pull, rebaseResult.getConflicts():", rebaseResult.getConflicts()
         print "### pull, rebaseResult.getFailingPaths():", rebaseResult.getFailingPaths()
-        print "### pull, mergeResult.getMergeStatus():", rebaseResult.getMergeStatus()
-        print "### pull, mergeResult.getConflicts():", rebaseResult.getConflicts()
-        print "### pull, mergeResult.getFailingPaths():", rebaseResult.getFailingPaths()
-        print "### pull, mergeResult.getCheckoutConflicts():", rebaseResult.getCheckoutConflicts()
+      if mergeResult!=None:
+        print "### pull, mergeResult.getMergeStatus():", mergeResult.getMergeStatus()
+        print "### pull, mergeResult.getConflicts():", mergeResult.getConflicts()
+        print "### pull, mergeResult.getFailingPaths():", mergeResult.getFailingPaths()
+        print "### pull, mergeResult.getCheckoutConflicts():", mergeResult.getCheckoutConflicts()
       if result.isSuccessful():
         return "OK"
       return unicode(result)
