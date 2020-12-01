@@ -43,6 +43,23 @@ def getBaseRepoPath():
   #print ">>> base repo path", path
   return path
 
+DEFAULT_BRANCH = "refs/heads/master"
+
+def getDefaultBranch(git):
+  try:
+    config = git.getRepository().getConfig()
+    subsections=config.getSubsections("branch")
+    if subsections==None or len(subsections)==0:
+      return DEFAULT_BRANCH
+    for name in subsections:
+      branch = config.getString("branch", name, "merge")
+      if not (branch in (None,'')):
+        return branch
+    return DEFAULT_BRANCH
+  except:
+    return DEFAULT_BRANCH
+    
+
 pullStrategies = {
   "OURS"                   : MergeStrategy.OURS,
   "RECURSIVE"              : ThreeWayMergeStrategy.RECURSIVE,
@@ -147,7 +164,7 @@ class ComposerGit(object):
     if repopath == None:
       repopath = os.path.join(getBaseRepoPath(),self.getRepoName(),".git")
     self.__repopath = File(repopath)
-    self.__branch = "refs/heads/master"
+    self.__branch = None
 
   def __str__(self):
     return self.__repopath.getAbsolutePath()
@@ -235,10 +252,20 @@ class ComposerGit(object):
     finally:
       self._close(git)
 
-  def getBranch(self):
+  def getBranch(self, git = None):
+    if self.__branch != None:
+      return self.__branch
+    if git == None:
+      git = self._open()
+      try:
+        self.__branch = getDefaultBranch(git)
+      finally:
+        self._close(git)
+    else:
+      self.__branch = getDefaultBranch(git)
     return self.__branch
 
-  def setBranch(self, branch="refs/heads/master"):
+  def setBranch(self, branch=DEFAULT_BRANCH):
     if "/" not in branch:
       branch="refs/heads/" + branch
     self.__branch = branch
@@ -357,12 +384,12 @@ class ComposerGit(object):
     git = self._open()
     try:
       git_checkout = git.checkout()
-      git_checkout.setName(self.getBranch())
+      git_checkout.setName(self.getBranch(git))
       #print "### checkout, files:", files
       if files != None and len(files)>0:
         git_checkout.addPaths(files)
       git_checkout.setCreateBranch(False)
-      git_checkout.setStartPoint(self.getBranch())
+      git_checkout.setStartPoint(self.getBranch(git))
       #print "### checkout:", git_checkout
       git_checkout.call()
     finally:
@@ -384,7 +411,7 @@ class ComposerGit(object):
       if monitor!=None:
         git_push.setProgressMonitor(monitor)
       responses = git_push.call()
-      status = unicode(responses[0].getRemoteUpdate("refs/heads/master" ).getStatus())
+      status = unicode(responses[0].getRemoteUpdate(getBranch(git)).getStatus())
       return status
     finally:
       self._close(git)
@@ -431,9 +458,11 @@ class ComposerGit(object):
     finally:
       self._close(git)
     
-  def pull(self, branch="refs/heads/master", strategy="RESOLVE", monitor=None, user=None, password=None, rebase=None):
+  def pull(self, branch=None, strategy="RESOLVE", monitor=None, user=None, password=None, rebase=None):
     git = self._open()
     try:
+      if branch == None:
+        branch= getBranch(git)
       strategy = pullStrategies.get(unicode(strategy),ThreeWayMergeStrategy.RESOLVE)
       rebase = pullRebaseModes.get(unicode(rebase),BranchRebaseMode.NONE)
       git_pull = git.pull()
