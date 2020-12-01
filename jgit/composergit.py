@@ -411,7 +411,7 @@ class ComposerGit(object):
       if monitor!=None:
         git_push.setProgressMonitor(monitor)
       responses = git_push.call()
-      status = unicode(responses[0].getRemoteUpdate(getBranch(git)).getStatus())
+      status = unicode(responses[0].getRemoteUpdate(self.getBranch(git)).getStatus())
       return status
     finally:
       self._close(git)
@@ -462,7 +462,7 @@ class ComposerGit(object):
     git = self._open()
     try:
       if branch == None:
-        branch= getBranch(git)
+        branch= self.getBranch(git)
       strategy = pullStrategies.get(unicode(strategy),ThreeWayMergeStrategy.RESOLVE)
       rebase = pullRebaseModes.get(unicode(rebase),BranchRebaseMode.NONE)
       git_pull = git.pull()
