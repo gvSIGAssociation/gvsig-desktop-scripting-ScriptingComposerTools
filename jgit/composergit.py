@@ -10,6 +10,7 @@ import gvsig
 #
 
 import os
+import os.path
 import base64
 
 from java.io import File
@@ -376,7 +377,8 @@ class ComposerGit(object):
       git_rm.call()
       for f in files:
         f = os.path.join(self.__workingpath.getAbsolutePath(),f)
-        os.remove(f)
+        if os.path.exists(f):
+          os.remove(f)
     finally:
       self._close(git)
 
