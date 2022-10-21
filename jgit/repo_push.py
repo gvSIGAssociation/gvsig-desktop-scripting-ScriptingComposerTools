@@ -14,6 +14,7 @@ from org.eclipse.jgit.lib import ProgressMonitor
 from org.gvsig.scripting.swing.api import ScriptingSwingLocator
 from java.lang import Runnable
 from org.gvsig.tools.swing.api import Component
+from org.gvsig.tools.swing.api  import ToolsSwingLocator
 
 from repo_utils import Git, getComposer, getSelectedGit
 from repo_utils import warning, message
@@ -73,6 +74,11 @@ class PushParamsPanel(FormPanel,Component):
     if password!=None:
       self.txtPassword.setText(password)
     self.txtPassword.requestFocusInWindow()
+    toolsSwingManager = ToolsSwingLocator.getToolsSwingManager()
+    toolsSwingManager.addClearButton(self.txtUserName)
+    toolsSwingManager.setDefaultPopupMenu(self.txtUserName)
+    toolsSwingManager.addClearButton(self.txtPassword)
+    toolsSwingManager.setDefaultPopupMenu(self.txtPassword)
 
 
   def getUserId(self):

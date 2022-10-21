@@ -94,6 +94,16 @@ class ClonePanel(FormPanel,Component):
     self.__monitor = CloneMonitor(git, self)
     self.pgbMonitor.setVisible(False)
     self.setPreferredSize(450,200)
+    toolsSwingManager = ToolsSwingLocator.getToolsSwingManager()
+    toolsSwingManager.addClearButton(self.txtUser)
+    toolsSwingManager.setDefaultPopupMenu(self.txtUser)
+    toolsSwingManager.addClearButton(self.txtPassword)
+    toolsSwingManager.setDefaultPopupMenu(self.txtPassword)
+    toolsSwingManager.addClearButton(self.txtUserMail)
+    toolsSwingManager.setDefaultPopupMenu(self.txtUserMail)
+    toolsSwingManager.addClearButton(self.txtURL)
+    toolsSwingManager.setDefaultPopupMenu(self.txtURL)
+
 
   def btnCloneRepository_click(self, *event):
     self.pgbMonitor.setVisible(True)
