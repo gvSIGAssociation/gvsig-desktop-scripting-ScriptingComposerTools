@@ -14,7 +14,7 @@ import sys
 from java.lang import Thread
 from java.lang import Runnable
 from java.lang import Throwable
-from org.gvsig.tools.swing.api import Component
+from org.gvsig.tools.swing.api import Component, ToolsSwingLocator
 from org.gvsig.scripting.swing.api import ScriptingSwingLocator
 from org.eclipse.jgit.lib import ProgressMonitor
 
