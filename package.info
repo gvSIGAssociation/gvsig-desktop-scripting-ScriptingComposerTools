@@ -1,21 +1,21 @@
 #
-#Fri May 13 09:08:24 CEST 2022
+#Fri Oct 21 10:27:29 CEST 2022
 owner=gvSIG association
 code=ScriptingComposerTools
 java-version=j1_8
-operating-system=all
-description=Utilities that extend the scripts editor interface made in python.\n\nAdd tools like\:\n- Buttons to run the abeille forms designer, integrated with scripting editor.\n- Automatic light syntax check for python. Syntax errors are marked in the editor \n  automatically. (pytlint integration)\n- On demand python syntaxt checker (pytlint integration)\n- Quick search of classes, methods and functions in a module\n- Code navigator panel, tree of editing module\n- Search references in module, current folder and user selected folder\n- list of running thread with interrupt functionality\n- Git integration (using JGit)\n- Javadoc viewer\n- import assistant\n- RST and MD text markup preview\n\n\nIn the current version some tools are partially developed\n
 official=true
 type=Script
-web-url=
-version=1.0.0-31
-buildNumber=31
-owner-url=
+version=1.0.0-32
+state=testing
+operating-system=all
 dependencies=
 sources-url=https\://github.com/gvSIGAssociation/gvsig-desktop-scripting-ScriptingComposerTools
-name=Scripts\: Composer tools
-gvSIG-version=2.6.0
-state=testing
-categories=Development
-model-version=1.0.1
+web-url=
 architecture=all
+model-version=1.0.1
+categories=Development
+description=Utilities that extend the scripts editor interface made in python.\n\nAdd tools like\:\n- Buttons to run the abeille forms designer, integrated with scripting editor.\n- Automatic light syntax check for python. Syntax errors are marked in the editor \n  automatically. (pytlint integration)\n- On demand python syntaxt checker (pytlint integration)\n- Quick search of classes, methods and functions in a module\n- Code navigator panel, tree of editing module\n- Search references in module, current folder and user selected folder\n- list of running thread with interrupt functionality\n- Git integration (using JGit)\n- Javadoc viewer\n- import assistant\n- RST and MD text markup preview\n\n\nIn the current version some tools are partially developed\n
+owner-url=
+buildNumber=32
+gvSIG-version=2.6.0
+name=Scripts\: Composer tools
