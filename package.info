@@ -1,11 +1,11 @@
 #
-#Fri Oct 21 10:27:29 CEST 2022
+#Mon Nov 14 19:35:53 CET 2022
 owner=gvSIG association
 code=ScriptingComposerTools
 java-version=j1_8
 official=true
 type=Script
-version=1.0.0-32
+version=1.0.0-33
 state=testing
 operating-system=all
 dependencies=
@@ -16,6 +16,6 @@ model-version=1.0.1
 categories=Development
 description=Utilities that extend the scripts editor interface made in python.\n\nAdd tools like\:\n- Buttons to run the abeille forms designer, integrated with scripting editor.\n- Automatic light syntax check for python. Syntax errors are marked in the editor \n  automatically. (pytlint integration)\n- On demand python syntaxt checker (pytlint integration)\n- Quick search of classes, methods and functions in a module\n- Code navigator panel, tree of editing module\n- Search references in module, current folder and user selected folder\n- list of running thread with interrupt functionality\n- Git integration (using JGit)\n- Javadoc viewer\n- import assistant\n- RST and MD text markup preview\n\n\nIn the current version some tools are partially developed\n
 owner-url=
-buildNumber=32
+buildNumber=33
 gvSIG-version=2.6.0
 name=Scripts\: Composer tools
