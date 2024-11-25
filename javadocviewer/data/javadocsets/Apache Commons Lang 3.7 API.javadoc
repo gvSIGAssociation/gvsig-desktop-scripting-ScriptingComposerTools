@@ -1,4 +1,5 @@
 [javadocset]
 name=Apache Commons Lang 3.7 API
-url=https://commons.apache.org/proper/commons-lang/apidocs
+#url=https://commons.apache.org/proper/commons-lang/apidocs
+url=https://commons.apache.org/proper/commons-lang/javadocs/api-3.7
 enabled=true

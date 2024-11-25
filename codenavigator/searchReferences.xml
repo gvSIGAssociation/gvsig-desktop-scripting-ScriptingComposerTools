@@ -24,7 +24,8 @@
     </at>
     <at name="componentclass">com.jeta.forms.gui.form.FormComponent</at>
    </super>
-   <at name="id">/home/jjdelcerro/gvSIG/plugins/org.gvsig.scripting.app.mainplugin/scripts/addons/ScriptingComposerTools/codenavigator/searchReferences.xml</at>
+   <at name="id">/home/fdiaz/gvSIG/plugins/org.gvsig.scripting.app.mainplugin/2.6.1/scripts/addons/ScriptingComposerTools/codenavigator/searchReferences.xml</at>
+   <at name="path">addons/ScriptingComposerTools/codenavigator/searchReferences.xml</at>
    <at name="rowspecs">CENTER:DEFAULT:NONE,CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,FILL:DEFAULT:GROW(1.0),CENTER:DEFAULT:NONE,CENTER:DEFAULT:NONE,CENTER:DEFAULT:NONE</at>
    <at name="colspecs">FILL:DEFAULT:NONE,FILL:DEFAULT:NONE,FILL:DEFAULT:NONE,FILL:DEFAULT:GROW(1.0),FILL:DEFAULT:NONE</at>
    <at name="components">
@@ -134,7 +135,7 @@
              </object>
             </at>
             <at name="name">txtSearchText</at>
-            <at name="width">336</at>
+            <at name="width">720</at>
             <at name="height">20</at>
            </object>
           </at>
@@ -220,7 +221,7 @@
          </at>
          <at name="componentclass">com.jeta.forms.gui.form.FormComponent</at>
         </super>
-        <at name="id">embedded.926011631</at>
+        <at name="id">embedded.1523128139</at>
         <at name="rowspecs">CENTER:DEFAULT:NONE</at>
         <at name="colspecs">FILL:DEFAULT:GROW(1.0),FILL:4DLU:NONE,FILL:DEFAULT:NONE,FILL:4DLU:NONE,FILL:DEFAULT:NONE</at>
         <at name="components">
@@ -271,7 +272,7 @@
                  </at>
                  <at name="actionCommand">Open in new tab</at>
                  <at name="name">chkOpenInNewTab</at>
-                 <at name="width">287</at>
+                 <at name="width">671</at>
                  <at name="text">Open in new tab</at>
                  <at name="height">16</at>
                 </object>
@@ -527,7 +528,7 @@
              </object>
             </at>
             <at name="name">rdbFindIdentifier</at>
-            <at name="width">336</at>
+            <at name="width">720</at>
             <at name="text">Find identifier</at>
             <at name="height">16</at>
            </object>
@@ -589,7 +590,7 @@
              </object>
             </at>
             <at name="name">rdbFindMethods</at>
-            <at name="width">336</at>
+            <at name="width">720</at>
             <at name="text">Find method declaration</at>
             <at name="height">16</at>
            </object>
@@ -651,7 +652,7 @@
              </object>
             </at>
             <at name="name">rdbFindClasses</at>
-            <at name="width">336</at>
+            <at name="width">720</at>
             <at name="text">Find class declaration</at>
             <at name="height">16</at>
            </object>
@@ -713,7 +714,7 @@
              </object>
             </at>
             <at name="name">rdbFindFunctions</at>
-            <at name="width">336</at>
+            <at name="width">720</at>
             <at name="text">Find function declaration</at>
             <at name="height">16</at>
            </object>
@@ -740,7 +741,7 @@
          </at>
          <at name="componentclass">com.jeta.forms.gui.form.FormComponent</at>
         </super>
-        <at name="id">embedded.1873743815</at>
+        <at name="id">embedded.1339736705</at>
         <at name="rowspecs">CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,FILL:DEFAULT:GROW(1.0),CENTER:2DLU:NONE</at>
         <at name="colspecs">FILL:10DLU:NONE,FILL:DEFAULT:NONE,FILL:DEFAULT:GROW(1.0),FILL:DEFAULT:NONE</at>
         <at name="components">
@@ -797,8 +798,8 @@
                   </object>
                  </at>
                  <at name="name">rdbCurrentFile</at>
-                 <at name="width">400</at>
-                 <at name="text">Current fie</at>
+                 <at name="width">784</at>
+                 <at name="text">Current file</at>
                  <at name="height">16</at>
                 </object>
                </at>
@@ -859,7 +860,7 @@
                   </object>
                  </at>
                  <at name="name">rdbCurrentFolder</at>
-                 <at name="width">400</at>
+                 <at name="width">784</at>
                  <at name="text">Current folder</at>
                  <at name="height">16</at>
                 </object>
@@ -921,7 +922,7 @@
                   </object>
                  </at>
                  <at name="name">rdbCustom</at>
-                 <at name="width">400</at>
+                 <at name="width">784</at>
                  <at name="text">Custom</at>
                  <at name="height">16</at>
                 </object>
@@ -978,7 +979,7 @@
                  <at name="background" object="color">236,233,216</at>
                  <at name="editable">false</at>
                  <at name="name">txtCurrentFile</at>
-                 <at name="width">384</at>
+                 <at name="width">768</at>
                  <at name="height">20</at>
                 </object>
                </at>
@@ -1034,7 +1035,7 @@
                  <at name="background" object="color">236,233,216</at>
                  <at name="editable">false</at>
                  <at name="name">txtCurrentFolder</at>
-                 <at name="width">384</at>
+                 <at name="width">768</at>
                  <at name="height">20</at>
                 </object>
                </at>
@@ -1068,8 +1069,8 @@
                <at name="properties">
                 <object classname="com.jeta.forms.store.support.PropertyMap">
                  <at name="name">containerScriptingBrowser</at>
-                 <at name="width">384</at>
-                 <at name="height">142</at>
+                 <at name="width">768</at>
+                 <at name="height">384</at>
                 </object>
                </at>
               </object>
@@ -1247,7 +1248,7 @@
              </object>
             </at>
             <at name="name">rdbFindText</at>
-            <at name="width">336</at>
+            <at name="width">720</at>
             <at name="text">Find text</at>
             <at name="height">16</at>
            </object>

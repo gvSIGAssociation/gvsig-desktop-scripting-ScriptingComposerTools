@@ -306,6 +306,7 @@ class Javadoc(object):
     # jar/zip.
     # Para rodearlo, intentaremos cargar la documentacion de la web si hay conexion a internet
     # y si no, usaremos la copia local zipeada
+    '''
     try:
       x = urllib2.urlopen("http://downloads.gvsig.org/download/gvsig-desktop-testing/dists/2.4.0/docs/javadocs/html/allclasses-frame.html",timeout=3)
       x.close()
@@ -316,12 +317,14 @@ class Javadoc(object):
         )
       )
     except:
-      docsets.append( 
-        JavadocSet(
-          "gvSIG 2.4.0 (local)",
-          "jar:file:" + getResource(__file__, "data","gvsig-2_4_0-javadocs.zip!/html")
-        )
+      pass
+    '''
+    docsets.append( 
+      JavadocSet(
+        "gvSIG 2.6.1 2024-11-15 (local)",
+        "jar:file:" + getResource(__file__, "data","gvsig-2_6_1-241115-javadocs.zip!/html")
       )
+    )
     docsets.append( 
       JavadocSet(
         "Java Platform SE 8",
@@ -353,6 +356,6 @@ class Javadoc(object):
 
   
 def main(*args):
-  url = "jar:file:" + getResource(__file__, "data","gvsig-2_4_0-javadocs.zip!/html")
-  javadoc = Javadoc(javadocSet=JavadocSet("gvSIG 2.4.0", url))
+  url = "jar:file:" + getResource(__file__, "data","gvsig-2_6_1-241115-javadocs.zip!/html")
+  javadoc = Javadoc(javadocSet=JavadocSet("gvSIG 2.6.1 2024-11-15", url))
   print javadoc.getNodes().hasChildren()

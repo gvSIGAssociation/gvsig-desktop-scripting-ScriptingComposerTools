@@ -116,7 +116,7 @@ class SearchReferencesPanel(FormPanel, Visitor):
     search = self.txtSearchText.getText()
     if search in ("",None):
       return
-      
+
     self.navigator = CodeNavigatorPanel(self.composer, search=search)
     self.navigator.getModel().getRoot().setName("[ references of '%s' ]" % search)
     #self.searchReferences(unit)
@@ -129,6 +129,7 @@ class SearchReferencesPanel(FormPanel, Visitor):
 
   def searchReferences(self, unit):
     mode = self.getMode()
+    print mode
     search = self.getSearchText()
     try:
       self.composer.getStatusbar().message("Searching...")
@@ -136,8 +137,12 @@ class SearchReferencesPanel(FormPanel, Visitor):
         fname = unit.getResource(unit.getId()+".py").getAbsolutePath()
         inputFile=StringIO(self.editor.getJTextComponent().getText())
         analyzer = CodeAnalyzer()
-        analyzer.load(fname,search=search, inputFile=inputFile)
-        analyzer.removeEmptyElemens()
+        analyzer.load(fname,search=search, inputFile=inputFile, mode=mode)
+        type = getTypeFromSearchMode(mode)
+        if type == None:
+          analyzer.removeEmptyElements()
+        else:
+          analyzer.keepElements(search, type)
         module = analyzer.getModule()
         module.name = self.getPath(File(module.fname))
         model = self.navigator.getModel()
@@ -175,8 +180,13 @@ class SearchReferencesPanel(FormPanel, Visitor):
       fname = unit.getResource(unit.getId()+".py").getAbsolutePath()
       inputFile=StringIO(unit.getCode())
       analyzer = CodeAnalyzer()
-      analyzer.load(fname,search=search, inputFile=inputFile)
-      analyzer.removeEmptyElemens()
+      analyzer.load(fname,search=search, inputFile=inputFile, mode=mode)
+
+      type = getTypeFromSearchMode(mode)
+      if type == None:
+        analyzer.removeEmptyElements()
+      else:
+        analyzer.keepElements(search, type)
       module = analyzer.getModule()
       if module.has_children():
         module.name = self.getPath(File(module.fname))
@@ -187,8 +197,15 @@ class SearchReferencesPanel(FormPanel, Visitor):
       
     except Exception, ex:
       logger("Error searching references, search=%r, mode=%r, unit=%s" % (search, mode, unit), LOGGER_WARN,ex)
-      
+
+def patata1():
+  pass
+    
+del main
 def main(*args):
   panel = SearchReferencesPanel()
   panel.show()
-  
+  print "main"
+
+def patata2():
+  pass

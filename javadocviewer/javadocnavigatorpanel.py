@@ -318,13 +318,17 @@ class BookmarksCellRenderer(DefaultTreeCellRenderer):
     
   def getTreeCellRendererComponent(self, tree, value, selected, expanded, isLeaf, row, focused):
     c = DefaultTreeCellRenderer.getTreeCellRendererComponent(self, tree, value, selected, expanded, isLeaf, row, focused)
-    icon = value.getUserObject().getIcon()
-    if icon == None:
-      if value.getUserObject().isGroup():
-        icon = self._icon_folder
-      else:
-        icon = self._icon_layer
-    self.setIcon(icon)
+    try:
+      c = DefaultTreeCellRenderer.getTreeCellRendererComponent(self, tree, value, selected, expanded, isLeaf, row, focused)
+      icon = value.getUserObject().getIcon()
+      if icon == None:
+        if value.getUserObject().isGroup():
+          icon = self._icon_folder
+        else:
+          icon = self._icon_layer
+      self.setIcon(icon)
+    except:
+      c.setText("###%s" %c.getText())
     return c
 
 class BookmarksPanel(FormComponent):
@@ -666,8 +670,10 @@ def main(*args):
     "jar:file:" + getResource(__file__, "data","scripting-developers-guide.zip!/html/index.html"), 
     persistent=False
   )
-  for docset in javadoc.getJavadocSets():
-    navigator.loadJavadocSet(docset)
+  #for docset in javadoc.getJavadocSets():
+  #  navigator._loadJavadocSet(docset)
+
+  navigator.loadJavadocSets()
   
   composer = ScriptingSwingLocator.getUIManager().getActiveComposer()
   composer.getDock().add("#JavadocNavigator","Javadoc",navigator,JScriptingComposer.Dock.DOCK_LEFT)

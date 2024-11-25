@@ -21,6 +21,17 @@ MODE_CLASS=TYPE_CLASS
 MODE_METHOD=TYPE_METHOD
 MODE_FUNCTION=TYPE_FUNCTION
 
+__modeToType = {
+  MODE_TEXT: None,
+  MODE_IDENTIFIER: None,
+  MODE_CLASS: TYPE_CLASS,
+  MODE_METHOD: TYPE_METHOD,
+  MODE_FUNCTION: TYPE_FUNCTION
+}
+
+def getTypeFromSearchMode(mode):
+  return __modeToType.get(mode, None)
+  
 class CodeElement(object):
   def __init__(self,type, name, indent, lineno,fname=None):
     self.name = name
@@ -96,7 +107,7 @@ class CodeAnalyzer(object):
     else:
       f = inputFile
     state = "code"
-    lineno = 0
+    lineno = 1
     for line in f:
       line_len = len(line)      
       pos = 0
@@ -109,11 +120,11 @@ class CodeAnalyzer(object):
 
       if state == "code" and search != None :
         if mode == MODE_TEXT:
-          if search.lower() in self.getIdentifiers(line).lower():  
+          if search.lower() in line.lower():  
             last = self.getLastElement()
             element = CodeElement(TYPE_TEXT,"%5d: %s" % (lineno,line[pos:-1]),indent, lineno,fname=fname)
             last.elements.append(element)
-        elif mode == MODE_IDENTIFIER:
+        elif mode in (MODE_IDENTIFIER, MODE_FUNCTION, MODE_CLASS, MODE_METHOD) :
           identifiers = self.getIdentifiers(line).split(" ")
           for identifier in identifiers:
             if search == identifier:
@@ -124,13 +135,13 @@ class CodeAnalyzer(object):
               
       while pos<line_len :
         if state == "triplequote":
-          if line[pos:pos+3] == '"""' :
+          if line[pos:pos+3] == '"""' or line[pos:pos+3] == "'''" :
             pos +=3
             state = "code"
           else:
             pos += 1
         elif state == "code":
-          if line[pos:pos+3] == '"""' :
+          if line[pos:pos+3] == '"""' or line[pos:pos+3] == "'''" :
             pos += 1
             state = "triplequote"
   
@@ -224,13 +235,27 @@ class CodeAnalyzer(object):
     for x in toremove:
       element.elements.remove(x)    
     
-  def removeEmptyElemens(self, element=None):
+  def removeEmptyElements(self, element=None):
     if element == None:
       element = self.module
     toremove =list()
     for child in element.elements:
-      self.removeEmptyElemens(child)
+      self.removeEmptyElements(child)
       if len(child.elements)==0 and child.type!=TYPE_TEXT:
+        toremove.append(child)
+    for x in toremove:
+      element.elements.remove(x)    
+
+  def keepElements(self, name, type, element=None):
+    if element == None:
+      element = self.module
+    toremove =list()
+    for child in element.elements:
+      if child.type == type and child.getName() == name :
+        del child.elements[:]
+        continue
+      self.keepElements(name, type, child)
+      if len(child.elements)==0 :
         toremove.append(child)
     for x in toremove:
       element.elements.remove(x)    
@@ -307,7 +332,7 @@ def test0():
 def test1():
   analyzer = CodeAnalyzer()
   analyzer.load(getResource(__file__),search="CodeElement")
-  analyzer.removeEmptyElemens()
+  analyzer.removeEmptyElements()
   print analyzer.dump()
 
 def main(*args):
