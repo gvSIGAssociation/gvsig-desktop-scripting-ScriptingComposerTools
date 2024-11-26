@@ -7,8 +7,9 @@ try:
   import continuoslint
   
   def selfRegister():
-    lint.selfRegister()
-    continuoslint.selfRegister()
+    #lint.selfRegister()
+    #continuoslint.selfRegister()
+    pass
 except:
   import sys
   import traceback

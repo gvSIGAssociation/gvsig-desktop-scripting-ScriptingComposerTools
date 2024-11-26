@@ -5,4 +5,5 @@ from gvsig import *
 from addons.ScriptingComposerTools import addimports
 
 def main(*args):
-  addimports.selfRegister()
+  #addimports.selfRegister()
+  pass

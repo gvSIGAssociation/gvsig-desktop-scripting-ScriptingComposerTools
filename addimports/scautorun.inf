@@ -13,7 +13,7 @@ useSysPath = true
 isolationGroup = gvsig-script-composer-unsafe
 
 [properties]
-autorun.group.name=gvsig-script-composer-unsafe
-autorun.group.order=10000
-autorun.order=8000
+autorun.group.name = gvsig-script-composer-unsafe
+autorun.group.order = 10000
+autorun.order = 8000
 
